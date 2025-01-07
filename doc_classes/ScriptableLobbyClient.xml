@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="AuthoritativeLobbyClient" inherits="BlaziumClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="ScriptableLobbyClient" inherits="BlaziumClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Node for connecting to the Blazium Lobby service. Offers authoritative lobby making features.
 	</brief_description>
 	<description>
-		The [AuthoritativeLobbyClient] node provides an interface for connecting to the Blazium Authoritative service. There is a free instance hosted on the [url=https://blazium.app]blazium.app[/url] domain that is used by default.
+		The [ScriptableLobbyClient] node provides an interface for connecting to the Blazium Authoritative service. There is a free instance hosted on the [url=https://blazium.app]blazium.app[/url] domain that is used by default.
 		The normal flow is as follows:
 		1. Listen to all the signals you are interested in.
 		2. Connect to the server using [method connect_to_lobby] method.
@@ -132,7 +132,7 @@
 			</description>
 		</method>
 		<method name="lobby_call">
-			<return type="AuthoritativeLobbyResponse" />
+			<return type="ScriptableLobbyResponse" />
 			<param index="0" name="method" type="String" />
 			<param index="1" name="args" type="Array" default="[]" />
 			<description>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="AuthoritativeLobbyResult" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="ScriptableLobbyResult" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		A result from a [AuthoritativeLobbyResponse].
+		A result from a [ScriptableLobbyResponse].
 	</brief_description>
 	<description>
-		A result from a [AuthoritativeLobbyResponse]. Contains either result or error.
+		A result from a [ScriptableLobbyResponse]. Contains either result or error.
 	</description>
 	<tutorials>
 	</tutorials>

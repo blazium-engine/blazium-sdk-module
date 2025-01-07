@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  authoritative_lobby_response.h                                        */
+/*  scriptable_lobby_response.h                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,33 +28,33 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef AUTHORITATIVE_LOBBY_RESPONSE_H
-#define AUTHORITATIVE_LOBBY_RESPONSE_H
+#ifndef SCRIPTABLE_LOBBY_RESPONSE_H
+#define SCRIPTABLE_LOBBY_RESPONSE_H
 
 #include "core/object/ref_counted.h"
 #include "core/variant/typed_array.h"
 #include "lobby_info.h"
 #include "lobby_peer.h"
 
-class AuthoritativeLobbyResponse : public RefCounted {
-	GDCLASS(AuthoritativeLobbyResponse, RefCounted);
+class ScriptableLobbyResponse : public RefCounted {
+	GDCLASS(ScriptableLobbyResponse, RefCounted);
 
 protected:
 	static void _bind_methods() {
-		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "AuthoritativeLobbyResult")));
+		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "ScriptableLobbyResult")));
 	}
 
 public:
-	class AuthoritativeLobbyResult : public RefCounted {
-		GDCLASS(AuthoritativeLobbyResult, RefCounted);
+	class ScriptableLobbyResult : public RefCounted {
+		GDCLASS(ScriptableLobbyResult, RefCounted);
 		Variant result;
 		String error;
 
 	protected:
 		static void _bind_methods() {
-			ClassDB::bind_method(D_METHOD("has_error"), &AuthoritativeLobbyResult::has_error);
-			ClassDB::bind_method(D_METHOD("get_error"), &AuthoritativeLobbyResult::get_error);
-			ClassDB::bind_method(D_METHOD("get_result"), &AuthoritativeLobbyResult::get_result);
+			ClassDB::bind_method(D_METHOD("has_error"), &ScriptableLobbyResult::has_error);
+			ClassDB::bind_method(D_METHOD("get_error"), &ScriptableLobbyResult::get_error);
+			ClassDB::bind_method(D_METHOD("get_result"), &ScriptableLobbyResult::get_result);
 			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
 		}
 
@@ -68,4 +68,4 @@ public:
 	};
 };
 
-#endif // AUTHORITATIVE_LOBBY_RESPONSE_H
+#endif // SCRIPTABLE_LOBBY_RESPONSE_H

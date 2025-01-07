@@ -759,7 +759,6 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 		TypedArray<Dictionary> lobbies_input = arr;
 		for (int i = 0; i < lobbies_input.size(); ++i) {
 			Dictionary lobby_dict = lobbies_input[i];
-			bool updated = false;
 			if (!lobby_dict.has("name")) {
 				// lobby got removed
 				// go through every lobby and remove the one with id
@@ -768,14 +767,12 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 					Ref<LobbyInfo> lobby_j = lobbies[j];
 					if (lobby_j->get_id() == lobby_id) {
 						lobbies.remove_at(j);
-						updated = true;
 						break;
 					}
 				}
-			}
-			if (updated) {
 				continue;
 			}
+			bool updated = false;
 			// go and see if there already is a lobby in lobbies
 			for (int j = 0; j < lobbies.size(); ++j) {
 				String lobby_id = lobby_dict.get("id", "");
