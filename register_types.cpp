@@ -30,8 +30,8 @@
 
 #include "register_types.h"
 #include "blazium_client.h"
-#include "lobby/scriptable_lobby_client.h"
-#include "lobby/scriptable_lobby_response.h"
+#include "lobby/scripted_lobby_client.h"
+#include "lobby/scripted_lobby_response.h"
 #include "lobby/lobby_client.h"
 #include "lobby/lobby_info.h"
 #include "lobby/lobby_peer.h"
@@ -50,9 +50,9 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LobbyResponse);
 		GDREGISTER_CLASS(ViewLobbyResponse::ViewLobbyResult);
 		GDREGISTER_CLASS(ViewLobbyResponse);
-		GDREGISTER_CLASS(ScriptableLobbyClient);
-		GDREGISTER_CLASS(ScriptableLobbyResponse);
-		GDREGISTER_CLASS(ScriptableLobbyResponse::ScriptableLobbyResult);
+		GDREGISTER_CLASS(ScriptedLobbyClient);
+		GDREGISTER_CLASS(ScriptedLobbyResponse);
+		GDREGISTER_CLASS(ScriptedLobbyResponse::ScriptedLobbyResult);
 		GDREGISTER_CLASS(POGRClient);
 		GDREGISTER_CLASS(POGRClient::POGRResponse);
 		GDREGISTER_CLASS(POGRClient::POGRResult);

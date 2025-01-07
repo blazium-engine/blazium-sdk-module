@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  scriptable_lobby_client.cpp                                           */
+/*  scripted_lobby_client.cpp                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,36 +28,36 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "./scriptable_lobby_client.h"
+#include "./scripted_lobby_client.h"
 #include "./lobby_client.h"
 #include "lobby_info.h"
 #include "scene/main/node.h"
-ScriptableLobbyClient::ScriptableLobbyClient() {
+ScriptedLobbyClient::ScriptedLobbyClient() {
 	lobby.instantiate();
 	peer.instantiate();
 	_socket = Ref<WebSocketPeer>(WebSocketPeer::create());
 	set_process_internal(false);
 }
 
-ScriptableLobbyClient::~ScriptableLobbyClient() {
+ScriptedLobbyClient::~ScriptedLobbyClient() {
 	_socket->close();
 	set_process_internal(false);
 }
 
-void ScriptableLobbyClient::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_server_url", "server_url"), &ScriptableLobbyClient::set_server_url);
-	ClassDB::bind_method(D_METHOD("get_server_url"), &ScriptableLobbyClient::get_server_url);
-	ClassDB::bind_method(D_METHOD("set_reconnection_token", "reconnection_token"), &ScriptableLobbyClient::set_reconnection_token);
-	ClassDB::bind_method(D_METHOD("get_reconnection_token"), &ScriptableLobbyClient::get_reconnection_token);
-	ClassDB::bind_method(D_METHOD("set_game_id", "game_id"), &ScriptableLobbyClient::set_game_id);
-	ClassDB::bind_method(D_METHOD("get_game_id"), &ScriptableLobbyClient::get_game_id);
+void ScriptedLobbyClient::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_server_url", "server_url"), &ScriptedLobbyClient::set_server_url);
+	ClassDB::bind_method(D_METHOD("get_server_url"), &ScriptedLobbyClient::get_server_url);
+	ClassDB::bind_method(D_METHOD("set_reconnection_token", "reconnection_token"), &ScriptedLobbyClient::set_reconnection_token);
+	ClassDB::bind_method(D_METHOD("get_reconnection_token"), &ScriptedLobbyClient::get_reconnection_token);
+	ClassDB::bind_method(D_METHOD("set_game_id", "game_id"), &ScriptedLobbyClient::set_game_id);
+	ClassDB::bind_method(D_METHOD("get_game_id"), &ScriptedLobbyClient::get_game_id);
 
-	ClassDB::bind_method(D_METHOD("is_host"), &ScriptableLobbyClient::is_host);
-	ClassDB::bind_method(D_METHOD("get_connected"), &ScriptableLobbyClient::get_connected);
-	ClassDB::bind_method(D_METHOD("get_lobby"), &ScriptableLobbyClient::get_lobby);
-	ClassDB::bind_method(D_METHOD("get_peer"), &ScriptableLobbyClient::get_peer);
-	ClassDB::bind_method(D_METHOD("get_peers"), &ScriptableLobbyClient::get_peers);
-	ClassDB::bind_method(D_METHOD("get_peer_data"), &ScriptableLobbyClient::get_peer_data);
+	ClassDB::bind_method(D_METHOD("is_host"), &ScriptedLobbyClient::is_host);
+	ClassDB::bind_method(D_METHOD("get_connected"), &ScriptedLobbyClient::get_connected);
+	ClassDB::bind_method(D_METHOD("get_lobby"), &ScriptedLobbyClient::get_lobby);
+	ClassDB::bind_method(D_METHOD("get_peer"), &ScriptedLobbyClient::get_peer);
+	ClassDB::bind_method(D_METHOD("get_peers"), &ScriptedLobbyClient::get_peers);
+	ClassDB::bind_method(D_METHOD("get_peer_data"), &ScriptedLobbyClient::get_peer_data);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "server_url", PROPERTY_HINT_NONE, ""), "set_server_url", "get_server_url");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "reconnection_token", PROPERTY_HINT_NONE, ""), "set_reconnection_token", "get_reconnection_token");
@@ -71,21 +71,21 @@ void ScriptableLobbyClient::_bind_methods() {
 	ADD_PROPERTY_DEFAULT("peer", Ref<LobbyPeer>());
 	ADD_PROPERTY_DEFAULT("lobby", Ref<LobbyInfo>());
 	// Register methods
-	ClassDB::bind_method(D_METHOD("connect_to_lobby"), &ScriptableLobbyClient::connect_to_lobby);
-	ClassDB::bind_method(D_METHOD("disconnect_from_lobby"), &ScriptableLobbyClient::disconnect_from_lobby);
-	ClassDB::bind_method(D_METHOD("create_lobby", "title", "sealed", "tags", "max_players", "password"), &ScriptableLobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
-	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &ScriptableLobbyClient::join_lobby, DEFVAL(""));
-	ClassDB::bind_method(D_METHOD("leave_lobby"), &ScriptableLobbyClient::leave_lobby);
-	ClassDB::bind_method(D_METHOD("lobby_call", "method", "args"), &ScriptableLobbyClient::lobby_call, DEFVAL(Array()));
-	ClassDB::bind_method(D_METHOD("list_lobbies"), &ScriptableLobbyClient::list_lobby);
-	ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"), &ScriptableLobbyClient::kick_peer);
-	ClassDB::bind_method(D_METHOD("send_chat_message", "chat_message"), &ScriptableLobbyClient::lobby_chat);
-	ClassDB::bind_method(D_METHOD("set_lobby_ready", "ready"), &ScriptableLobbyClient::lobby_ready);
-	ClassDB::bind_method(D_METHOD("add_lobby_tags", "tags"), &ScriptableLobbyClient::set_lobby_tags);
-	ClassDB::bind_method(D_METHOD("del_lobby_tags", "keys"), &ScriptableLobbyClient::del_lobby_tags);
-	ClassDB::bind_method(D_METHOD("set_lobby_sealed", "seal"), &ScriptableLobbyClient::seal_lobby);
-	ClassDB::bind_method(D_METHOD("add_peer_user_data", "data"), &ScriptableLobbyClient::add_user_data);
-	ClassDB::bind_method(D_METHOD("del_peer_user_data", "keys"), &ScriptableLobbyClient::del_user_data);
+	ClassDB::bind_method(D_METHOD("connect_to_lobby"), &ScriptedLobbyClient::connect_to_lobby);
+	ClassDB::bind_method(D_METHOD("disconnect_from_lobby"), &ScriptedLobbyClient::disconnect_from_lobby);
+	ClassDB::bind_method(D_METHOD("create_lobby", "title", "sealed", "tags", "max_players", "password"), &ScriptedLobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
+	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &ScriptedLobbyClient::join_lobby, DEFVAL(""));
+	ClassDB::bind_method(D_METHOD("leave_lobby"), &ScriptedLobbyClient::leave_lobby);
+	ClassDB::bind_method(D_METHOD("lobby_call", "method", "args"), &ScriptedLobbyClient::lobby_call, DEFVAL(Array()));
+	ClassDB::bind_method(D_METHOD("list_lobbies"), &ScriptedLobbyClient::list_lobby);
+	ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"), &ScriptedLobbyClient::kick_peer);
+	ClassDB::bind_method(D_METHOD("send_chat_message", "chat_message"), &ScriptedLobbyClient::lobby_chat);
+	ClassDB::bind_method(D_METHOD("set_lobby_ready", "ready"), &ScriptedLobbyClient::lobby_ready);
+	ClassDB::bind_method(D_METHOD("add_lobby_tags", "tags"), &ScriptedLobbyClient::set_lobby_tags);
+	ClassDB::bind_method(D_METHOD("del_lobby_tags", "keys"), &ScriptedLobbyClient::del_lobby_tags);
+	ClassDB::bind_method(D_METHOD("set_lobby_sealed", "seal"), &ScriptedLobbyClient::seal_lobby);
+	ClassDB::bind_method(D_METHOD("add_peer_user_data", "data"), &ScriptedLobbyClient::add_user_data);
+	ClassDB::bind_method(D_METHOD("del_peer_user_data", "keys"), &ScriptedLobbyClient::del_user_data);
 
 	// Register signals
 	ADD_SIGNAL(MethodInfo("connected_to_lobby", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::STRING, "reconnection_token")));
@@ -109,22 +109,22 @@ void ScriptableLobbyClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
 }
 
-void ScriptableLobbyClient::set_server_url(const String &p_server_url) { this->server_url = p_server_url; }
-String ScriptableLobbyClient::get_server_url() { return server_url; }
-void ScriptableLobbyClient::set_reconnection_token(const String &p_reconnection_token) { this->reconnection_token = p_reconnection_token; }
-String ScriptableLobbyClient::get_reconnection_token() { return reconnection_token; }
-void ScriptableLobbyClient::set_game_id(const String &p_game_id) { this->game_id = p_game_id; }
-String ScriptableLobbyClient::get_game_id() { return game_id; }
-bool ScriptableLobbyClient::is_host() { return lobby->get_host() == peer->get_id(); }
-bool ScriptableLobbyClient::get_connected() { return connected; }
-void ScriptableLobbyClient::set_lobby(const Ref<LobbyInfo> &p_lobby) { this->lobby = p_lobby; }
-Ref<LobbyInfo> ScriptableLobbyClient::get_lobby() { return lobby; }
-void ScriptableLobbyClient::set_peer(const Ref<LobbyPeer> &p_peer) { this->peer = p_peer; }
-Ref<LobbyPeer> ScriptableLobbyClient::get_peer() { return peer; }
-TypedArray<LobbyPeer> ScriptableLobbyClient::get_peers() { return peers; }
-Dictionary ScriptableLobbyClient::get_peer_data() { return peer_data; }
+void ScriptedLobbyClient::set_server_url(const String &p_server_url) { this->server_url = p_server_url; }
+String ScriptedLobbyClient::get_server_url() { return server_url; }
+void ScriptedLobbyClient::set_reconnection_token(const String &p_reconnection_token) { this->reconnection_token = p_reconnection_token; }
+String ScriptedLobbyClient::get_reconnection_token() { return reconnection_token; }
+void ScriptedLobbyClient::set_game_id(const String &p_game_id) { this->game_id = p_game_id; }
+String ScriptedLobbyClient::get_game_id() { return game_id; }
+bool ScriptedLobbyClient::is_host() { return lobby->get_host() == peer->get_id(); }
+bool ScriptedLobbyClient::get_connected() { return connected; }
+void ScriptedLobbyClient::set_lobby(const Ref<LobbyInfo> &p_lobby) { this->lobby = p_lobby; }
+Ref<LobbyInfo> ScriptedLobbyClient::get_lobby() { return lobby; }
+void ScriptedLobbyClient::set_peer(const Ref<LobbyPeer> &p_peer) { this->peer = p_peer; }
+Ref<LobbyPeer> ScriptedLobbyClient::get_peer() { return peer; }
+TypedArray<LobbyPeer> ScriptedLobbyClient::get_peers() { return peers; }
+Dictionary ScriptedLobbyClient::get_peer_data() { return peer_data; }
 
-Ref<LobbyResponse> ScriptableLobbyClient::connect_to_lobby() {
+Ref<LobbyResponse> ScriptedLobbyClient::connect_to_lobby() {
 	Ref<LobbyResponse> response;
 	response.instantiate();
 	// if there is another command connect, finish that with error
@@ -155,7 +155,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::connect_to_lobby() {
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::disconnect_from_lobby() {
+Ref<LobbyResponse> ScriptedLobbyClient::disconnect_from_lobby() {
 	Ref<LobbyResponse> response;
 	response.instantiate();
 	// if there is another disconnect connect, finish that with error
@@ -179,11 +179,11 @@ Ref<LobbyResponse> ScriptableLobbyClient::disconnect_from_lobby() {
 	return response;
 }
 
-String ScriptableLobbyClient::_increment_counter() {
+String ScriptedLobbyClient::_increment_counter() {
 	return String::num(_counter++);
 }
 
-Ref<ViewLobbyResponse> ScriptableLobbyClient::create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password) {
+Ref<ViewLobbyResponse> ScriptedLobbyClient::create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "create_lobby";
@@ -205,7 +205,7 @@ Ref<ViewLobbyResponse> ScriptableLobbyClient::create_lobby(const String &p_name,
 	return response;
 }
 
-Ref<ViewLobbyResponse> ScriptableLobbyClient::join_lobby(const String &p_lobby_id, const String &p_password) {
+Ref<ViewLobbyResponse> ScriptedLobbyClient::join_lobby(const String &p_lobby_id, const String &p_password) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "join_lobby";
@@ -224,7 +224,7 @@ Ref<ViewLobbyResponse> ScriptableLobbyClient::join_lobby(const String &p_lobby_i
 	return response;
 }
 
-Ref<ScriptableLobbyResponse> ScriptableLobbyClient::lobby_call(const String &p_method, const Array &p_args) {
+Ref<ScriptedLobbyResponse> ScriptedLobbyClient::lobby_call(const String &p_method, const Array &p_args) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_call";
@@ -234,7 +234,7 @@ Ref<ScriptableLobbyResponse> ScriptableLobbyClient::lobby_call(const String &p_m
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<ScriptableLobbyResponse> response;
+	Ref<ScriptedLobbyResponse> response;
 	response.instantiate();
 	command_array.push_back(LOBBY_CALL);
 	command_array.push_back(response);
@@ -243,7 +243,7 @@ Ref<ScriptableLobbyResponse> ScriptableLobbyClient::lobby_call(const String &p_m
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::leave_lobby() {
+Ref<LobbyResponse> ScriptedLobbyClient::leave_lobby() {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "leave_lobby";
@@ -260,7 +260,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::leave_lobby() {
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::list_lobby() {
+Ref<LobbyResponse> ScriptedLobbyClient::list_lobby() {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "list_lobby";
@@ -277,7 +277,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::list_lobby() {
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::kick_peer(const String &p_peer_id) {
+Ref<LobbyResponse> ScriptedLobbyClient::kick_peer(const String &p_peer_id) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "kick_peer";
@@ -295,7 +295,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::kick_peer(const String &p_peer_id) {
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::add_user_data(const Dictionary &p_user_data) {
+Ref<LobbyResponse> ScriptedLobbyClient::add_user_data(const Dictionary &p_user_data) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "user_data";
@@ -313,7 +313,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::add_user_data(const Dictionary &p_user
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::del_user_data(const TypedArray<String> &p_keys) {
+Ref<LobbyResponse> ScriptedLobbyClient::del_user_data(const TypedArray<String> &p_keys) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "user_data";
@@ -336,7 +336,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::del_user_data(const TypedArray<String>
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::set_lobby_tags(const Dictionary &p_tags) {
+Ref<LobbyResponse> ScriptedLobbyClient::set_lobby_tags(const Dictionary &p_tags) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_tags";
@@ -354,7 +354,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::set_lobby_tags(const Dictionary &p_tag
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::del_lobby_tags(const TypedArray<String> &p_keys) {
+Ref<LobbyResponse> ScriptedLobbyClient::del_lobby_tags(const TypedArray<String> &p_keys) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_tags";
@@ -377,7 +377,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::del_lobby_tags(const TypedArray<String
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::lobby_chat(const String &p_chat_message) {
+Ref<LobbyResponse> ScriptedLobbyClient::lobby_chat(const String &p_chat_message) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "chat_lobby";
@@ -395,7 +395,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::lobby_chat(const String &p_chat_messag
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::lobby_ready(bool p_ready) {
+Ref<LobbyResponse> ScriptedLobbyClient::lobby_ready(bool p_ready) {
 	String id = _increment_counter();
 	Dictionary command;
 	if (p_ready) {
@@ -416,7 +416,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::lobby_ready(bool p_ready) {
 	return response;
 }
 
-Ref<LobbyResponse> ScriptableLobbyClient::seal_lobby(bool seal) {
+Ref<LobbyResponse> ScriptedLobbyClient::seal_lobby(bool seal) {
 	String id = _increment_counter();
 	Dictionary command;
 	if (seal) {
@@ -437,7 +437,7 @@ Ref<LobbyResponse> ScriptableLobbyClient::seal_lobby(bool seal) {
 	return response;
 }
 
-void ScriptableLobbyClient::_notification(int p_what) {
+void ScriptedLobbyClient::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_INTERNAL_PROCESS: {
 			_socket->poll();
@@ -481,7 +481,7 @@ void ScriptableLobbyClient::_notification(int p_what) {
 	}
 }
 
-void ScriptableLobbyClient::_send_data(const Dictionary &p_data_dict) {
+void ScriptedLobbyClient::_send_data(const Dictionary &p_data_dict) {
 	if (_socket->get_ready_state() != WebSocketPeer::STATE_OPEN) {
 		emit_signal("log_updated", "error", "Socket is not ready.");
 		return;
@@ -493,7 +493,7 @@ void ScriptableLobbyClient::_send_data(const Dictionary &p_data_dict) {
 	}
 }
 
-void ScriptableLobbyClient::_update_peers(Dictionary p_data_dict, TypedArray<LobbyPeer> &p_peers) {
+void ScriptedLobbyClient::_update_peers(Dictionary p_data_dict, TypedArray<LobbyPeer> &p_peers) {
 	Array peers_array = p_data_dict.get("peers", Array());
 	TypedArray<LobbyPeer> peers_info;
 	p_peers.clear();
@@ -512,7 +512,7 @@ void ScriptableLobbyClient::_update_peers(Dictionary p_data_dict, TypedArray<Lob
 	}
 }
 
-void ScriptableLobbyClient::_clear_lobby() {
+void ScriptedLobbyClient::_clear_lobby() {
 	lobby->set_dict(Dictionary());
 	peers.clear();
 	peer->set_data(Dictionary());
@@ -520,7 +520,7 @@ void ScriptableLobbyClient::_clear_lobby() {
 	peer_data = Dictionary();
 }
 
-void ScriptableLobbyClient::_receive_data(const Dictionary &p_dict) {
+void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 	String command = p_dict.get("command", "error");
 	String message = p_dict.get("message", "");
 	Dictionary data_dict = p_dict.get("data", Dictionary());
@@ -730,9 +730,9 @@ void ScriptableLobbyClient::_receive_data(const Dictionary &p_dict) {
 		}
 	} else if (command == "lobby_call") {
 		if (command_array.size() == 2) {
-			Ref<ScriptableLobbyResponse> response = command_array[1];
+			Ref<ScriptedLobbyResponse> response = command_array[1];
 			if (response.is_valid()) {
-				Ref<ScriptableLobbyResponse::ScriptableLobbyResult> result = Ref<ScriptableLobbyResponse::ScriptableLobbyResult>(memnew(ScriptableLobbyResponse::ScriptableLobbyResult));
+				Ref<ScriptedLobbyResponse::ScriptedLobbyResult> result = Ref<ScriptedLobbyResponse::ScriptedLobbyResult>(memnew(ScriptedLobbyResponse::ScriptedLobbyResult));
 				result->set_result(data_dict.get("result", ""));
 				response->emit_signal("finished", result);
 			}
@@ -775,9 +775,9 @@ void ScriptableLobbyClient::_receive_data(const Dictionary &p_dict) {
 					}
 				} break;
 				case LOBBY_CALL: {
-					Ref<ScriptableLobbyResponse> view_response = command_array[1];
+					Ref<ScriptedLobbyResponse> view_response = command_array[1];
 					if (view_response.is_valid()) {
-						Ref<ScriptableLobbyResponse::ScriptableLobbyResult> result;
+						Ref<ScriptedLobbyResponse::ScriptedLobbyResult> result;
 						result.instantiate();
 						result->set_error(message);
 						view_response->emit_signal("finished", result);
