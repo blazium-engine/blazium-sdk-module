@@ -96,6 +96,11 @@ void DiscordEmbeddedAppClient::_bind_methods() {
     ADD_SIGNAL(MethodInfo("entitlement_create", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("current_guild_member_update", PropertyInfo(Variant::DICTIONARY, "data")));
 	ADD_SIGNAL(MethodInfo("current_user_update", PropertyInfo(Variant::DICTIONARY, "data")));
+
+	BIND_ENUM_CONSTANT(DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNHANDLED);
+	BIND_ENUM_CONSTANT(DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNLOCKED);
+	BIND_ENUM_CONSTANT(DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_PORTRAIT);
+	BIND_ENUM_CONSTANT(DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_LANDSCAPE);
 }
 
 

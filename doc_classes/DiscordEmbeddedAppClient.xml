@@ -262,4 +262,18 @@
 			</description>
 		</signal>
 	</signals>
+	<constants>
+		<constant name="DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNHANDLED" value="-1" enum="DiscordEmbeddedAppOrientationLockState">
+			Unhandled orientation lock state.
+		</constant>
+		<constant name="DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNLOCKED" value="1" enum="DiscordEmbeddedAppOrientationLockState">
+			Unlocked orientation lock state.
+		</constant>
+		<constant name="DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_PORTRAIT" value="2" enum="DiscordEmbeddedAppOrientationLockState">
+			Locked portrait orientation lock state.
+		</constant>
+		<constant name="DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_LANDSCAPE" value="3" enum="DiscordEmbeddedAppOrientationLockState">
+			Locked landscape orientation lock state.
+		</constant>
+	</constants>
 </class>
