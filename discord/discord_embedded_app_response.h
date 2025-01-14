@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  jwt.h                                                                 */
+/*  discord_embedded_app_response.h                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,24 +28,44 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JWT_H
-#define JWT_H
+#ifndef DISCORD_EMBEDDED_APP_RESPONSE_H
+#define DISCORD_EMBEDDED_APP_RESPONSE_H
 
-#include "core/object/object.h"
-#include "core/object/class_db.h"
+#include "core/object/ref_counted.h"
+#include "core/variant/typed_array.h"
 
-class JWT : public Object {
-	GDCLASS(JWT, Object);
-	static JWT *singleton;
+class DiscordEmbeddedAppResponse : public RefCounted {
+	GDCLASS(DiscordEmbeddedAppResponse, RefCounted);
+
+protected:
+	static void _bind_methods() {
+		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "DiscordEmbeddedAppResult")));
+	}
 
 public:
-    static JWT *get_singleton();
-	static void _bind_methods();
+	class DiscordEmbeddedAppResult : public RefCounted {
+		GDCLASS(DiscordEmbeddedAppResult, RefCounted);
 
-    Dictionary get_header(const String &p_jwt);
-    Dictionary get_payload(const String &p_jwt);
-    JWT();
-    ~JWT();
+		String error = "";
+        Dictionary data;
+
+	protected:
+		static void _bind_methods() {
+			ClassDB::bind_method(D_METHOD("has_error"), &DiscordEmbeddedAppResult::has_error);
+			ClassDB::bind_method(D_METHOD("get_error"), &DiscordEmbeddedAppResult::get_error);
+            ClassDB::bind_method(D_METHOD("get_data"), &DiscordEmbeddedAppResult::get_data);
+            ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data"), "", "get_data");
+			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
+		}
+
+	public:
+		void set_error(String p_error) { this->error = p_error; }
+        void set_data(Dictionary p_data) { this->data = p_data; }
+
+		bool has_error() const { return !error.is_empty(); }
+		String get_error() const { return error; }
+        Dictionary get_data() const { return data; }
+	};
 };
 
-#endif // JWT_H
+#endif // DISCORD_EMBEDDED_APP_RESPONSE_H

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  jwt.h                                                                 */
+/*  jwt.cpp                                                               */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,24 +28,43 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JWT_H
-#define JWT_H
+#include "jwt.h"
+#include "core/core_bind.h"
 
-#include "core/object/object.h"
-#include "core/object/class_db.h"
+JWT *JWT::singleton = nullptr;
 
-class JWT : public Object {
-	GDCLASS(JWT, Object);
-	static JWT *singleton;
+JWT *JWT::get_singleton() {
+    return singleton;
+}
+void JWT::_bind_methods() {
 
-public:
-    static JWT *get_singleton();
-	static void _bind_methods();
+    ClassDB::bind_method(D_METHOD("get_header", "jwt"), &JWT::get_header);
+    ClassDB::bind_method(D_METHOD("get_payload", "jwt"), &JWT::get_payload);
+}
 
-    Dictionary get_header(const String &p_jwt);
-    Dictionary get_payload(const String &p_jwt);
-    JWT();
-    ~JWT();
-};
-
-#endif // JWT_H
+Dictionary JWT::get_header(const String &p_jwt) {
+    // split first portion
+    Vector<String> split = p_jwt.split(".");
+    if (split.size() < 2) {
+        return {};
+    }
+    core_bind::Marshalls *singleton = core_bind::Marshalls::get_singleton();
+    if (singleton == nullptr) {
+        ERR_PRINT("Failed to get Marshalls singleton.");
+    }
+    return singleton->base64_to_variant(split[0]);
+}
+Dictionary JWT::get_payload(const String &p_jwt) {
+    // split first portion
+    Vector<String> split = p_jwt.split(".");
+    if (split.size() < 2) {
+        return {};
+    }
+    core_bind::Marshalls *singleton = core_bind::Marshalls::get_singleton();
+    if (singleton == nullptr) {
+        ERR_PRINT("Failed to get Marshalls singleton.");
+    }
+    return singleton->base64_to_variant(split[1]);
+}
+JWT::JWT() {singleton = this; }
+JWT::~JWT() { singleton = nullptr; }

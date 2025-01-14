@@ -31,6 +31,10 @@ def get_doc_classes():
         "LoginClient",
         "LoginResponse",
         "LoginResult",
+        "ThirdPartyClient",
+        "DiscordEmbeddedAppClient",
+        "DiscordEmbeddedAppResponse",
+        "DiscordEmbeddedAppResult",
     ]
 
 
