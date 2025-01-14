@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="5" fill="none" stroke="#F079F2" stroke-width="2"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Discord_Logos" transform="matrix(0.110858,0,0,0.110858,0.952759,3.17114)">
+        <g id="图层_2">
+            <g id="Discord_Logos1" serif:id="Discord_Logos">
+                <g id="Discord_Logo_-_Large_-_White">
+                    <path d="M107.7,8.07C99.347,4.246 90.528,1.533 81.47,0C80.23,2.216 79.109,4.496 78.11,6.83C68.461,5.376 58.649,5.376 49,6.83C48.001,4.496 46.879,2.216 45.64,-0C36.576,1.546 27.752,4.265 19.39,8.09C2.79,32.65 -1.71,56.6 0.54,80.21C10.261,87.392 21.143,92.855 32.71,96.36C35.315,92.857 37.62,89.14 39.6,85.25C35.838,83.845 32.208,82.112 28.75,80.07C29.66,79.41 30.55,78.73 31.41,78.07C51.768,87.644 75.372,87.644 95.73,78.07C96.6,78.78 97.49,79.46 98.39,80.07C94.926,82.115 91.288,83.852 87.52,85.26C89.498,89.149 91.803,92.862 94.41,96.36C105.987,92.869 116.877,87.409 126.6,80.22C129.24,52.84 122.09,29.11 107.7,8.07ZM42.45,65.69C36.18,65.69 31,60 31,53C31,46 36,40.26 42.43,40.26C48.86,40.26 54,46 53.89,53C53.78,60 48.84,65.69 42.45,65.69ZM84.69,65.69C78.41,65.69 73.25,60 73.25,53C73.25,46 78.25,40.26 84.69,40.26C91.13,40.26 96.23,46 96.12,53C96.01,60 91.08,65.69 84.69,65.69Z" style="fill:rgb(240,121,242);fill-rule:nonzero;stroke:rgb(240,121,242);stroke-width:0.9px;"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

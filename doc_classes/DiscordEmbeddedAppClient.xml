@@ -11,34 +11,34 @@
 	<methods>
 		<method name="authenticate">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="String" />
+			<param index="0" name="access_token" type="String" />
 			<description>
 				Authenticate an existing client with your app.
 			</description>
 		</method>
 		<method name="authorize">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="String" />
-			<param index="1" name="_unnamed_arg1" type="String" />
-			<param index="2" name="_unnamed_arg2" type="String" />
-			<param index="3" name="_unnamed_arg3" type="String" />
-			<param index="4" name="_unnamed_arg4" type="Array" />
+			<param index="0" name="client_id" type="String" />
+			<param index="1" name="response_type" type="String" />
+			<param index="2" name="state" type="String" />
+			<param index="3" name="prompt" type="String" />
+			<param index="4" name="scope" type="Array" />
 			<description>
 				Authorize a new client with your app.
 			</description>
 		</method>
 		<method name="capture_log">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="String" />
-			<param index="1" name="_unnamed_arg1" type="String" />
+			<param index="0" name="level" type="String" />
+			<param index="1" name="message" type="String" />
 			<description>
 				Forward logs to your own logger.
 			</description>
 		</method>
 		<method name="close">
 			<return type="void" />
-			<param index="0" name="_unnamed_arg0" type="int" />
-			<param index="1" name="_unnamed_arg1" type="String" />
+			<param index="0" name="code" type="int" />
+			<param index="1" name="message" type="String" />
 			<description>
 				Close an Embedded App.
 			</description>
@@ -51,7 +51,7 @@
 		</method>
 		<method name="get_channel">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="String" />
+			<param index="0" name="channel_id" type="String" />
 			<description>
 				Returns information about the channel, per the channel_id
 			</description>
@@ -94,7 +94,7 @@
 		</method>
 		<method name="open_external_link">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="String" />
+			<param index="0" name="url" type="String" />
 			<description>
 				Allows for opening an external link from within the Discord client
 			</description>
@@ -107,38 +107,38 @@
 		</method>
 		<method name="open_share_moment_dialog">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="String" />
+			<param index="0" name="media_url" type="String" />
 			<description>
 				Presents a modal dialog to share media to a channel or DM
 			</description>
 		</method>
 		<method name="set_activity">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="Dictionary" />
+			<param index="0" name="activity" type="Dictionary" />
 			<description>
 				Modifies how your activity's rich presence is displayed in the Discord client
 			</description>
 		</method>
 		<method name="set_config">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="bool" />
+			<param index="0" name="use_interactive_pip" type="bool" />
 			<description>
 				Set whether or not the PIP (picture-in-picture) is interactive
 			</description>
 		</method>
 		<method name="set_orientation_lock_state">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
-			<param index="1" name="_unnamed_arg1" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
-			<param index="2" name="_unnamed_arg2" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
+			<param index="0" name="lock_state" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
+			<param index="1" name="picture_in_picture_lock_state" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
+			<param index="2" name="grid_lock_state" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
 			<description>
 				Set options for orientation and picture-in-picture (PIP) modes
 			</description>
 		</method>
 		<method name="start_purchase">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="_unnamed_arg0" type="String" />
-			<param index="1" name="_unnamed_arg1" type="String" />
+			<param index="0" name="sku_id" type="String" />
+			<param index="1" name="pid" type="String" />
 			<description>
 				Launches the purchase flow for a specific SKU, per the sku_id
 			</description>

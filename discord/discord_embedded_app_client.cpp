@@ -36,26 +36,26 @@
 #include "core/variant/array.h"
 
 void DiscordEmbeddedAppClient::_bind_methods() {
-	ClassDB::bind_method("close", &DiscordEmbeddedAppClient::close);
-	ClassDB::bind_method("authenticate", &DiscordEmbeddedAppClient::authenticate);
-	ClassDB::bind_method("authorize", &DiscordEmbeddedAppClient::authorize);
-	ClassDB::bind_method("capture_log", &DiscordEmbeddedAppClient::capture_log);
-	ClassDB::bind_method("encourage_hardware_acceleration", &DiscordEmbeddedAppClient::encourage_hardware_acceleration);
-	ClassDB::bind_method("get_channel", &DiscordEmbeddedAppClient::get_channel);
-	ClassDB::bind_method("get_channel_permissions", &DiscordEmbeddedAppClient::get_channel_permissions);
-	ClassDB::bind_method("get_entitlements", &DiscordEmbeddedAppClient::get_entitlements);
-	ClassDB::bind_method("get_instance_connected_participants", &DiscordEmbeddedAppClient::get_instance_connected_participants);
-	ClassDB::bind_method("get_platform_behaviours", &DiscordEmbeddedAppClient::get_platform_behaviours);
-	ClassDB::bind_method("get_skus", &DiscordEmbeddedAppClient::get_skus);
-	ClassDB::bind_method("initiate_image_upload", &DiscordEmbeddedAppClient::initiate_image_upload);
-	ClassDB::bind_method("open_external_link", &DiscordEmbeddedAppClient::open_external_link);
-	ClassDB::bind_method("open_invite_dialog", &DiscordEmbeddedAppClient::open_invite_dialog);
-	ClassDB::bind_method("open_share_moment_dialog", &DiscordEmbeddedAppClient::open_share_moment_dialog);
-	ClassDB::bind_method("set_activity", &DiscordEmbeddedAppClient::set_activity);
-	ClassDB::bind_method("set_config", &DiscordEmbeddedAppClient::set_config);
-	ClassDB::bind_method("set_orientation_lock_state", &DiscordEmbeddedAppClient::set_orientation_lock_state);
-	ClassDB::bind_method("start_purchase", &DiscordEmbeddedAppClient::start_purchase);
-	ClassDB::bind_method("user_settings_get_locale", &DiscordEmbeddedAppClient::user_settings_get_locale);
+	ClassDB::bind_method(D_METHOD("close", "code", "message"), &DiscordEmbeddedAppClient::close);
+	ClassDB::bind_method(D_METHOD("authenticate", "access_token"), &DiscordEmbeddedAppClient::authenticate);
+	ClassDB::bind_method(D_METHOD("authorize", "client_id", "response_type", "state", "prompt", "scope"), &DiscordEmbeddedAppClient::authorize);
+	ClassDB::bind_method(D_METHOD("capture_log", "level", "message"), &DiscordEmbeddedAppClient::capture_log);
+	ClassDB::bind_method(D_METHOD("encourage_hardware_acceleration"), &DiscordEmbeddedAppClient::encourage_hardware_acceleration);
+	ClassDB::bind_method(D_METHOD("get_channel", "channel_id"), &DiscordEmbeddedAppClient::get_channel);
+	ClassDB::bind_method(D_METHOD("get_channel_permissions"), &DiscordEmbeddedAppClient::get_channel_permissions);
+	ClassDB::bind_method(D_METHOD("get_entitlements"), &DiscordEmbeddedAppClient::get_entitlements);
+	ClassDB::bind_method(D_METHOD("get_instance_connected_participants"), &DiscordEmbeddedAppClient::get_instance_connected_participants);
+	ClassDB::bind_method(D_METHOD("get_platform_behaviours"), &DiscordEmbeddedAppClient::get_platform_behaviours);
+	ClassDB::bind_method(D_METHOD("get_skus"), &DiscordEmbeddedAppClient::get_skus);
+	ClassDB::bind_method(D_METHOD("initiate_image_upload"), &DiscordEmbeddedAppClient::initiate_image_upload);
+	ClassDB::bind_method(D_METHOD("open_external_link", "url"), &DiscordEmbeddedAppClient::open_external_link);
+	ClassDB::bind_method(D_METHOD("open_invite_dialog"), &DiscordEmbeddedAppClient::open_invite_dialog);
+	ClassDB::bind_method(D_METHOD("open_share_moment_dialog", "media_url"), &DiscordEmbeddedAppClient::open_share_moment_dialog);
+	ClassDB::bind_method(D_METHOD("set_activity", "activity"), &DiscordEmbeddedAppClient::set_activity);
+	ClassDB::bind_method(D_METHOD("set_config", "use_interactive_pip"), &DiscordEmbeddedAppClient::set_config);
+	ClassDB::bind_method(D_METHOD("set_orientation_lock_state", "lock_state", "picture_in_picture_lock_state", "grid_lock_state"), &DiscordEmbeddedAppClient::set_orientation_lock_state);
+	ClassDB::bind_method(D_METHOD("start_purchase", "sku_id", "pid"), &DiscordEmbeddedAppClient::start_purchase);
+	ClassDB::bind_method(D_METHOD("user_settings_get_locale"), &DiscordEmbeddedAppClient::user_settings_get_locale);
 
 	ClassDB::bind_method("get_user_id", &DiscordEmbeddedAppClient::get_user_id);
 	ClassDB::bind_method("get_client_id", &DiscordEmbeddedAppClient::get_client_id);
@@ -212,13 +212,12 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 	}
 	Ref<JavaScriptObject> window = singleton->get_interface("window");
 	if (!window.is_valid()) {
-		ERR_PRINT("Window is invalid");
+		// Don't error here as we are on desktop most likely.
 		return;
 	}
 	// this reference must be kept to keep it alive
 	
-	Callable callable = callable_mp(this, &DiscordEmbeddedAppClient::_handle_message);
-	callback = singleton->create_callback(callable);
+	callback = singleton->create_callback(callable_mp(this, &DiscordEmbeddedAppClient::_handle_message));
 	if (!callback.is_valid()) {
 		ERR_PRINT("Callback is invalid");
 		return;
@@ -353,7 +352,8 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::capture_log(String p_l
 	_commands[nonce] = response;
 	return response;
 }
-Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::encourage_hardware_acceleration() {	Dictionary body;
+Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::encourage_hardware_acceleration() {
+	Dictionary body;
 	String nonce = _generate_nonce();
 	_send_command("ENCOURAGE_HW_ACCELERATION", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
