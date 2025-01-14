@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  register_types.cpp                                                    */
+/*  blazium_client.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,55 +28,52 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "register_types.h"
-#include "blazium_client.h"
-#include "lobby/scripted_lobby_client.h"
-#include "lobby/scripted_lobby_response.h"
-#include "lobby/lobby_client.h"
-#include "lobby/lobby_info.h"
-#include "lobby/lobby_peer.h"
-#include "lobby/lobby_response.h"
-#include "login/login_client.h"
-#include "master_server/master_server_client.h"
-#include "pogr/pogr_client.h"
-#include "third_party_client.h"
-//#include "discord/discord_embedded_app_client.h"
-#include "jwt.h"
+#ifndef JWT_H
+#define JWT_H
 
-void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		// JWT singleton
-		GDREGISTER_CLASS(JWT);
-		Engine::get_singleton()->add_singleton(Engine::Singleton("JWT", JWT::get_singleton()));
-		// Blazium clients
-		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
-		GDREGISTER_CLASS(LobbyInfo);
-		GDREGISTER_CLASS(LobbyPeer);
-		GDREGISTER_CLASS(LobbyClient);
-		GDREGISTER_CLASS(LobbyResponse::LobbyResult);
-		GDREGISTER_CLASS(LobbyResponse);
-		GDREGISTER_CLASS(ViewLobbyResponse::ViewLobbyResult);
-		GDREGISTER_CLASS(ViewLobbyResponse);
-		GDREGISTER_CLASS(ScriptedLobbyClient);
-		GDREGISTER_CLASS(ScriptedLobbyResponse);
-		GDREGISTER_CLASS(ScriptedLobbyResponse::ScriptedLobbyResult);
-		GDREGISTER_CLASS(POGRClient);
-		GDREGISTER_CLASS(POGRClient::POGRResponse);
-		GDREGISTER_CLASS(POGRClient::POGRResult);
-		GDREGISTER_CLASS(GameServerInfo);
-		GDREGISTER_CLASS(MasterServerClient);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResult);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResult);
-		GDREGISTER_CLASS(LoginClient);
-		GDREGISTER_CLASS(LoginClient::LoginResponse);
-		GDREGISTER_CLASS(LoginClient::LoginResponse::LoginResult);
-		// Third party clients
-		GDREGISTER_ABSTRACT_CLASS(ThirdPartyClient);
-		//GDREGISTER_ABSTRACT_CLASS(DiscordEmbeddedAppClient);
-	}
-}
+#include "scene/main/node.h"
+#include "core/core_bind.h"
 
-void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-}
+class JWT : public Object {
+	GDCLASS(JWT, Object);
+
+public:
+	static JWT *singleton;
+    static JWT *get_singleton() {
+        return singleton;
+    }
+	static void _bind_methods() {
+
+        ClassDB::bind_method(D_METHOD("get_header", "jwt"), &JWT::get_header);
+        ClassDB::bind_method(D_METHOD("get_payload", "jwt"), &JWT::get_payload);
+    }
+
+    Dictionary get_header(const String &p_jwt) {
+        // split first portion
+        Vector<String> split = p_jwt.split(".");
+        if (split.size() < 2) {
+            return {};
+        }
+        core_bind::Marshalls *singleton = core_bind::Marshalls::get_singleton();
+        if (singleton == nullptr) {
+            ERR_PRINT("Failed to get Marshalls singleton.");
+        }
+        return singleton->base64_to_variant(split[0]);
+    }
+    Dictionary get_payload(const String &p_jwt) {
+        // split first portion
+        Vector<String> split = p_jwt.split(".");
+        if (split.size() < 2) {
+            return {};
+        }
+        core_bind::Marshalls *singleton = core_bind::Marshalls::get_singleton();
+        if (singleton == nullptr) {
+            ERR_PRINT("Failed to get Marshalls singleton.");
+        }
+        return singleton->base64_to_variant(split[1]);
+    }
+    JWT() { singleton = this; }
+    ~JWT() { singleton = nullptr; }
+};
+
+#endif // JWT_H
