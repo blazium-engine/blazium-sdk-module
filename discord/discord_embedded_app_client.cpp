@@ -84,7 +84,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "mobile_app_version"), "", "get_mobile_app_version");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "frame_id"), "", "get_frame_id");
 
-    ADD_SIGNAL(MethodInfo("ready", PropertyInfo(Variant::DICTIONARY, "data")));
+    ADD_SIGNAL(MethodInfo("is_ready", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("error", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("voice_state_update", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("speaking_start", PropertyInfo(Variant::DICTIONARY, "data")));
@@ -151,7 +151,7 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
 	String event = p_data["evt"];
 	if (event == "READY") {
-		emit_signal("ready", p_data["data"]);
+		emit_signal("is_ready", p_data["data"]);
 	} else if (event == "ERROR") {
 		emit_signal("error", p_data["data"]);
 	} else if (event == "VOICE_STATE_UPDATE") {
