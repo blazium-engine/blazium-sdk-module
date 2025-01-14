@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ThirdPartyClient" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Base node for connecting to the Third Party services (eg. Discord, Steam, etc.).
 	</brief_description>
 	<description>
+		The [ThirdPartyClient] node provides an interface for connecting to Third Party services. The purpose of this node is to group all these nodes under one common ancestor.
 	</description>
 	<tutorials>
 	</tutorials>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="JWT" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Singleton containing basic operations needed to operate with JWT.
+	</brief_description>
+	<description>
+		Singleton containing basic operations needed to operate with JWT.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_header">
+			<return type="Dictionary" />
+			<param index="0" name="jwt" type="String" />
+			<description>
+				Get the header part of a JWT.
+			</description>
+		</method>
+		<method name="get_payload">
+			<return type="Dictionary" />
+			<param index="0" name="jwt" type="String" />
+			<description>
+				Get the payload part of a JWT.
+			</description>
+		</method>
+	</methods>
+</class>

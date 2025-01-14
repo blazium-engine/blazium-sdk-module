@@ -95,6 +95,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
     ADD_SIGNAL(MethodInfo("activity_instance_participants_update", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("entitlement_create", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("current_guild_member_update", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("current_user_update", PropertyInfo(Variant::DICTIONARY, "data")));
 }
 
 
@@ -151,6 +152,8 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
 	String event = p_data["evt"];
 	if (event == "READY") {
+		// once ready, subscribe to all events
+		_subscribe_to_events();
 		emit_signal("is_ready", p_data["data"]);
 	} else if (event == "ERROR") {
 		emit_signal("error", p_data["data"]);
@@ -248,7 +251,6 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 	
 	singleton->eval("window.source = window.parent.opener ?? window.parent", true);
 	
-	_subscribe_to_events();
 	_handshake();
 }
 

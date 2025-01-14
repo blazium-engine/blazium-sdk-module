@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="DiscordEmbeddedAppClient" inherits="ThirdPartyClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Node for connecting to the Discord Embedded App service.
 	</brief_description>
 	<description>
+		Implementation based on the official Discord Embedded App SDK for JS. Official documentation for this service on [url=https://discord.com/developers/docs/rich-presence/using-with-the-embedded-app-sdk]discord.com/developers/docs/rich-presence/using-with-the-embedded-app-sdk[/url].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -150,84 +152,113 @@
 	</methods>
 	<members>
 		<member name="channel_id" type="String" setter="" getter="get_channel_id" default="&quot;&quot;">
+			The id of a channel. A channel represents a guild or DM channel within Discord.
 		</member>
 		<member name="client_d" type="String" setter="set_client_id" getter="get_client_id" default="&quot;&quot;">
+			The client id you want to use when starting the client.
 		</member>
 		<member name="custom_id" type="String" setter="" getter="get_custom_id" default="&quot;&quot;">
+			Custom ID.
 		</member>
 		<member name="frame_id" type="String" setter="" getter="get_frame_id" default="&quot;&quot;">
+			Frame ID.
 		</member>
 		<member name="guild_id" type="String" setter="" getter="get_guild_id" default="&quot;&quot;">
+			Guilds in Discord represent an isolated collection of users and channels, and are often referred to as "servers" in the UI.
 		</member>
 		<member name="location_id" type="String" setter="" getter="get_location_id" default="&quot;&quot;">
+			Location ID.
 		</member>
 		<member name="mobile_app_version" type="String" setter="" getter="get_mobile_app_version" default="&quot;&quot;">
+			Only if on mobile.
 		</member>
 		<member name="platform" type="String" setter="" getter="get_platform" default="&quot;&quot;">
+			The platform, web, ios or android.
 		</member>
 		<member name="referrer_id" type="String" setter="" getter="get_referrer_id" default="&quot;&quot;">
+			The id of the referrer.
 		</member>
 		<member name="sdk_version" type="String" setter="" getter="get_sdk_version" default="&quot;1.9.0&quot;">
+			The version of the Discord Embedded App used.
 		</member>
 		<member name="user_id" type="String" setter="" getter="get_user_id" default="&quot;&quot;">
+			User ID.
 		</member>
 		<member name="user_instance_id" type="String" setter="" getter="get_user_instance_id" default="&quot;&quot;">
+			Instance ID.
 		</member>
 	</members>
 	<signals>
 		<signal name="activity_instance_participants_update">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Received when the number of instance participants changes.
 			</description>
 		</signal>
 		<signal name="activity_layout_mode_update">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Received when a user changes the layout mode in the Discord client.
 			</description>
 		</signal>
 		<signal name="current_guild_member_update">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Received when the current guild member object changes.
+			</description>
+		</signal>
+		<signal name="current_user_update">
+			<param index="0" name="data" type="Dictionary" />
+			<description>
+				Received when the current user object changes.
 			</description>
 		</signal>
 		<signal name="entitlement_create">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Received when an entitlement is created for a SKU.
 			</description>
 		</signal>
 		<signal name="error">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Non-subscription event sent when there is an error, including command responses.
 			</description>
 		</signal>
 		<signal name="is_ready">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Non-subscription event sent immediately after connecting, contains server information.
 			</description>
 		</signal>
 		<signal name="orientation_update">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Received when screen orientation changes.
 			</description>
 		</signal>
 		<signal name="speaking_start">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Sent when a user in a subscribed voice channel speaks.
 			</description>
 		</signal>
 		<signal name="speaking_stop">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Sent when a user in a subscribed voice channel stops speaking.
 			</description>
 		</signal>
 		<signal name="thermal_state_update">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Received when Android or iOS thermal states are surfaced to the Discord app.
 			</description>
 		</signal>
 		<signal name="voice_state_update">
 			<param index="0" name="data" type="Dictionary" />
 			<description>
+				Sent when a user's voice state changes in a subscribed voice channel (mute, volume, etc.).
 			</description>
 		</signal>
 	</signals>
