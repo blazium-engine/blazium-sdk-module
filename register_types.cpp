@@ -40,8 +40,8 @@
 #include "master_server/master_server_client.h"
 #include "pogr/pogr_client.h"
 #include "third_party_client.h"
-#include "discord/discord_embedded_app_client.h"
-#include "discord/discord_embedded_app_response.h"
+//#include "discord/discord_embedded_app_client.h"
+//#include "discord/discord_embedded_app_response.h"
 //#include "jwt.h"
 
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
@@ -75,9 +75,9 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LoginClient::LoginResponse::LoginResult);
 		// Third party clients
 		GDREGISTER_ABSTRACT_CLASS(ThirdPartyClient);
-		GDREGISTER_CLASS(DiscordEmbeddedAppClient);
-		GDREGISTER_CLASS(DiscordEmbeddedAppResponse);
-		GDREGISTER_CLASS(DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult);
+		//GDREGISTER_CLASS(DiscordEmbeddedAppClient);
+		//GDREGISTER_CLASS(DiscordEmbeddedAppResponse);
+		//GDREGISTER_CLASS(DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult);
 	}
 }
 
