@@ -52,7 +52,12 @@ Dictionary JWT::get_header(const String &p_jwt) {
 	if (singleton == nullptr) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
-	String json_utf8 = singleton->base64_to_utf8(split[0]);
+    // pad with = if not multiple of 4
+    String padded_string = split[0];
+    while (padded_string.length() % 4 != 0) {
+        padded_string += "=";
+    }
+	String json_utf8 = singleton->base64_to_utf8(padded_string);
 	return JSON::parse_string(json_utf8);
 }
 Dictionary JWT::get_payload(const String &p_jwt) {
@@ -66,7 +71,12 @@ Dictionary JWT::get_payload(const String &p_jwt) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
 
-	String json_utf8 = singleton->base64_to_utf8(split[1]);
+    // pad with = if not multiple of 4
+    String padded_string = split[1];
+    while (padded_string.length() % 4 != 0) {
+        padded_string += "=";
+    }
+	String json_utf8 = singleton->base64_to_utf8(padded_string);
 	return JSON::parse_string(json_utf8);
 }
 JWT::JWT() {jwt_singleton = this; }
