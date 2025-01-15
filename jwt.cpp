@@ -31,7 +31,7 @@
 #include "jwt.h"
 #include "core/core_bind.h"
 
-JWT *jwt_singleton = nullptr;
+JWT *JWT::jwt_singleton = nullptr;
 
 JWT *JWT::get_singleton() {
     return jwt_singleton;
