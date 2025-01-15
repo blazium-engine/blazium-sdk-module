@@ -32,6 +32,7 @@
 #define DISCORD_EMBEDDED_APP_CLIENT_H
 
 #include "../third_party_client.h"
+#include "platform/web/api/javascript_bridge_singleton.h"
 #include "scene/main/node.h"
 #include "discord_embedded_app_response.h"
 
