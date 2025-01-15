@@ -36,7 +36,7 @@
 
 class JWT : public Object {
 	GDCLASS(JWT, Object);
-	static JWT *singleton;
+	static JWT *jwt_singleton;
 
 public:
     static JWT *get_singleton();

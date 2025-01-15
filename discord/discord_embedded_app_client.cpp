@@ -196,11 +196,11 @@ void DiscordEmbeddedAppClient::_send_command(String p_command, Dictionary p_args
 	_send_message(DiscordEmbeddedAppClient::Opcode::OP_FRAME, body);
 }
 void DiscordEmbeddedAppClient::_send_message(int opcode, Dictionary body) {
-	Array data;
-	data.push_back(opcode);
-	data.push_back(body);
+	Array data_message;
+	data_message.push_back(opcode);
+	data_message.push_back(body);
 
-	String js_command = String("window.source.postMessage(") + JSON::stringify(data) + ", '*')";
+	String js_command = String("window.source.postMessage(") + JSON::stringify(data_message) + ", '*')";
 	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
 	if (!singleton) {
 		ERR_PRINT("JavaScriptBridge not available.");

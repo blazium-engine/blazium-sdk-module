@@ -31,10 +31,10 @@
 #include "jwt.h"
 #include "core/core_bind.h"
 
-JWT *JWT::singleton = nullptr;
+JWT *JWT::jwt_singleton = nullptr;
 
 JWT *JWT::get_singleton() {
-    return singleton;
+    return jwt_singleton;
 }
 void JWT::_bind_methods() {
 
@@ -66,5 +66,5 @@ Dictionary JWT::get_payload(const String &p_jwt) {
     }
     return singleton->base64_to_variant(split[1]);
 }
-JWT::JWT() {singleton = this; }
-JWT::~JWT() { singleton = nullptr; }
+JWT::JWT() {jwt_singleton = this; }
+JWT::~JWT() { jwt_singleton = nullptr; }
