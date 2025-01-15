@@ -51,7 +51,6 @@ public:
 		static void _bind_methods() {
             ClassDB::bind_method(D_METHOD("get_data"), &DiscordEmbeddedAppResult::get_data);
             ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data"), "", "get_data");
-			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
 		}
 
 	public:
