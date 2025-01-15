@@ -30,7 +30,7 @@
 
 #include "discord_embedded_app_client.h"
 #include "platform/web/api/javascript_bridge_singleton.h"
-#include "core/io/json.cpp"
+#include "core/io/json.h"
 
 void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("close", "code", "message"), &DiscordEmbeddedAppClient::close);
