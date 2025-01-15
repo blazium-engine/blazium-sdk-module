@@ -44,11 +44,16 @@
 //#include "discord/discord_embedded_app_response.h"
 #include "jwt.h"
 
+static JWT *jwt_singleton_global = nullptr;
+
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
 		// JWT singleton
+		jwt_singleton_global = memnew(JWT);
 		GDREGISTER_CLASS(JWT);
 		Engine::get_singleton()->add_singleton(Engine::Singleton("JWT", JWT::get_singleton()));
+	}
+	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
 		// Blazium clients
 		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
 		GDREGISTER_CLASS(LobbyInfo);
@@ -82,4 +87,7 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 }
 
 void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
+		memdelete(jwt_singleton_global);
+	}
 }
