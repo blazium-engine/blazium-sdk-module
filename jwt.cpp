@@ -29,6 +29,7 @@
 /**************************************************************************/
 
 #include "jwt.h"
+#include "core/io/json.h"
 #include "core/core_bind.h"
 
 JWT *JWT::jwt_singleton = nullptr;
@@ -37,7 +38,6 @@ JWT *JWT::get_singleton() {
 	return jwt_singleton;
 }
 void JWT::_bind_methods() {
-
 	ClassDB::bind_method(D_METHOD("get_header", "jwt"), &JWT::get_header);
 	ClassDB::bind_method(D_METHOD("get_payload", "jwt"), &JWT::get_payload);
 }
@@ -52,7 +52,8 @@ Dictionary JWT::get_header(const String &p_jwt) {
 	if (singleton == nullptr) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
-	return singleton->base64_to_variant(split[0]);
+	String json_utf8 = singleton->base64_to_utf8(split[0]);
+	return JSON::parse_string(json_utf8);
 }
 Dictionary JWT::get_payload(const String &p_jwt) {
 	// split first portion
@@ -64,7 +65,9 @@ Dictionary JWT::get_payload(const String &p_jwt) {
 	if (singleton == nullptr) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
-	return singleton->base64_to_variant(split[1]);
+
+	String json_utf8 = singleton->base64_to_utf8(split[1]);
+	return JSON::parse_string(json_utf8);
 }
 JWT::JWT() {jwt_singleton = this; }
 JWT::~JWT() { jwt_singleton = nullptr; }
