@@ -57,19 +57,19 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("start_purchase", "sku_id", "pid"), &DiscordEmbeddedAppClient::start_purchase);
 	ClassDB::bind_method(D_METHOD("user_settings_get_locale"), &DiscordEmbeddedAppClient::user_settings_get_locale);
 
-	ClassDB::bind_method("get_user_id", &DiscordEmbeddedAppClient::get_user_id);
-	ClassDB::bind_method("get_client_id", &DiscordEmbeddedAppClient::get_client_id);
-	ClassDB::bind_method("set_client_id", &DiscordEmbeddedAppClient::set_client_id);
-	ClassDB::bind_method("get_user_instance_id", &DiscordEmbeddedAppClient::get_user_instance_id);
-	ClassDB::bind_method("get_custom_id", &DiscordEmbeddedAppClient::get_custom_id);
-	ClassDB::bind_method("get_referrer_id", &DiscordEmbeddedAppClient::get_referrer_id);
-	ClassDB::bind_method("get_platform", &DiscordEmbeddedAppClient::get_platform);
-	ClassDB::bind_method("get_guild_id", &DiscordEmbeddedAppClient::get_guild_id);
-	ClassDB::bind_method("get_channel_id", &DiscordEmbeddedAppClient::get_channel_id);
-	ClassDB::bind_method("get_location_id", &DiscordEmbeddedAppClient::get_location_id);
-	ClassDB::bind_method("get_sdk_version", &DiscordEmbeddedAppClient::get_sdk_version);
-	ClassDB::bind_method("get_mobile_app_version", &DiscordEmbeddedAppClient::get_mobile_app_version);
-	ClassDB::bind_method("get_frame_id", &DiscordEmbeddedAppClient::get_frame_id);
+	ClassDB::bind_method(D_METHOD("get_user_id"), &DiscordEmbeddedAppClient::get_user_id);
+	ClassDB::bind_method(D_METHOD("get_client_id"), &DiscordEmbeddedAppClient::get_client_id);
+	ClassDB::bind_method(D_METHOD("set_client_id", "client_id"), &DiscordEmbeddedAppClient::set_client_id);
+	ClassDB::bind_method(D_METHOD("get_user_instance_id"), &DiscordEmbeddedAppClient::get_user_instance_id);
+	ClassDB::bind_method(D_METHOD("get_custom_id"), &DiscordEmbeddedAppClient::get_custom_id);
+	ClassDB::bind_method(D_METHOD("get_referrer_id"), &DiscordEmbeddedAppClient::get_referrer_id);
+	ClassDB::bind_method(D_METHOD("get_platform"), &DiscordEmbeddedAppClient::get_platform);
+	ClassDB::bind_method(D_METHOD("get_guild_id"), &DiscordEmbeddedAppClient::get_guild_id);
+	ClassDB::bind_method(D_METHOD("get_channel_id"), &DiscordEmbeddedAppClient::get_channel_id);
+	ClassDB::bind_method(D_METHOD("get_location_id"), &DiscordEmbeddedAppClient::get_location_id);
+	ClassDB::bind_method(D_METHOD("get_sdk_version"), &DiscordEmbeddedAppClient::get_sdk_version);
+	ClassDB::bind_method(D_METHOD("get_mobile_app_version"), &DiscordEmbeddedAppClient::get_mobile_app_version);
+	ClassDB::bind_method(D_METHOD("get_frame_id"), &DiscordEmbeddedAppClient::get_frame_id);
     
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "", "get_user_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_d"), "set_client_id", "get_client_id");
