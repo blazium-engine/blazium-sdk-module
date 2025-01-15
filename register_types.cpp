@@ -42,13 +42,13 @@
 #include "third_party_client.h"
 //#include "discord/discord_embedded_app_client.h"
 //#include "discord/discord_embedded_app_response.h"
-//#include "jwt.h"
+#include "jwt.h"
 
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
 		// JWT singleton
-		// GDREGISTER_CLASS(JWT);
-		// Engine::get_singleton()->add_singleton(Engine::Singleton("JWT", JWT::get_singleton()));
+		GDREGISTER_CLASS(JWT);
+		Engine::get_singleton()->add_singleton(Engine::Singleton("JWT", JWT::get_singleton()));
 		// Blazium clients
 		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
 		GDREGISTER_CLASS(LobbyInfo);
