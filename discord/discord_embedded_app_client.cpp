@@ -143,6 +143,7 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 				if (response.is_valid()) {
 					Ref<DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult> result;
 					result.instantiate();
+					result->set_data(data_dict["data"]);
 					response->emit_signal("finished", result);
 				}
 			}
