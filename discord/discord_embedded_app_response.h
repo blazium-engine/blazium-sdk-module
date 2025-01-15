@@ -32,7 +32,6 @@
 #define DISCORD_EMBEDDED_APP_RESPONSE_H
 
 #include "core/object/ref_counted.h"
-#include "core/variant/typed_array.h"
 
 class DiscordEmbeddedAppResponse : public RefCounted {
 	GDCLASS(DiscordEmbeddedAppResponse, RefCounted);

@@ -29,10 +29,8 @@
 /**************************************************************************/
 
 #include "discord_embedded_app_client.h"
-#include "core/object/callable_method_pointer.h"
 #include "platform/web/api/javascript_bridge_singleton.h"
 #include "core/io/json.cpp"
-#include "core/string/ustring.h"
 #include "core/variant/array.h"
 
 void DiscordEmbeddedAppClient::_bind_methods() {
