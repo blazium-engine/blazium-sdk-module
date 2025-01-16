@@ -37,6 +37,7 @@ class LobbyPeer : public Resource {
 	GDCLASS(LobbyPeer, Resource);
 	String id = "";
 	int order_id = -1;
+	bool disconnected = false;
 	bool ready = false;
 	Dictionary user_data = Dictionary();
 	Dictionary data = Dictionary();
@@ -48,6 +49,7 @@ public:
 	void set_order_id(int p_order_id);
 	void set_id(const String &p_id);
 	void set_ready(bool p_ready);
+	void set_disconnected(bool p_disconnected);
 	void set_data(const Dictionary &p_data);
 	void set_dict(const Dictionary &p_dict);
 	void set_user_data(const Dictionary &p_data);
@@ -55,6 +57,7 @@ public:
 	Dictionary get_dict() const;
 	Dictionary get_data() const;
 	String get_id() const;
+	bool is_disconnected() const;
 	bool is_ready() const;
 	int get_order_id() const;
 	Dictionary get_user_data() const;
