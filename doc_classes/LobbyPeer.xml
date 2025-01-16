@@ -12,6 +12,9 @@
 		<member name="data" type="Dictionary" setter="" getter="get_data" default="{}">
 			Public data of the peer.
 		</member>
+		<member name="disconnected" type="bool" setter="" getter="is_disconnected" default="false">
+			Whether the peer is disconnected.
+		</member>
 		<member name="id" type="String" setter="" getter="get_id" default="&quot;&quot;">
 			Identifier of the peer.
 		</member>
