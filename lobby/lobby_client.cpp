@@ -809,19 +809,21 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "peer_user_data") {
 		String peer_id = data_dict.get("peer_id", "");
 		Dictionary peer_user_data = data_dict.get("user_data", "");
+		bool notified = false;
 		if (peer->get_id() == peer_id) {
 			peer->set_user_data(peer_user_data);
 			// notify self
 			emit_signal("received_peer_user_data", peer, peer_user_data);
-		} else {
-			// another peer got user data changed
-			for (int i = 0; i < peers.size(); ++i) {
-				Ref<LobbyPeer> updated_peer = peers[i];
-				if (updated_peer->get_id() == peer_id) {
-					updated_peer->set_user_data(peer_user_data);
+			notified = true;
+		}
+		for (int i = 0; i < peers.size(); ++i) {
+			Ref<LobbyPeer> updated_peer = peers[i];
+			if (updated_peer->get_id() == peer_id) {
+				updated_peer->set_user_data(peer_user_data);
+				if (!notified) {
 					emit_signal("received_peer_user_data", updated_peer, peer_user_data);
-					break;
 				}
+				break;
 			}
 		}
 	} else if (command == "peer_ready") {
@@ -863,6 +865,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 		for (int i = 0; i < peers.size(); ++i) {
 			Ref<LobbyPeer> updated_peer = peers[i];
 			if (updated_peer->get_id() == String(data_dict.get("peer_id", ""))) {
+				peer->set_disconnected(false);
 				emit_signal("peer_reconnected", updated_peer);
 				break;
 			}
@@ -882,8 +885,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 		for (int i = 0; i < peers.size(); ++i) {
 			Ref<LobbyPeer> leaving_peer = peers[i];
 			if (leaving_peer->get_id() == String(data_dict.get("peer_id", ""))) {
-				peers.remove_at(i);
-				lobby->set_players(peers.size());
+				peer->set_disconnected(true);
 				emit_signal("peer_disconnected", leaving_peer);
 				break;
 			}
