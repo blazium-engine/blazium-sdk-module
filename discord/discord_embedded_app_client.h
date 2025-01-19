@@ -80,8 +80,8 @@ public:
 		DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_PORTRAIT = 2,
 		DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_LANDSCAPE = 3,
 	};
+	bool is_discord_environment();
 	void close(int p_code, String p_message);
-
 	String get_user_id() { return user_id; }
 	String get_client_id() { return client_id; }
 	void set_client_id(String p_client_id) { return client_id = p_client_id; }

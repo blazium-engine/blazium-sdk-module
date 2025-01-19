@@ -54,6 +54,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("start_purchase", "sku_id", "pid"), &DiscordEmbeddedAppClient::start_purchase);
 	ClassDB::bind_method(D_METHOD("user_settings_get_locale"), &DiscordEmbeddedAppClient::user_settings_get_locale);
 
+	ClassDB::bind_method(D_METHOD("is_discord_environment"), &DiscordEmbeddedAppClient::is_discord_environment);
 	ClassDB::bind_method(D_METHOD("get_user_id"), &DiscordEmbeddedAppClient::get_user_id);
 	ClassDB::bind_method(D_METHOD("get_client_id"), &DiscordEmbeddedAppClient::get_client_id);
 	ClassDB::bind_method(D_METHOD("set_client_id", "client_id"), &DiscordEmbeddedAppClient::set_client_id);
@@ -307,6 +308,16 @@ void DiscordEmbeddedAppClient::_handshake() {
 	_send_message(DiscordEmbeddedAppClient::Opcode::OP_HANDSHAKE, body);
 }
 
+bool DiscordEmbeddedAppClient::is_discord_environment() {
+    JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
+    if (!singleton) {
+        ERR_PRINT("JavaScriptBridge singleton is invalid");
+        return false;
+    }
+
+	bool is_discord = singleton->eval("window.location.hostname.includes('discord')", true);
+	return is_discord;
+}
 
 void DiscordEmbeddedAppClient::close(int p_code, String p_message) {
 	Dictionary body;
