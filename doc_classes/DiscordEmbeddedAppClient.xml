@@ -92,6 +92,12 @@
 				Presents the file upload flow in the Discord client
 			</description>
 		</method>
+		<method name="is_discord_environment">
+			<return type="bool" />
+			<description>
+				Returns whether or not the current environment is Discord environment.
+			</description>
+		</method>
 		<method name="open_external_link">
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="url" type="String" />
