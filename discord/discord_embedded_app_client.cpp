@@ -70,7 +70,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_frame_id"), &DiscordEmbeddedAppClient::get_frame_id);
     
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "", "get_user_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_d"), "set_client_id", "get_client_id");
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "set_client_id", "get_client_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_instance_id"), "", "get_user_instance_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_id"), "", "get_custom_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "referrer_id"), "", "get_referrer_id");

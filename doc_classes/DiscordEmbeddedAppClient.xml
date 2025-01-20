@@ -160,7 +160,7 @@
 		<member name="channel_id" type="String" setter="" getter="get_channel_id" default="&quot;&quot;">
 			The id of a channel. A channel represents a guild or DM channel within Discord.
 		</member>
-		<member name="client_d" type="String" setter="set_client_id" getter="get_client_id" default="&quot;&quot;">
+		<member name="client_id" type="String" setter="set_client_id" getter="get_client_id" default="&quot;&quot;">
 			The client id you want to use when starting the client.
 		</member>
 		<member name="custom_id" type="String" setter="" getter="get_custom_id" default="&quot;&quot;">
