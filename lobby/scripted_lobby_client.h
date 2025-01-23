@@ -38,7 +38,7 @@ class ScriptedLobbyClient : public BlaziumClient {
 	GDCLASS(ScriptedLobbyClient, BlaziumClient);
 
 protected:
-	String server_url = "wss://scriptedlobby.blazium.app/connect";
+	String server_url;
 	String reconnection_token = "";
 	String game_id = "";
 	Dictionary peer_data = Dictionary();

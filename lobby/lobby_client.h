@@ -44,7 +44,7 @@ class LobbyClient : public BlaziumClient {
 	GDCLASS(LobbyClient, BlaziumClient);
 
 protected:
-	String server_url = "wss://lobby.blazium.app/connect";
+	String server_url;
 	String reconnection_token = "";
 	String game_id = "";
 	Dictionary host_data = Dictionary();

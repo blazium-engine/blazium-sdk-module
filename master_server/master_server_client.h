@@ -32,6 +32,7 @@
 #define MASTER_SERVER_CLIENT_H
 
 #include "../blazium_client.h"
+#include "../discord/discord_embedded_app_client.h"
 #include "core/io/json.h"
 #include "core/templates/vector.h"
 #include "core/version.h"
@@ -129,7 +130,7 @@ class MasterServerClient : public BlaziumClient {
 	GDCLASS(MasterServerClient, BlaziumClient);
 
 private:
-	String server_url = "https://masterserver.blazium.app/api/v1";
+	String server_url;
 	String game_id = "";
 	Vector<String> get_headers() {
 		Vector<String> headers;
@@ -329,6 +330,14 @@ public:
 	String get_server_url() const { return server_url; }
 	void set_game_id(String p_game_id) { game_id = p_game_id; }
 	String get_game_id() const { return game_id; }
+
+	MasterServerClient() {
+		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/blazium/masterserver/api/v1";
+		} else {
+			server_url = "https://masterserver.blazium.app/api/v1";
+		}
+	}
 };
 
 #endif // MASTER_SERVER_CLIENT_H

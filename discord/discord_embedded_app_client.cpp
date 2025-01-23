@@ -252,14 +252,24 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 	frame_id = query_map.get("frame_id", "");
 	
 	singleton->eval("window.source = window.parent.opener ?? window.parent", true);
+	client_id = static_find_client_id();
+	_handshake();
+}
+
+String DiscordEmbeddedAppClient::static_find_client_id() {
+	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
+	if (!singleton) {
+		ERR_PRINT("JavaScriptBridge not available.");
+		return "";
+	}
 	String host = singleton->eval("window.location.hostname");
 	PackedStringArray host_parts = host.split(".");
 	if (host_parts.size() > 0) {
-		client_id = host_parts[0]; // The first part is the client_id
+		return host_parts[0]; // The first part is the client_id
 	} else {
 		ERR_PRINT("Unable to extract client ID from host: " + host);
 	}
-	_handshake();
+	return "";
 }
 
 String _generate_nonce() {
@@ -312,6 +322,10 @@ void DiscordEmbeddedAppClient::_handshake() {
 }
 
 bool DiscordEmbeddedAppClient::is_discord_environment() {
+	return static_is_discord_environment();
+}
+
+bool DiscordEmbeddedAppClient::static_is_discord_environment() {
     JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
     if (!singleton) {
         ERR_PRINT("JavaScriptBridge singleton is invalid");

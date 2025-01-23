@@ -50,6 +50,7 @@
 		</member>
 		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;wss://login.blazium.app/connect&quot;">
 			Set to what url this client should connect to.
+			For discord embedded app environment, replaces the url with [url=wss://client_id.discordsays.com/.proxy/blazium/login/connect]client_id.discordsays.com/.proxy/blazium/login/connect[/url] if left default, where client_id is the client id from the discord embedded app url (automatically detected).
 		</member>
 	</members>
 	<signals>

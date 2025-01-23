@@ -32,6 +32,7 @@
 #define LOGIN_CLIENT_H
 
 #include "../blazium_client.h"
+#include "../discord/discord_embedded_app_client.h"
 #include "core/io/json.h"
 #include "modules/websocket/websocket_peer.h"
 
@@ -39,7 +40,7 @@ class LoginClient : public BlaziumClient {
 	GDCLASS(LoginClient, BlaziumClient);
 
 protected:
-	String server_url = "wss://login.blazium.app/connect";
+	String server_url;
 	String game_id = "";
 	bool connected = false;
 
@@ -199,6 +200,11 @@ public:
 	}
 
 	LoginClient() {
+		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/blazium/login/connect";
+		} else {
+			server_url = "wss://login.blazium.app/connect";
+		}
 		_socket = Ref<WebSocketPeer>(WebSocketPeer::create());
 		set_process_internal(false);
 	}

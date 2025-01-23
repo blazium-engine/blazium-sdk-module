@@ -31,7 +31,14 @@
 #include "./lobby_client.h"
 #include "lobby_info.h"
 #include "scene/main/node.h"
+#include "../discord/discord_embedded_app_client.h"
+
 LobbyClient::LobbyClient() {
+	if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
+		server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/blazium/lobby/connect";
+	} else {
+		server_url = "wss://lobby.blazium.app/connect";
+	}
 	lobby.instantiate();
 	peer.instantiate();
 	_socket = Ref<WebSocketPeer>(WebSocketPeer::create());
