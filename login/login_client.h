@@ -123,7 +123,7 @@ protected:
 				WebSocketPeer::State state = _socket->get_ready_state();
 				if (state == WebSocketPeer::STATE_OPEN) {
 					if (!connected) {
-						emit_signal("log_updated", "connect_to_lobby", "Connectied to: " + server_url);
+						emit_signal("log_updated", "connect_to_lobby", "Connected to: " + server_url);
 						emit_signal("connected_to_server");
 					}
 					connected = true;
@@ -169,6 +169,10 @@ public:
 	void disconnect_from_server();
 
 	Ref<LoginResponse> request_login_info(String p_type) {
+		if (!connected) {
+			// Return null response if not connected
+			return Ref<LoginResponse>();
+		}
 		Dictionary command;
 		command["action"] = "getLogin";
 		command["type"] = p_type;
