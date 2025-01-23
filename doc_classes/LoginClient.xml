@@ -17,10 +17,11 @@
 	</tutorials>
 	<methods>
 		<method name="connect_to_server">
-			<return type="bool" />
+			<return type="LoginResponse" />
 			<description>
 				Connects to the server specified in [member server_url] using the game id specified in [member game_id]. Must be done before requesting login info.
 				Generates [signal connected_to_server] when connected.
+				Returns a [LoginResponse] object that has a [signal LoginResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="disconnect_from_server">

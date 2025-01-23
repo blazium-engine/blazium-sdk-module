@@ -35,7 +35,7 @@
 void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("close", "code", "message"), &DiscordEmbeddedAppClient::close);
 	ClassDB::bind_method(D_METHOD("authenticate", "access_token"), &DiscordEmbeddedAppClient::authenticate);
-	ClassDB::bind_method(D_METHOD("authorize", "client_id", "response_type", "state", "prompt", "scope"), &DiscordEmbeddedAppClient::authorize);
+	ClassDB::bind_method(D_METHOD("authorize", "response_type", "state", "prompt", "scope"), &DiscordEmbeddedAppClient::authorize);
 	ClassDB::bind_method(D_METHOD("capture_log", "level", "message"), &DiscordEmbeddedAppClient::capture_log);
 	ClassDB::bind_method(D_METHOD("encourage_hardware_acceleration"), &DiscordEmbeddedAppClient::encourage_hardware_acceleration);
 	ClassDB::bind_method(D_METHOD("get_channel", "channel_id"), &DiscordEmbeddedAppClient::get_channel);
@@ -53,11 +53,12 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_orientation_lock_state", "lock_state", "picture_in_picture_lock_state", "grid_lock_state"), &DiscordEmbeddedAppClient::set_orientation_lock_state);
 	ClassDB::bind_method(D_METHOD("start_purchase", "sku_id", "pid"), &DiscordEmbeddedAppClient::start_purchase);
 	ClassDB::bind_method(D_METHOD("user_settings_get_locale"), &DiscordEmbeddedAppClient::user_settings_get_locale);
+	ClassDB::bind_method(D_METHOD("subscribe_to_all_events"), &DiscordEmbeddedAppClient::subscribe_to_all_events);
 
+	ClassDB::bind_method(D_METHOD("is_ready"), &DiscordEmbeddedAppClient::is_ready);
 	ClassDB::bind_method(D_METHOD("is_discord_environment"), &DiscordEmbeddedAppClient::is_discord_environment);
 	ClassDB::bind_method(D_METHOD("get_user_id"), &DiscordEmbeddedAppClient::get_user_id);
 	ClassDB::bind_method(D_METHOD("get_client_id"), &DiscordEmbeddedAppClient::get_client_id);
-	ClassDB::bind_method(D_METHOD("set_client_id", "client_id"), &DiscordEmbeddedAppClient::set_client_id);
 	ClassDB::bind_method(D_METHOD("get_user_instance_id"), &DiscordEmbeddedAppClient::get_user_instance_id);
 	ClassDB::bind_method(D_METHOD("get_custom_id"), &DiscordEmbeddedAppClient::get_custom_id);
 	ClassDB::bind_method(D_METHOD("get_referrer_id"), &DiscordEmbeddedAppClient::get_referrer_id);
@@ -70,7 +71,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_frame_id"), &DiscordEmbeddedAppClient::get_frame_id);
     
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "", "get_user_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "set_client_id", "get_client_id");
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "", "get_client_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_instance_id"), "", "get_user_instance_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_id"), "", "get_custom_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "referrer_id"), "", "get_referrer_id");
@@ -82,7 +83,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "mobile_app_version"), "", "get_mobile_app_version");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "frame_id"), "", "get_frame_id");
 
-    ADD_SIGNAL(MethodInfo("is_ready", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
     ADD_SIGNAL(MethodInfo("error", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("voice_state_update", PropertyInfo(Variant::DICTIONARY, "data")));
     ADD_SIGNAL(MethodInfo("speaking_start", PropertyInfo(Variant::DICTIONARY, "data")));
@@ -103,36 +104,31 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 
 
 void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
-    // event is a tuple
-    // https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts#L281
-    Array event_array = p_event;
-    if (event_array.size() != 1) {
-        ERR_PRINT("Event is invalid");
-        return;
-    }
-    Dictionary event_dict = event_array[0];
-    if (!event_dict.has("data")) {
-        ERR_PRINT("Event data is invalid");
-        return;
-    }
-	Array data_tuple = event_dict["data"];
-	if (data_tuple.size() != 2) {
-        ERR_PRINT("Event data tuple is invalid");
-        return;
-	}
     JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
     if (!singleton) {
         ERR_PRINT("JavaScriptBridge singleton is invalid");
         return;
     }
+    Array event_array = p_event;
+    if (event_array.size() != 1) {
+        ERR_PRINT("Event is invalid");
+		print_line(event_array);
+        return;
+    }
+    // event is a tuple
+    // https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts#L281
+    Variant event_dict = event_array[0];
+	Variant data_arr = event_dict.get("data");
     Ref<JavaScriptObject> json = singleton->get_interface("JSON");
 	if (!json.is_valid()) {
         ERR_PRINT("JavaScriptBridge JSON is invalid");
         return;
 	}
-	String stringified_data = json->call("stringify", data_tuple[1]);
-	Dictionary data_dict = JSON::parse_string(stringified_data);
-	int opcode = data_tuple[0];
+	String stringified_data = json->call("stringify", data_arr);
+	Array parsed_data_array = JSON::parse_string(stringified_data);
+	int opcode = parsed_data_array[0];
+	Dictionary data_dict = parsed_data_array[1];
+	emit_signal("log_updated", "handle_message", stringified_data);
 	if (opcode == DiscordEmbeddedAppClient::Opcode::OP_FRAME) {
 		if (data_dict["cmd"] == "DISPATCH") {
 			_handle_dispatch(data_dict);
@@ -155,10 +151,9 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 }
 void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
 	String event = p_data["evt"];
+	emit_signal("log_updated", "handle_dispatch", event);
 	if (event == "READY") {
-		// once ready, subscribe to all events
-		_subscribe_to_events();
-		emit_signal("is_ready", p_data["data"]);
+		discord_ready = true;
 	} else if (event == "ERROR") {
 		emit_signal("error", p_data["data"]);
 	} else if (event == "VOICE_STATE_UPDATE") {
@@ -198,6 +193,7 @@ void DiscordEmbeddedAppClient::_send_message(int opcode, Dictionary body) {
 	Array data_message;
 	data_message.push_back(opcode);
 	data_message.push_back(body);
+	emit_signal("log_updated", "send_message", JSON::stringify(data_message));
 
 	String js_command = String("window.source.postMessage(") + JSON::stringify(data_message) + ", '*')";
 	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
@@ -205,7 +201,7 @@ void DiscordEmbeddedAppClient::_send_message(int opcode, Dictionary body) {
 		ERR_PRINT("JavaScriptBridge not available.");
 		return;
 	}
-	singleton->eval(js_command, false);
+	singleton->eval(js_command, true);
 }
 
 DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
@@ -253,7 +249,13 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 	frame_id = query_map.get("frame_id", "");
 	
 	singleton->eval("window.source = window.parent.opener ?? window.parent", true);
-	
+	String host = singleton->eval("window.location.hostname");
+	PackedStringArray host_parts = host.split(".");
+	if (host_parts.size() > 0) {
+		client_id = host_parts[0]; // The first part is the client_id
+	} else {
+		ERR_PRINT("Unable to extract client ID from host: " + host);
+	}
 	_handshake();
 }
 
@@ -269,10 +271,8 @@ String _generate_nonce() {
 	return nonce;
 }
 
-void DiscordEmbeddedAppClient::_subscribe_to_events() {
+void DiscordEmbeddedAppClient::subscribe_to_all_events() {
     Array events;
-    events.push_back("READY");
-    events.push_back("ERROR");
     events.push_back("VOICE_STATE_UPDATE");
     events.push_back("SPEAKING_START");
     events.push_back("SPEAKING_STOP");
@@ -327,7 +327,33 @@ void DiscordEmbeddedAppClient::close(int p_code, String p_message) {
 	_send_message(DiscordEmbeddedAppClient::Opcode::OP_CLOSE, body);
 }
 
+Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::is_ready() {
+	if (discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("");
+		return response;
+	}
+	if (discord_ready) {
+		return Ref<DiscordEmbeddedAppResponse>();
+	}
+	if (!ready_response.is_valid()) {
+		ready_response.instantiate();
+	}
+	return ready_response;
+}
+
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::authenticate(String p_access_token) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["access_token"] = p_access_token;
 
@@ -338,7 +364,15 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::authenticate(String p_
 	_commands[nonce] = response;
 	return response;
 }
-Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::authorize(String p_client_id, String p_response_type, String p_state, String p_prompt, Array p_scope) {
+Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::authorize(String p_response_type, String p_state, String p_prompt, Array p_scope) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["client_id"] = client_id;
 	body["response_type"] = p_response_type;
@@ -355,6 +389,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::authorize(String p_cli
 }
 
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::capture_log(String p_level, String p_message) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["level"] = p_level;
 	body["message"] = p_message;
@@ -367,6 +409,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::capture_log(String p_l
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::encourage_hardware_acceleration() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	String nonce = _generate_nonce();
 	_send_command("ENCOURAGE_HW_ACCELERATION", Dictionary(), nonce);
@@ -376,6 +426,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::encourage_hardware_acc
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_channel(String p_channel_id) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["channel_id"] = p_channel_id;
 	String nonce = _generate_nonce();
@@ -386,6 +444,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_channel(String p_c
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_channel_permissions() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("GET_CHANNEL_PERMISSIONS", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
@@ -394,6 +460,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_channel_permission
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_entitlements() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("GET_ENTITLEMENTS_EMBEDDED", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
@@ -402,6 +476,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_entitlements() {
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_instance_connected_participants() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("GET_ACTIVITY_INSTANCE_CONNECTED_PARTICIPANTS", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
@@ -410,6 +492,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_instance_connected
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_platform_behaviours() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("GET_PLATFORM_BEHAVIORS", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
@@ -418,6 +508,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_platform_behaviour
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_skus() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("GET_SKUS_EMBEDDED", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
@@ -426,6 +524,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::get_skus() {
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::initiate_image_upload() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("INITIATE_IMAGE_UPLOAD", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
@@ -434,14 +540,32 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::initiate_image_upload(
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::open_external_link(String p_url) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
+	Dictionary body;
+	body["url"] = p_url;
 	String nonce = _generate_nonce();
-	_send_command("OPEN_EXTERNAL_LINK", Dictionary(), nonce);
+	_send_command("OPEN_EXTERNAL_LINK", body, nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
 	response.instantiate();
 	_commands[nonce] = response;
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::open_invite_dialog() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("OPEN_INVITE_DIALOG", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;
@@ -450,6 +574,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::open_invite_dialog() {
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::open_share_moment_dialog(String p_media_url) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["mediaUrl"] = p_media_url;
 
@@ -461,6 +593,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::open_share_moment_dial
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::set_activity(Dictionary p_activity) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["activity"] = p_activity;
 
@@ -472,6 +612,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::set_activity(Dictionar
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::set_config(bool p_use_interactive_pip) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["use_interactive_pip"] = p_use_interactive_pip;
 
@@ -483,6 +631,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::set_config(bool p_use_
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::set_orientation_lock_state(DiscordEmbeddedAppOrientationLockState p_lock_state, DiscordEmbeddedAppOrientationLockState p_picture_in_picture_lock_state, DiscordEmbeddedAppOrientationLockState p_grid_lock_state) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["lock_state"] = p_lock_state;
 	body["pip_lock_state"] = p_picture_in_picture_lock_state;
@@ -496,6 +652,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::set_orientation_lock_s
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::start_purchase(String p_sku_id, String p_pid) {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	Dictionary body;
 	body["sku_id"] = p_sku_id;
 	body["pid"] = p_pid;
@@ -508,6 +672,14 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::start_purchase(String 
 	return response;
 }
 Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::user_settings_get_locale() {
+	if (!discord_ready) {
+		Ref<DiscordEmbeddedAppResponse> response = Ref<DiscordEmbeddedAppResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
+		callable.call_deferred("Discord not ready. Listen to is_ready.");
+		return response;
+	}
 	String nonce = _generate_nonce();
 	_send_command("USER_SETTINGS_GET_LOCALE", Dictionary(), nonce);
 	Ref<DiscordEmbeddedAppResponse> response;

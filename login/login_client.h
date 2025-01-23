@@ -81,11 +81,18 @@ public:
 			String get_login_url() const { return login_url; }
 			String get_login_type() const { return login_type; }
 		};
+		void signal_finish(String p_error) {
+			Ref<LoginResult> result;
+			result.instantiate();
+			result->set_error(p_error);
+			emit_signal("finished", result);
+		}
 	};
 
 protected:
 	Ref<WebSocketPeer> _socket;
 	Ref<LoginResponse> login_response;
+	Ref<LoginResponse> connect_response;
 
 	void _receive_data(const Dictionary &p_data) {
 		String action = p_data.get("action", "");
@@ -123,10 +130,15 @@ protected:
 				WebSocketPeer::State state = _socket->get_ready_state();
 				if (state == WebSocketPeer::STATE_OPEN) {
 					if (!connected) {
+						connected = true;
+						if (connect_response.is_valid()) {
+							Ref<LoginResponse::LoginResult> connected_result;
+							connected_result.instantiate();
+							connect_response->emit_signal("finished", connected_result);
+						}
 						emit_signal("log_updated", "connect_to_lobby", "Connected to: " + server_url);
 						emit_signal("connected_to_server");
 					}
-					connected = true;
 					while (_socket->get_available_packet_count() > 0) {
 						Vector<uint8_t> packet_buffer;
 						Error err = _socket->get_packet_buffer(packet_buffer);
@@ -165,13 +177,17 @@ public:
 	String get_game_id() { return game_id; }
 	bool get_connected() { return connected; }
 
-	bool connect_to_server();
+	Ref<LoginResponse> connect_to_server();
 	void disconnect_from_server();
 
 	Ref<LoginResponse> request_login_info(String p_type) {
 		if (!connected) {
-			// Return null response if not connected
-			return Ref<LoginResponse>();
+			Ref<LoginResponse> response = Ref<LoginResponse>();
+			response.instantiate();
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &LoginResponse::signal_finish);
+			callable.call_deferred("Not connected to login server.");
+			return response;
 		}
 		Dictionary command;
 		command["action"] = "getLogin";

@@ -21,9 +21,14 @@ void LoginClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("received_jwt", PropertyInfo(Variant::STRING, "jwt"), PropertyInfo(Variant::STRING, "type")));
 }
 
-bool LoginClient::connect_to_server() {
+Ref<LoginClient::LoginResponse> LoginClient::connect_to_server() {
 	if (connected) {
-		return true;
+		Ref<LoginResponse> response = Ref<LoginResponse>();
+		response.instantiate();
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LoginResponse::signal_finish);
+		callable.call_deferred("Already connected to the server.");
+		return response;
 	}
 	String lobby_url = get_server_url();
 	String url = lobby_url;
@@ -36,11 +41,13 @@ bool LoginClient::connect_to_server() {
 		set_process_internal(false);
 		emit_signal("log_updated", "error", "Unable to connect to lobby server at: " + url);
 		connected = false;
-		return false;
+		return Ref<LoginResponse>();
 	}
 	set_process_internal(true);
 	emit_signal("log_updated", "connect_to_lobby", "Connecting to: " + url);
-	return true;
+	connect_response = Ref<LoginResponse>();
+	connect_response.instantiate();
+	return connect_response;
 }
 
 void LoginClient::disconnect_from_server() {

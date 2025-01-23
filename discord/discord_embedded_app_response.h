@@ -44,20 +44,33 @@ protected:
 public:
 	class DiscordEmbeddedAppResult : public RefCounted {
 		GDCLASS(DiscordEmbeddedAppResult, RefCounted);
-
+		String error = "";
         Dictionary data;
 
 	protected:
 		static void _bind_methods() {
             ClassDB::bind_method(D_METHOD("get_data"), &DiscordEmbeddedAppResult::get_data);
+			ClassDB::bind_method(D_METHOD("has_error"), &DiscordEmbeddedAppResult::has_error);
+			ClassDB::bind_method(D_METHOD("get_error"), &DiscordEmbeddedAppResult::get_error);
             ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data"), "", "get_data");
+			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
 		}
 
-	public:
-        void set_data(Dictionary p_data) { this->data = p_data; }
+		public:
+			void set_error(String p_error) { this->error = p_error; }
+			bool has_error() const { return !error.is_empty(); }
+			String get_error() const { return error; }
 
-        Dictionary get_data() const { return data; }
+			void set_data(Dictionary p_data) { this->data = p_data; }
+			Dictionary get_data() const { return data; }
 	};
+
+	void signal_finish(String p_error) {
+		Ref<DiscordEmbeddedAppResult> result;
+		result.instantiate();
+		result->set_error(p_error);
+		emit_signal("finished", result);
+	}
 };
 
 #endif // DISCORD_EMBEDDED_APP_RESPONSE_H

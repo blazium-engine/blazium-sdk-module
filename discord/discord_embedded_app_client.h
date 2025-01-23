@@ -47,6 +47,8 @@ class DiscordEmbeddedAppClient : public ThirdPartyClient {
 		OP_HELLO = 3,
 	};
 
+	bool discord_ready = false;
+
 	String user_id;
 	String client_id;
 	String user_instance_id;
@@ -63,12 +65,12 @@ class DiscordEmbeddedAppClient : public ThirdPartyClient {
 	Dictionary _commands;
 
 	Ref<JavaScriptObject> callback;
+	Ref<DiscordEmbeddedAppResponse> ready_response;
 
 	void _handle_message(Variant p_event);
 	void _handle_dispatch(Dictionary p_data);
 	void _send_command(String p_command, Dictionary p_args, String p_nonce);
 	void _send_message(int p_opcode, Dictionary p_body);
-	void _subscribe_to_events();
 	void _handshake();
 protected:
 	static void _bind_methods();
@@ -80,6 +82,7 @@ public:
 		DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_PORTRAIT = 2,
 		DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_LANDSCAPE = 3,
 	};
+	void subscribe_to_all_events();
 	bool is_discord_environment();
 	void close(int p_code, String p_message);
 	String get_user_id() { return user_id; }
@@ -96,8 +99,9 @@ public:
 	String get_mobile_app_version() { return mobile_app_version; }
 	String get_frame_id() { return frame_id; }
 
+	Ref<DiscordEmbeddedAppResponse> is_ready();
 	Ref<DiscordEmbeddedAppResponse> authenticate(String p_access_token);
-	Ref<DiscordEmbeddedAppResponse> authorize(String p_client_id, String p_response_type, String p_sate, String p_prompt, Array p_scope);
+	Ref<DiscordEmbeddedAppResponse> authorize(String p_response_type, String p_sate, String p_prompt, Array p_scope);
 	Ref<DiscordEmbeddedAppResponse> capture_log(String p_level, String p_message);
 	Ref<DiscordEmbeddedAppResponse> encourage_hardware_acceleration();
 	Ref<DiscordEmbeddedAppResponse> get_channel(String p_channel_id);

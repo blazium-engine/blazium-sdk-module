@@ -8,9 +8,20 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="has_error" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns true if there is an error.
+			</description>
+		</method>
+	</methods>
 	<members>
 		<member name="data" type="Dictionary" setter="" getter="get_data" default="{}">
 			The data returned. Check the discord documentation for more info.
+		</member>
+		<member name="error" type="String" setter="" getter="get_error" default="&quot;&quot;">
+			The error message.
 		</member>
 	</members>
 </class>

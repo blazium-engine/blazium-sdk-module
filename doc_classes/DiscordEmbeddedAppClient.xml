@@ -14,17 +14,18 @@
 			<param index="0" name="access_token" type="String" />
 			<description>
 				Authenticate an existing client with your app.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="authorize">
 			<return type="DiscordEmbeddedAppResponse" />
-			<param index="0" name="client_id" type="String" />
-			<param index="1" name="response_type" type="String" />
-			<param index="2" name="state" type="String" />
-			<param index="3" name="prompt" type="String" />
-			<param index="4" name="scope" type="Array" />
+			<param index="0" name="response_type" type="String" />
+			<param index="1" name="state" type="String" />
+			<param index="2" name="prompt" type="String" />
+			<param index="3" name="scope" type="Array" />
 			<description>
 				Authorize a new client with your app.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="capture_log">
@@ -33,6 +34,7 @@
 			<param index="1" name="message" type="String" />
 			<description>
 				Forward logs to your own logger.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="close">
@@ -46,50 +48,58 @@
 		<method name="encourage_hardware_acceleration">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Presents a modal dialog to allow enabling of hardware acceleration
+				Presents a modal dialog to allow enabling of hardware acceleration.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_channel">
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="channel_id" type="String" />
 			<description>
-				Returns information about the channel, per the channel_id
+				Returns information about the channel, per the channel_id.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_channel_permissions">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns permissions for the current user in the currently connected channel
+				Returns permissions for the current user in the currently connected channel.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_entitlements">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns a list of entitlements for the current user
+				Returns a list of entitlements for the current user.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_instance_connected_participants">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns all participants connected to the instance
+				Returns all participants connected to the instance.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_platform_behaviours">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns information about supported platform behaviors
+				Returns information about supported platform behaviors.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_skus">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns a list of your app's SKUs
+				Returns a list of your app's SKUs.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="initiate_image_upload">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Presents the file upload flow in the Discord client
+				Presents the file upload flow in the Discord client.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="is_discord_environment">
@@ -98,38 +108,50 @@
 				Returns whether or not the current environment is Discord environment.
 			</description>
 		</method>
+		<method name="is_ready">
+			<return type="DiscordEmbeddedAppResponse" />
+			<description>
+				Returns whether or not the client is ready.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
 		<method name="open_external_link">
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="url" type="String" />
 			<description>
-				Allows for opening an external link from within the Discord client
+				Allows for opening an external link from within the Discord client.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="open_invite_dialog">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Presents a modal dialog with Channel Invite UI without requiring additional OAuth scopes
+				Presents a modal dialog with Channel Invite UI without requiring additional OAuth scopes.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="open_share_moment_dialog">
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="media_url" type="String" />
 			<description>
-				Presents a modal dialog to share media to a channel or DM
+				Presents a modal dialog to share media to a channel or DM.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="set_activity">
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="activity" type="Dictionary" />
 			<description>
-				Modifies how your activity's rich presence is displayed in the Discord client
+				Modifies how your activity's rich presence is displayed in the Discord client.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="set_config">
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="use_interactive_pip" type="bool" />
 			<description>
-				Set whether or not the PIP (picture-in-picture) is interactive
+				Set whether or not the PIP (picture-in-picture) is interactive.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="set_orientation_lock_state">
@@ -138,7 +160,8 @@
 			<param index="1" name="picture_in_picture_lock_state" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
 			<param index="2" name="grid_lock_state" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
 			<description>
-				Set options for orientation and picture-in-picture (PIP) modes
+				Set options for orientation and picture-in-picture (PIP) modes.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="start_purchase">
@@ -146,13 +169,21 @@
 			<param index="0" name="sku_id" type="String" />
 			<param index="1" name="pid" type="String" />
 			<description>
-				Launches the purchase flow for a specific SKU, per the sku_id
+				Launches the purchase flow for a specific SKU, per the sku_id.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
+		<method name="subscribe_to_all_events">
+			<return type="void" />
+			<description>
+				Subscribes to all events. Needs to be done after [method authenticate].
 			</description>
 		</method>
 		<method name="user_settings_get_locale">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns the current user's locale
+				Returns the current user's locale.
+				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 	</methods>
@@ -160,7 +191,7 @@
 		<member name="channel_id" type="String" setter="" getter="get_channel_id" default="&quot;&quot;">
 			The id of a channel. A channel represents a guild or DM channel within Discord.
 		</member>
-		<member name="client_id" type="String" setter="set_client_id" getter="get_client_id" default="&quot;&quot;">
+		<member name="client_id" type="String" setter="" getter="get_client_id" default="&quot;&quot;">
 			The client id you want to use when starting the client.
 		</member>
 		<member name="custom_id" type="String" setter="" getter="get_custom_id" default="&quot;&quot;">
@@ -231,10 +262,10 @@
 				Non-subscription event sent when there is an error, including command responses.
 			</description>
 		</signal>
-		<signal name="is_ready">
-			<param index="0" name="data" type="Dictionary" />
+		<signal name="log_updated">
+			<param index="0" name="command" type="String" />
+			<param index="1" name="logs" type="String" />
 			<description>
-				Non-subscription event sent immediately after connecting, contains server information.
 			</description>
 		</signal>
 		<signal name="orientation_update">
