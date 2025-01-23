@@ -266,6 +266,7 @@
 			<param index="0" name="command" type="String" />
 			<param index="1" name="logs" type="String" />
 			<description>
+				Received when logs are updated.
 			</description>
 		</signal>
 		<signal name="orientation_update">
