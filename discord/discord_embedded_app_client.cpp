@@ -2,8 +2,8 @@
 /*  discord_embedded_app_client.cpp                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
-/*                             GODOT ENGINE                               */
-/*                        https://godotengine.org                         */
+/*                             BLAZIUM ENGINE                             */
+/*                        https://http://blazium.app                      */
 /**************************************************************************/
 /* Copyright (c) 2024-present Blazium Engine contributors.                */
 /* Copyright (c) 2024 Dragos Daian, Randolph William Aarseth II.          */
@@ -70,7 +70,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_frame_id"), &DiscordEmbeddedAppClient::get_frame_id);
     
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "", "get_user_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_d"), "set_client_id", "get_client_id");
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "set_client_id", "get_client_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_instance_id"), "", "get_user_instance_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_id"), "", "get_custom_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "referrer_id"), "", "get_referrer_id");
@@ -103,23 +103,6 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 
 
 void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
-    // event is a tuple
-    // https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts#L281
-    Array event_array = p_event;
-    if (event_array.size() != 1) {
-        ERR_PRINT("Event is invalid");
-        return;
-    }
-    Dictionary event_dict = event_array[0];
-    if (!event_dict.has("data")) {
-        ERR_PRINT("Event data is invalid");
-        return;
-    }
-	Array data_tuple = event_dict["data"];
-	if (data_tuple.size() != 2) {
-        ERR_PRINT("Event data tuple is invalid");
-        return;
-	}
     JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
     if (!singleton) {
         ERR_PRINT("JavaScriptBridge singleton is invalid");
@@ -130,8 +113,67 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
         ERR_PRINT("JavaScriptBridge JSON is invalid");
         return;
 	}
-	String stringified_data = json->call("stringify", data_tuple[1]);
-	Dictionary data_dict = JSON::parse_string(stringified_data);
+	Ref<JavaScriptObject> console = singleton->get_interface("console");
+	if (!console.is_valid()) {
+        ERR_PRINT("JavaScriptBridge Console is invalid");
+        return;
+	}
+	Ref<JavaScriptObject> event_object = p_event;
+	List<PropertyInfo> p_list;
+	print_line("get property list");
+	print_line(p_event);
+	print_line(event_object->getvar("data"));
+	print_line("get property list2");
+	event_object->get_property_list(&p_list);
+	for (int i = 0; i < p_list.size(); i++) {
+		print_line("property ", p_list.get(i).name);
+	}
+	print_line("get method list");
+	List<MethodInfo> m_list;
+	event_object->get_method_list(&m_list);
+	for (int i = 0; i < m_list.size(); i++) {
+		print_line("method ", m_list.get(i).name);
+	}
+	print_line("getting data");
+	print_line("data[0]", event_object->getvar("*"));
+	print_line("data", event_object->getvar("data[0]"));
+	print_line("data", event_object->getvar("data[1]."));
+	Variant log_result = console->call("log", "handle message 123", p_event);
+	print_line("window event ", singleton->eval("window.event", true));
+	print_line("log result ", log_result);
+	Variant result = event_object->call("toString");
+	print_line("toString result ", result);
+	print_line("getting data");
+	print_line("array 0", event_object->getvar("0"));
+	print_line("array 0", event_object->getvar("[0]"));
+	print_line("data", event_object->get("data"));
+	print_line(".data", event_object->getvar(".data"));
+	print_line(".data", event_object->get(".data"));
+	print_line("array 0 ", event_object->get("[0]"));
+	print_line("end getting data");
+	Variant stringified_event = json->call("stringify", event_object);
+	print_line("stringified ", stringified_event);
+	Variant data_dict = JSON::stringify(event_object);
+	print_line("data dict ", data_dict);
+	/*
+    // event is a tuple
+    // https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts#L281
+    Array event_array = p_event;
+    if (event_array.size() != 1) {
+        ERR_PRINT("Event is invalid");
+        return;
+    }
+    Dictionary event_dict = event_array[0];
+    if (!event_dict.has("data")) {
+		print_line(p_event);
+        ERR_PRINT("Event data is invalid");
+        return;
+    }
+	Array data_tuple = event_dict["data"];
+	if (data_tuple.size() != 2) {
+        ERR_PRINT("Event data tuple is invalid");
+        return;
+	}
 	int opcode = data_tuple[0];
 	if (opcode == DiscordEmbeddedAppClient::Opcode::OP_FRAME) {
 		if (data_dict["cmd"] == "DISPATCH") {
@@ -151,9 +193,10 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 		} else {
 			ERR_PRINT("Unkown packet received.");
 		}
-	}
+	}*/
 }
 void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
+	print_line(p_data);
 	String event = p_data["evt"];
 	if (event == "READY") {
 		// once ready, subscribe to all events
@@ -199,13 +242,13 @@ void DiscordEmbeddedAppClient::_send_message(int opcode, Dictionary body) {
 	data_message.push_back(opcode);
 	data_message.push_back(body);
 
-	String js_command = String("window.source.postMessage(") + JSON::stringify(data_message) + ", '*')";
+	String js_command = String("(window.parent.opener ?? window.parent).postMessage(") + JSON::stringify(data_message) + ", '*')";
 	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
 	if (!singleton) {
 		ERR_PRINT("JavaScriptBridge not available.");
 		return;
 	}
-	singleton->eval(js_command, false);
+	singleton->eval(js_command, true);
 }
 
 DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
@@ -214,7 +257,7 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 		ERR_PRINT("JavaScriptBridge not available.");
 		return;
 	}
-	Ref<JavaScriptObject> window = singleton->get_interface("window");
+	window = singleton->get_interface("window");
 	if (!window.is_valid()) {
 		// Don't error here as we are on desktop most likely.
 		return;
@@ -226,9 +269,15 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 		ERR_PRINT("Callback is invalid");
 		return;
 	}
+	if (!window.is_valid()) {
+		ERR_PRINT("Window is invalid");
+		return;
+	}
 	window->call("addEventListener", "message", callback);
+	//singleton->eval("window.addEventListener('message', function(e) {console.log(e)})", true);
+
 	// update params
-	String query_parts_string = singleton->eval("window.location.search");
+	String query_parts_string = singleton->eval("window.location.search", true);
 	Vector<String> query_parts = query_parts_string.trim_prefix("?").split("&", false);
 	Dictionary query_map = {};
 	for (int i = 0; i < query_parts.size(); i++) {
@@ -251,9 +300,6 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 	mobile_app_version = query_map.get("mobile_app_version", "");
 
 	frame_id = query_map.get("frame_id", "");
-	
-	singleton->eval("window.source = window.parent.opener ?? window.parent", true);
-	
 	_handshake();
 }
 

@@ -123,7 +123,7 @@ protected:
 				WebSocketPeer::State state = _socket->get_ready_state();
 				if (state == WebSocketPeer::STATE_OPEN) {
 					if (!connected) {
-						emit_signal("log_updated", "connect_to_lobby", "Connectied to: " + server_url);
+						emit_signal("log_updated", "connect_to_lobby", "Connected to: " + server_url);
 						emit_signal("connected_to_server");
 					}
 					connected = true;

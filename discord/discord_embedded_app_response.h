@@ -2,8 +2,8 @@
 /*  discord_embedded_app_response.h                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
-/*                            BLAZIUM ENGINE                              */
-/*                        https://blazium.app                             */
+/*                             BLAZIUM ENGINE                             */
+/*                        https://http://blazium.app                      */
 /**************************************************************************/
 /* Copyright (c) 2024-present Blazium Engine contributors.                */
 /* Copyright (c) 2024 Dragos Daian, Randolph William Aarseth II.          */
