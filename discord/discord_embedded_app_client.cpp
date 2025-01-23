@@ -154,6 +154,9 @@ void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
 	emit_signal("log_updated", "handle_dispatch", event);
 	if (event == "READY") {
 		discord_ready = true;
+		Ref<DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult> ready_result;
+		ready_result.instantiate();
+		ready_response->emit_signal("finished", ready_result);
 	} else if (event == "ERROR") {
 		emit_signal("error", p_data["data"]);
 	} else if (event == "VOICE_STATE_UPDATE") {
