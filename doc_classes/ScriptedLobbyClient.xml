@@ -171,6 +171,9 @@
 		<member name="connected" type="bool" setter="" getter="get_connected" default="false">
 			True if the client is connected, else false.
 		</member>
+		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;blazium/scriptedlobby/connect&quot;">
+			Set to what path this client should use when connecting to the discord embedded app.
+		</member>
 		<member name="game_id" type="String" setter="set_game_id" getter="get_game_id" default="&quot;&quot;">
 			The game id.
 		</member>

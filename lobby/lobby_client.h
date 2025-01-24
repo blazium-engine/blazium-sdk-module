@@ -31,6 +31,7 @@
 #ifndef LOBBY_CLIENT_H
 #define LOBBY_CLIENT_H
 
+#include "../discord/discord_embedded_app_client.h"
 #include "../blazium_client.h"
 #include "core/io/json.h"
 #include "lobby_info.h"

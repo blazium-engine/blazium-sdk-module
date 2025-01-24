@@ -31,6 +31,7 @@
 #ifndef SCRIPTED_LOBBY_CLIENT_H
 #define SCRIPTED_LOBBY_CLIENT_H
 
+#include "../discord/discord_embedded_app_client.h"
 #include "scripted_lobby_response.h"
 #include "lobby_client.h"
 
