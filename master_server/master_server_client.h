@@ -130,6 +130,7 @@ class MasterServerClient : public BlaziumClient {
 	GDCLASS(MasterServerClient, BlaziumClient);
 
 private:
+	String override_discord_path = "blazium/masterserver/api/v1";
 	String server_url;
 	String game_id = "";
 	Vector<String> get_headers() {
@@ -147,9 +148,12 @@ protected:
 		ClassDB::bind_method(D_METHOD("get_server_url"), &MasterServerClient::get_server_url);
 		ClassDB::bind_method(D_METHOD("set_game_id", "game_id"), &MasterServerClient::set_game_id);
 		ClassDB::bind_method(D_METHOD("get_game_id"), &MasterServerClient::get_game_id);
+		ClassDB::bind_method(D_METHOD("set_override_discord_path", "override_discord_path"), &MasterServerClient::set_override_discord_path);
+		ClassDB::bind_method(D_METHOD("get_override_discord_path"), &MasterServerClient::get_override_discord_path);
 
 		ADD_PROPERTY(PropertyInfo(Variant::STRING, "server_url", PROPERTY_HINT_NONE, ""), "set_server_url", "get_server_url");
 		ADD_PROPERTY(PropertyInfo(Variant::STRING, "game_id", PROPERTY_HINT_NONE, ""), "set_game_id", "get_game_id");
+		ADD_PROPERTY(PropertyInfo(Variant::STRING, "discord_embedded_app/path"), "set_override_discord_path", "get_override_discord_path");
 	}
 
 public:
@@ -330,10 +334,17 @@ public:
 	String get_server_url() const { return server_url; }
 	void set_game_id(String p_game_id) { game_id = p_game_id; }
 	String get_game_id() const { return game_id; }
+	void set_override_discord_path(String p_path) {
+		override_discord_path = p_path;
+		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
+		}
+	}
+	String get_override_discord_path() const { return override_discord_path; }
 
 	MasterServerClient() {
 		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
-			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/blazium/masterserver/api/v1";
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 		} else {
 			server_url = "https://masterserver.blazium.app/api/v1";
 		}

@@ -40,6 +40,7 @@ class LoginClient : public BlaziumClient {
 	GDCLASS(LoginClient, BlaziumClient);
 
 protected:
+	String override_discord_path = "blazium/login/connect";
 	String server_url;
 	String game_id = "";
 	bool connected = false;
@@ -180,6 +181,13 @@ public:
 
 	Ref<LoginResponse> connect_to_server();
 	void disconnect_from_server();
+	void set_override_discord_path(String p_path) {
+		override_discord_path = p_path;
+		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
+		}
+	}
+	String get_override_discord_path() const { return override_discord_path; }
 
 	Ref<LoginResponse> request_login_info(String p_type) {
 		if (!connected) {
@@ -201,7 +209,7 @@ public:
 
 	LoginClient() {
 		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
-			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/blazium/login/connect";
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 		} else {
 			server_url = "wss://login.blazium.app/connect";
 		}

@@ -38,6 +38,7 @@ class ScriptedLobbyClient : public BlaziumClient {
 	GDCLASS(ScriptedLobbyClient, BlaziumClient);
 
 protected:
+	String override_discord_path = "blazium/scriptedlobby/connect";
 	String server_url;
 	String reconnection_token = "";
 	String game_id = "";
@@ -68,6 +69,13 @@ protected:
 	static void _bind_methods();
 
 public:
+	void set_override_discord_path(String p_path) {
+		override_discord_path = p_path;
+		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
+		}
+	}
+	String get_override_discord_path() const { return override_discord_path; }
 	void set_server_url(const String &p_server_url);
 	String get_server_url();
 	void set_reconnection_token(const String &p_reconnection_token);

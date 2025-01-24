@@ -36,7 +36,7 @@
 
 ScriptedLobbyClient::ScriptedLobbyClient() {
 	if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
-		server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/blazium/scriptedlobby/connect";
+		server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 	} else {
 		server_url = "wss://scriptedlobby.blazium.app/connect";
 	}
@@ -66,6 +66,10 @@ void ScriptedLobbyClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_peers"), &ScriptedLobbyClient::get_peers);
 	ClassDB::bind_method(D_METHOD("get_peer_data"), &ScriptedLobbyClient::get_peer_data);
 
+	ClassDB::bind_method(D_METHOD("set_override_discord_path", "override_discord_path"), &ScriptedLobbyClient::set_override_discord_path);
+	ClassDB::bind_method(D_METHOD("get_override_discord_path"), &ScriptedLobbyClient::get_override_discord_path);
+
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "discord_embedded_app/path"), "set_override_discord_path", "get_override_discord_path");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "server_url", PROPERTY_HINT_NONE, ""), "set_server_url", "get_server_url");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "reconnection_token", PROPERTY_HINT_NONE, ""), "set_reconnection_token", "get_reconnection_token");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "game_id", PROPERTY_HINT_NONE, ""), "set_game_id", "get_game_id");

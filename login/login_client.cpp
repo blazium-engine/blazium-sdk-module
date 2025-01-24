@@ -37,6 +37,8 @@ void LoginClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_game_id", "game_id"), &LoginClient::set_game_id);
 	ClassDB::bind_method(D_METHOD("get_game_id"), &LoginClient::get_game_id);
 	ClassDB::bind_method(D_METHOD("get_connected"), &LoginClient::get_connected);
+	ClassDB::bind_method(D_METHOD("set_override_discord_path", "override_discord_path"), &LoginClient::set_override_discord_path);
+	ClassDB::bind_method(D_METHOD("get_override_discord_path"), &LoginClient::get_override_discord_path);
 
 	ClassDB::bind_method(D_METHOD("connect_to_server"), &LoginClient::connect_to_server);
 	ClassDB::bind_method(D_METHOD("disconnect_from_server"), &LoginClient::disconnect_from_server);
@@ -44,6 +46,7 @@ void LoginClient::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "server_url", PROPERTY_HINT_NONE, ""), "set_server_url", "get_server_url");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "game_id", PROPERTY_HINT_NONE, ""), "set_game_id", "get_game_id");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "connected"), "", "get_connected");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "discord_embedded_app/path"), "set_override_discord_path", "get_override_discord_path");
 
 	ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
 	ADD_SIGNAL(MethodInfo("disconnected_from_server", PropertyInfo(Variant::STRING, "reason")));
