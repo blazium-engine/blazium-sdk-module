@@ -75,6 +75,7 @@
 		<signal name="received_jwt">
 			<param index="0" name="jwt" type="String" />
 			<param index="1" name="type" type="String" />
+			<param index="2" name="access_token" type="String" />
 			<description>
 				Signal emitted when a JWT is received.
 			</description>

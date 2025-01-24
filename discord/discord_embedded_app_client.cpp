@@ -147,7 +147,7 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 		} else {
 			ERR_PRINT("Unkown packet received.");
 		}
-	}*/
+	}
 }
 void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
 	print_line(p_data);
