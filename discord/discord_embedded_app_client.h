@@ -2,8 +2,8 @@
 /*  discord_embedded_app_client.h                                         */
 /**************************************************************************/
 /*                         This file is part of:                          */
-/*                             GODOT ENGINE                               */
-/*                        https://godotengine.org                         */
+/*                             BLAZIUM ENGINE                             */
+/*                        https://http://blazium.app                      */
 /**************************************************************************/
 /* Copyright (c) 2024-present Blazium Engine contributors.                */
 /* Copyright (c) 2024 Dragos Daian, Randolph William Aarseth II.          */
@@ -66,6 +66,7 @@ class DiscordEmbeddedAppClient : public ThirdPartyClient {
 
 	Ref<JavaScriptObject> callback;
 	Ref<DiscordEmbeddedAppResponse> ready_response;
+	Ref<JavaScriptObject> window;
 
 	void _handle_message(Variant p_event);
 	void _handle_dispatch(Dictionary p_data);
