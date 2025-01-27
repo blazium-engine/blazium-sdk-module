@@ -231,7 +231,6 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 		return;
 	}
 	window->call("addEventListener", "message", callback);
-	//singleton->eval("window.addEventListener('message', function(e) {console.log(e)})", true);
 
 	// update params
 	String query_parts_string = singleton->eval("window.location.search", true);

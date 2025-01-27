@@ -88,6 +88,7 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 
 void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
+		Engine::get_singleton()->remove_singleton("JWT");
 		memdelete(jwt_singleton_global);
 	}
 }
