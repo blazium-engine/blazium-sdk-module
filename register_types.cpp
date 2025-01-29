@@ -43,8 +43,10 @@
 #include "discord/discord_embedded_app_client.h"
 #include "discord/discord_embedded_app_response.h"
 #include "jwt.h"
+#include "env.h"
 
 static JWT *jwt_singleton_global = nullptr;
+static ENV *env_singleton_global = nullptr;
 
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
@@ -52,6 +54,10 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		jwt_singleton_global = memnew(JWT);
 		GDREGISTER_CLASS(JWT);
 		Engine::get_singleton()->add_singleton(Engine::Singleton("JWT", JWT::get_singleton()));
+		// ENV singleton
+		env_singleton_global = memnew(ENV);
+		GDREGISTER_CLASS(ENV);
+		Engine::get_singleton()->add_singleton(Engine::Singleton("ENV", ENV::get_singleton()));
 	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
 		// Blazium clients
@@ -89,6 +95,8 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
 		Engine::get_singleton()->remove_singleton("JWT");
+		Engine::get_singleton()->remove_singleton("ENV");
 		memdelete(jwt_singleton_global);
+		memdelete(env_singleton_global);
 	}
 }
