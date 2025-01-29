@@ -44,15 +44,14 @@ void ENV::_bind_methods() {
     ClassDB::bind_method(D_METHOD("populate", "env", "override"), &ENV::populate, DEFVAL(false));
     ClassDB::bind_method(D_METHOD("refresh", "override"), &ENV::refresh, DEFVAL(false));
     ClassDB::bind_method(D_METHOD("clear"), &ENV::clear);
-    ClassDB::bind_method(D_METHOD("get", "key"), &ENV::get);
-    ClassDB::bind_method(D_METHOD("set", "key", "value"), &ENV::set);
-    ClassDB::bind_method(D_METHOD("has", "key"), &ENV::has);
+    ClassDB::bind_method(D_METHOD("get_env"), &ENV::get_env);
+    ClassDB::bind_method(D_METHOD("set_env", "dict"), &ENV::set_env);
 
     ClassDB::bind_method(D_METHOD("get_debug"), &ENV::get_debug);
     ClassDB::bind_method(D_METHOD("set_debug", "debug"), &ENV::set_debug);
 
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "debug"), "set_debug", "get_debug");
-    ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "env"), "set", "get");
+    ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "env"), "set_env", "get_env");
 
     ADD_SIGNAL(MethodInfo("file_loaded", PropertyInfo(Variant::STRING, "file"), PropertyInfo(Variant::DICTIONARY, "env")));
     ADD_SIGNAL(MethodInfo("cleared"));
@@ -64,12 +63,17 @@ void ENV::clear() {
     env_vars.clear();
     emit_signal("cleared");
 }
-Variant ENV::get(const String &p_key) { return env_vars[p_key]; }
-void ENV::set(const String &p_key, const Variant &p_value) {
-    env_vars[p_key] = p_value;
-    emit_signal("updated", p_key, p_value);
+Dictionary ENV::get_env() { return env_vars; }
+void ENV::set_env(const Dictionary &p_env) {
+    // Check for what was updated
+    for (int i = 0; i < p_env.keys().size(); i++) {
+        String key = p_env.keys()[i];
+        if (env_vars.has(key) && env_vars[key] != p_env[key]) {
+            emit_signal("updated", key, p_env[key]);
+        }
+    }
+    env_vars = p_env;
 }
-bool ENV::has(const String &p_key) { return env_vars.has(p_key); }
 
 Dictionary ENV::config(const String &p_file, bool override) {
     Ref<FileAccess> file = FileAccess::open(p_file, FileAccess::READ);
