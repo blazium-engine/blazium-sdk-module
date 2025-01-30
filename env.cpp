@@ -39,7 +39,7 @@ ENV *ENV::get_singleton() {
 	return env_singleton;
 }
 void ENV::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("config", "file", "encoding", "override"), &ENV::config, DEFVAL("UTF8"), DEFVAL(false));
+    ClassDB::bind_method(D_METHOD("config", "file", "override"), &ENV::config, DEFVAL(false));
     ClassDB::bind_method(D_METHOD("parse", "data"), &ENV::parse);
     ClassDB::bind_method(D_METHOD("populate", "env", "override"), &ENV::populate, DEFVAL(false));
     ClassDB::bind_method(D_METHOD("refresh", "override"), &ENV::refresh, DEFVAL(false));
@@ -75,17 +75,36 @@ void ENV::set_env(const Dictionary &p_env) {
     env_vars = p_env;
 }
 
-Dictionary ENV::config(const String &p_file, bool override) {
-    Ref<FileAccess> file = FileAccess::open(p_file, FileAccess::READ);
-    Dictionary env = populate(parse(file->get_as_text()), override);
-    emit_signal("file_loaded", p_file, env);
-    return env;
+void ENV::print_debug(String debug_text) {
+    if (!debug) {
+        return;
+    }
+    print_line("[ENV] " + debug_text);
 }
 
+Dictionary ENV::config(const String &p_file, bool override) {
+    print_debug("Loading .env file: " + p_file);
+    Ref<FileAccess> file = FileAccess::open(p_file, FileAccess::READ);
+    
+    if (!file.is_valid()) {
+        print_debug("Failed to open .env file: " + p_file);
+        return Dictionary();
+    }
+
+    Dictionary env = populate(parse(file->get_as_text()), override);
+    emit_signal("file_loaded", p_file, env);
+    print_debug("Loaded environment variables from: " + p_file);
+    
+    return env;
+}
 
 Dictionary ENV::parse(const String &p_data) {
     Dictionary env;
     Vector<String> lines = p_data.split("\n");
+    
+    String current_key;
+    String current_value;
+    bool multi_line = false;
 
     for (int i = 0; i < lines.size(); i++) {
         String line = lines[i].strip_edges();
@@ -95,10 +114,23 @@ Dictionary ENV::parse(const String &p_data) {
             continue;
         }
 
-        // Find the first = sign to split key/value
+        // Detect multi-line values
+        if (multi_line) {
+            if (line.ends_with("\"") || line.ends_with("'")) {
+                current_value += "\n" + line.substr(0, line.length() - 1);
+                env[current_key] = current_value;
+                multi_line = false;
+                print_debug("Multi-line env [" + current_key + "] = " + current_value);
+            } else {
+                current_value += "\n" + line;
+            }
+            continue;
+        }
+
+        // Find the first `=` sign to split key/value
         int eq_pos = line.find("=");
         if (eq_pos == -1) {
-            continue; // Invalid line (no =)
+            continue; // Invalid line (no `=`)
         }
 
         String key = line.substr(0, eq_pos).strip_edges();
@@ -111,8 +143,19 @@ Dictionary ENV::parse(const String &p_data) {
         }
 
         // Handle quoted values
+        if ((value.begins_with("\"") && !value.ends_with("\"")) ||
+            (value.begins_with("'") && !value.ends_with("'")) ||
+            (value.begins_with("`") && !value.ends_with("`"))) {
+            // Start multi-line mode
+            current_key = key;
+            current_value = value.substr(1); // Remove starting quote
+            multi_line = true;
+            continue;
+        }
+
         if ((value.begins_with("\"") && value.ends_with("\"")) ||
-            (value.begins_with("'") && value.ends_with("'"))) {
+            (value.begins_with("'") && value.ends_with("'")) ||
+            (value.begins_with("`") && value.ends_with("`"))) {
             value = value.substr(1, value.length() - 2);
         }
 
@@ -123,6 +166,7 @@ Dictionary ENV::parse(const String &p_data) {
 
         // Store the key-value pair
         env[key] = value;
+        print_debug("Parsed env [" + key + "] = " + value);
     }
 
     return env;
@@ -133,11 +177,16 @@ Dictionary ENV::populate(const Dictionary &p_env, bool override) {
     for (int i = 0; i < p_env.keys().size(); i++) {
         String key = p_env.keys()[i];
         Variant value = p_env[p_env.keys()[i]];
-        if (env_vars.has(key) && override) {
+
+        if (env_vars.has(key)) {
+            if (override) {
+                env_vars[key] = value;
+                print_debug("Updated env [" + key + "] = " + value.to_json_string());
+                emit_signal("updated", key, value);
+            }
+        } else {
             env_vars[key] = value;
-            emit_signal("updated", key, value);
-        } else if (env_vars.has(key) == false) {
-            env_vars[key] = value;
+            print_debug("Added new env [" + key + "] = " + value.to_json_string());
             emit_signal("updated", key, value);
         }
     }

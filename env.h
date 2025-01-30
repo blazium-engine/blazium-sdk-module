@@ -57,6 +57,8 @@ public:
     bool get_debug() const { return debug; }
     void set_debug(bool p_debug) { debug = p_debug; }
 
+	void print_debug(String text);
+
 	ENV();
 	~ENV();
 };
