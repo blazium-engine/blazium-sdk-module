@@ -137,7 +137,7 @@ Dictionary ENV::parse(const String &p_data) {
         String value = line.substr(eq_pos + 1).strip_edges();
 
         // Remove inline comments (# after a value)
-        int comment_pos = value.find("#");
+        int comment_pos = value.find(" #");
         if (comment_pos != -1) {
             value = value.substr(0, comment_pos).strip_edges();
         }
