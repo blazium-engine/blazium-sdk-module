@@ -63,8 +63,17 @@ void ENV::clear() {
     env_vars.clear();
     emit_signal("cleared");
 }
-Dictionary ENV::get_env() { return env_vars; }
-void ENV::set_env(const Dictionary &p_env) {
+
+    void set_env(const String &p_key, const Variant &p_value);
+	bool has_env(const String &p_key);
+
+Variant ENV::get_env(const String &p_key) { 
+    if (env_vars.has(p_key)) {
+        return env_vars[p_key];
+    }
+    return OS::get_singleton()->get_environment(p_key);
+}
+void ENV::set_env(const String &p_key, const Variant &p_value) {
     // Check for what was updated
     for (int i = 0; i < p_env.keys().size(); i++) {
         String key = p_env.keys()[i];

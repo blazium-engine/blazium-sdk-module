@@ -51,8 +51,9 @@ public:
 	Dictionary populate(const Dictionary &p_env, bool override = false);
 	Dictionary refresh(bool override = false);
 	void clear();
-    Dictionary get_env();
-    void set_env(const Dictionary &p_env);
+    Variant get_env(const String &p_key);
+    void set_env(const String &p_key, const Variant &p_value);
+	bool has_env(const String &p_key);
 
     bool get_debug() const { return debug; }
     void set_debug(bool p_debug) { debug = p_debug; }
