@@ -111,7 +111,7 @@ void LobbyClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("del_peers_data", "keys", "is_private"), &LobbyClient::del_peers_data, DEFVAL(false));
 
 	// Register signals
-	ADD_SIGNAL(MethodInfo("connected_to_lobby", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::STRING, "reconnection_token")));
+	ADD_SIGNAL(MethodInfo("connected_to_server", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::STRING, "reconnection_token")));
 	ADD_SIGNAL(MethodInfo("disconnected_from_lobby", PropertyInfo(Variant::STRING, "reason")));
 	ADD_SIGNAL(MethodInfo("received_peer_user_data", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::OBJECT, "data")));
 	ADD_SIGNAL(MethodInfo("lobby_notified", PropertyInfo(Variant::OBJECT, "data"), PropertyInfo(Variant::OBJECT, "from_peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
@@ -877,7 +877,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 		peer->set_dict(peer_dict);
 		lobby->set_id(peer_dict.get("lobby_id", ""));
 		reconnection_token = peer_dict.get("reconnection_token", "");
-		emit_signal("connected_to_lobby", peer, reconnection_token);
+		emit_signal("connected_to_server", peer, reconnection_token);
 	} else if (command == "lobby_created") {
 		lobbies.clear();
 		emit_signal("lobby_created", lobby, peers);

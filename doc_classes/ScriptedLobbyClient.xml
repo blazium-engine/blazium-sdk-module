@@ -47,7 +47,7 @@
 			<return type="LobbyResponse" />
 			<description>
 				Connect to a Blazium Lobby Server using the [member game_id] and [member server_url].
-				Generates [signal connected_to_lobby] signal if successful.
+				Generates [signal connected_to_server] signal if successful.
 			</description>
 		</method>
 		<method name="create_lobby">
@@ -198,7 +198,7 @@
 		</member>
 	</members>
 	<signals>
-		<signal name="connected_to_lobby">
+		<signal name="connected_to_server">
 			<param index="0" name="peer" type="LobbyPeer" />
 			<param index="1" name="reconnection_token" type="String" />
 			<description>
