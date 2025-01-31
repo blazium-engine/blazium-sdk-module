@@ -100,7 +100,7 @@ void ScriptedLobbyClient::_bind_methods() {
 
 	// Register signals
 	ADD_SIGNAL(MethodInfo("connected_to_server", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::STRING, "reconnection_token")));
-	ADD_SIGNAL(MethodInfo("disconnected_from_lobby", PropertyInfo(Variant::STRING, "reason")));
+	ADD_SIGNAL(MethodInfo("disconnected_from_server", PropertyInfo(Variant::STRING, "reason")));
 	ADD_SIGNAL(MethodInfo("received_peer_user_data", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::OBJECT, "data")));
 	ADD_SIGNAL(MethodInfo("lobby_notified", PropertyInfo(Variant::OBJECT, "data")));
 	ADD_SIGNAL(MethodInfo("received_peer_data", PropertyInfo(Variant::OBJECT, "data"), PropertyInfo(Variant::OBJECT, "to_peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::BOOL, "is_private")));
@@ -574,7 +574,7 @@ void ScriptedLobbyClient::_notification(int p_what) {
 				}
 				_clear_lobby();
 				emit_signal("log_updated", "error", _socket->get_close_reason());
-				emit_signal("disconnected_from_lobby", _socket->get_close_reason());
+				emit_signal("disconnected_from_server", _socket->get_close_reason());
 				set_process_internal(false);
 				connected = false;
 			}
