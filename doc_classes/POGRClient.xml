@@ -60,7 +60,7 @@
 
 				[codeblocks]
 				[gdscript]
-				var res :POGRResult = await event("combat", "enemy_killed", "attack", "completed", "user-event", {"player_id": "my_id"}, {"enemy": "orc"}).finished
+				var res :POGRResult = await event("combat", "enemy_killed", "attack", "completed", "user-event").finished
 				if res.has_error():
 					print(res.error)
 				[/gdscript]
@@ -163,6 +163,7 @@
 			<param index="0" name="command" type="String" />
 			<param index="1" name="logs" type="String" />
 			<description>
+				Signals a log from a command.
 			</description>
 		</signal>
 	</signals>
