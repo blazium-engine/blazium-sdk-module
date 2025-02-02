@@ -4,7 +4,7 @@
 		Node for connecting to the Discord Embedded App service.
 	</brief_description>
 	<description>
-		Implementation based on the official Discord Embedded App SDK for JS. Official documentation for this service on [url=https://discord.com/developers/docs/rich-presence/using-with-the-embedded-app-sdk]discord.com/developers/docs/rich-presence/using-with-the-embedded-app-sdk[/url].
+		Implementation based on the official Discord Embedded App SDK for JS. Official documentation for this service on [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk]discord.com/developers/docs/developer-tools/embedded-app-sdk[/url].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -13,7 +13,17 @@
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="access_token" type="String" />
 			<description>
-				Authenticate an existing client with your app.
+				Authenticate an existing client with your app. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#authenticate]discord.com/developers/docs/developer-tools/embedded-app-sdk#authenticate[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await authenticate("ACCESS_TOKEN").finished
+				if res.has_error():
+				    print(res.error)
+				else:
+					print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -24,7 +34,17 @@
 			<param index="2" name="prompt" type="String" />
 			<param index="3" name="scope" type="Array" />
 			<description>
-				Authorize a new client with your app.
+				Authorize a new client with your app. Needs [member client_id] to be set.
+				Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#authorize]discord.com/developers/docs/developer-tools/embedded-app-sdk#authorize[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await authorize("code", "", "none", ["identity", "guilds"]).finished
+				if res.has_error():
+				    print(res.error)
+				else:
+					print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -33,7 +53,17 @@
 			<param index="0" name="level" type="String" />
 			<param index="1" name="message" type="String" />
 			<description>
-				Forward logs to your own logger.
+				Forward logs to your own logger. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#capturelog]discord.com/developers/docs/developer-tools/embedded-app-sdk#capturelog[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await capture_log("log", "This is my log message!").finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -42,13 +72,33 @@
 			<param index="0" name="code" type="int" />
 			<param index="1" name="message" type="String" />
 			<description>
-				Close an Embedded App.
+				Close an Embedded App. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#close]discord.com/developers/docs/developer-tools/embedded-app-sdk#close[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await close(1000, "You exited app.").finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="encourage_hardware_acceleration">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Presents a modal dialog to allow enabling of hardware acceleration.
+				Presents a modal dialog to allow enabling of hardware acceleration. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#encouragehardwareacceleration]discord.com/developers/docs/developer-tools/embedded-app-sdk#encouragehardwareacceleration[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await encourage_hardware_acceleration().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -56,49 +106,120 @@
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="channel_id" type="String" />
 			<description>
-				Returns information about the channel, per the channel_id.
+				Returns information about the channel, per the channel_id. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#getchannel]discord.com/developers/docs/developer-tools/embedded-app-sdk#getchannel[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await get_channel("channel_id").finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_channel_permissions">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns permissions for the current user in the currently connected channel.
+				Returns permissions for the current user in the currently connected channel. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#getchannelpermissions]discord.com/developers/docs/developer-tools/embedded-app-sdk#getchannelpermissions[/url]
+				[codeblocks]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await get_channel_permissions().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_entitlements">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns a list of entitlements for the current user.
+				Returns a list of entitlements for the current user. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#getentitlements]discord.com/developers/docs/developer-tools/embedded-app-sdk#getentitlements[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await get_entitlements().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_instance_connected_participants">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns all participants connected to the instance.
+				Returns all participants connected to the instance. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#getinstanceconnectedparticipants]discord.com/developers/docs/developer-tools/embedded-app-sdk#getinstanceconnectedparticipants[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await get_instance_connected_participants().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_platform_behaviours">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns information about supported platform behaviors.
+				Returns information about supported platform behaviors. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#getplatformbehaviors]discord.com/developers/docs/developer-tools/embedded-app-sdk#getplatformbehaviors[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await get_platform_behaviours().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="get_skus">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns a list of your app's SKUs.
+				Returns a list of your app's SKUs. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#getskus]discord.com/developers/docs/developer-tools/embedded-app-sdk#getskus[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await get_skus().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="initiate_image_upload">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Presents the file upload flow in the Discord client.
+				Presents the file upload flow in the Discord client. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#initiateimageupload]discord.com/developers/docs/developer-tools/embedded-app-sdk#initiateimageupload[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await initiate_image_upload().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -106,12 +227,28 @@
 			<return type="bool" />
 			<description>
 				Returns whether or not the current environment is Discord environment.
+				[codeblocks]
+				[gdscript]
+				if is_discord_environment():
+				    print("This is discord environment")
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="is_ready">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
 				Returns whether or not the client is ready.
+				Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#ready]discord.com/developers/docs/developer-tools/embedded-app-sdk#ready[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await is_ready().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -119,14 +256,34 @@
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="url" type="String" />
 			<description>
-				Allows for opening an external link from within the Discord client.
+				Allows for opening an external link from within the Discord client. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#openexternallink]discord.com/developers/docs/developer-tools/embedded-app-sdk#openexternallink[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await open_external_link("url").finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="open_invite_dialog">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Presents a modal dialog with Channel Invite UI without requiring additional OAuth scopes.
+				Presents a modal dialog with Channel Invite UI without requiring additional OAuth scopes. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#openinvitedialog]discord.com/developers/docs/developer-tools/embedded-app-sdk#openinvitedialog[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await open_invite_dialog().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -134,7 +291,17 @@
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="media_url" type="String" />
 			<description>
-				Presents a modal dialog to share media to a channel or DM.
+				Presents a modal dialog to share media to a channel or DM. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#opensharemomentdialog]discord.com/developers/docs/developer-tools/embedded-app-sdk#opensharemomentdialog[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await open_share_moment_dialog().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -142,7 +309,17 @@
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="activity" type="Dictionary" />
 			<description>
-				Modifies how your activity's rich presence is displayed in the Discord client.
+				Modifies how your activity's rich presence is displayed in the Discord client. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#setactivity]discord.com/developers/docs/developer-tools/embedded-app-sdk#setactivity[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await set_activity({"type": 0, "details": "Details", "state": "Playing"}).finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -150,7 +327,17 @@
 			<return type="DiscordEmbeddedAppResponse" />
 			<param index="0" name="use_interactive_pip" type="bool" />
 			<description>
-				Set whether or not the PIP (picture-in-picture) is interactive.
+				Set whether or not the PIP (picture-in-picture) is interactive. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#setconfig]discord.com/developers/docs/developer-tools/embedded-app-sdk#setconfig[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await set_config(true).finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -160,7 +347,17 @@
 			<param index="1" name="picture_in_picture_lock_state" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
 			<param index="2" name="grid_lock_state" type="int" enum="DiscordEmbeddedAppClient.DiscordEmbeddedAppOrientationLockState" />
 			<description>
-				Set options for orientation and picture-in-picture (PIP) modes.
+				Set options for orientation and picture-in-picture (PIP) modes. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#setorientationlockstate]discord.com/developers/docs/developer-tools/embedded-app-sdk#setorientationlockstate[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await set_orientation_lock_state(DiscordEmbeddedAppClient.DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNLOCKED, DiscordEmbeddedAppClient.DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNLOCKED, DiscordEmbeddedAppClient.DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNLOCKED).finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
@@ -169,20 +366,45 @@
 			<param index="0" name="sku_id" type="String" />
 			<param index="1" name="pid" type="String" />
 			<description>
-				Launches the purchase flow for a specific SKU, per the sku_id.
+				Launches the purchase flow for a specific SKU, per the sku_id. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#startpurchase]discord.com/developers/docs/developer-tools/embedded-app-sdk#startpurchase[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await start_purchase("sku_id", "pid").finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="subscribe_to_all_events">
 			<return type="void" />
 			<description>
-				Subscribes to all events. Needs to be done after [method authenticate].
+				Subscribes to all events. Needs to be done after [method authenticate]. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				[codeblocks]
+				[gdscript]
+				subscribe_to_all_events()
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="user_settings_get_locale">
 			<return type="DiscordEmbeddedAppResponse" />
 			<description>
-				Returns the current user's locale.
+				Returns the current user's locale. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
+				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#usersettingsgetlocale]discord.com/developers/docs/developer-tools/embedded-app-sdk#usersettingsgetlocale[/url]
+				[codeblocks]
+				[gdscript]
+				var res :DiscordEmbeddedAppResult = await user_settings_get_locale().finished
+				if res.has_error():
+				    print(res.error)
+				else:
+				    print(res.data)
+				[/gdscript]
+				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>

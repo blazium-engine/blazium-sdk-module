@@ -18,40 +18,53 @@
 			<return type="POGRResponse" />
 			<param index="0" name="data" type="Dictionary" />
 			<description>
-				Send unstructured data.
+				Send unstructured data. Call [method init] first.
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
+
+				[codeblocks]
+				[gdscript]
+				var res :POGRResult = await data({"custom_data": "my_data"}).finished
+				if res.has_error():
+				    print(res.error)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="end">
 			<return type="POGRResponse" />
 			<description>
-				Send end request.
+				Send end request. Call [method init] first.
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
+
+				[codeblocks]
+				[gdscript]
+				var res :POGRResult = await end().finished
+				if res.has_error():
+				    print(res.error)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="event">
 			<return type="POGRResponse" />
 			<param index="0" name="event_name" type="String" />
-			<param index="1" name="event_data" type="Dictionary" />
-			<param index="2" name="event_flag" type="String" />
-			<param index="3" name="event_key" type="String" />
-			<param index="4" name="event_type" type="String" />
-			<param index="5" name="event_sub_type" type="String" />
+			<param index="1" name="sub_event" type="String" />
+			<param index="2" name="event_key" type="String" />
+			<param index="3" name="flag" type="String" />
+			<param index="4" name="type" type="String" default="&quot;user-event&quot;" />
+			<param index="5" name="tags" type="Dictionary" default="{}" />
+			<param index="6" name="data" type="Dictionary" default="{}" />
 			<description>
-				Send event with unstructured data.
+				Send event with unstructured data. Call [method init] first.
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
-			</description>
-		</method>
-		<method name="get_build_id" qualifiers="const">
-			<return type="String" />
-			<description>
-				Get the build id.
-			</description>
-		</method>
-		<method name="get_client_id" qualifiers="const">
-			<return type="String" />
-			<description>
-				Get the client id.
+
+				[codeblocks]
+				[gdscript]
+				var res :POGRResult = await event("combat", "enemy_killed", "attack", "completed", "user-event", {"player_id": "my_id"}, {"enemy": "orc"}).finished
+				if res.has_error():
+					print(res.error)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="get_pogr_url" qualifiers="const">
@@ -69,33 +82,57 @@
 		<method name="init">
 			<return type="POGRResponse" />
 			<description>
-				Send init request. Needs to be called first.
+				Send init request. Needs to be called first. Needs to have set before [member client_id] and [member build_id].
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
+
+				[codeblocks]
+				[gdscript]
+				var res :POGRResult = await init().finished
+				if res.has_error():
+				    print(res.error)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="logs">
 			<return type="POGRResponse" />
-			<param index="0" name="tags" type="Dictionary" />
-			<param index="1" name="data" type="Dictionary" />
-			<param index="2" name="environment" type="String" />
-			<param index="3" name="log" type="String" />
-			<param index="4" name="service" type="String" />
-			<param index="5" name="severity" type="String" />
-			<param index="6" name="type" type="String" />
+			<param index="0" name="log" type="String" />
+			<param index="1" name="severity" type="String" default="&quot;info&quot;" />
+			<param index="2" name="environment" type="String" default="&quot;dev&quot;" />
+			<param index="3" name="service" type="String" default="&quot;gameclient&quot;" />
+			<param index="4" name="type" type="String" default="&quot;user-event&quot;" />
+			<param index="5" name="tags" type="Dictionary" default="{}" />
+			<param index="6" name="data" type="Dictionary" default="{}" />
 			<description>
-				Add logs to the analytics.
+				Add logs to the analytics. Call [method init] first.
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
+
+				[codeblocks]
+				[gdscript]
+				var res :POGRResult = await logs("logs 123").finished
+				if res.has_error():
+				    print(res.error)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="metrics">
 			<return type="POGRResponse" />
-			<param index="0" name="tags" type="Dictionary" />
-			<param index="1" name="environment" type="String" />
-			<param index="2" name="metrics" type="Dictionary" />
-			<param index="3" name="service" type="String" />
+			<param index="0" name="metrics" type="Dictionary" />
+			<param index="1" name="environment" type="String" default="&quot;dev&quot;" />
+			<param index="2" name="service" type="String" default="&quot;gameclient&quot;" />
+			<param index="3" name="tags" type="Dictionary" default="{}" />
 			<description>
-				Add metrics to the analytics.
+				Add metrics to the analytics. Call [method init] first.
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
+
+				[codeblocks]
+				[gdscript]
+				var res :POGRResult = await metrics({"FPS": Engine.get_frames_per_second()}).finished
+				if res.has_error():
+				    print(res.error)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 		<method name="monitor">
@@ -104,7 +141,29 @@
 			<description>
 				Send monitor request.
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
+
+				[codeblocks]
+				[gdscript]
+				var res :POGRResult = await monitor({"my_setting": "test"}).finished
+				if res.has_error():
+				    print(res.error)
+				[/gdscript]
+				[/codeblocks]
 			</description>
 		</method>
 	</methods>
+	<members>
+		<member name="build_id" type="String" setter="set_build_id" getter="get_build_id" default="&quot;&quot;">
+		</member>
+		<member name="client_id" type="String" setter="set_client_id" getter="get_client_id" default="&quot;&quot;">
+		</member>
+	</members>
+	<signals>
+		<signal name="log_updated">
+			<param index="0" name="command" type="String" />
+			<param index="1" name="logs" type="String" />
+			<description>
+			</description>
+		</signal>
+	</signals>
 </class>

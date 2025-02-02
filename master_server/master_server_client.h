@@ -227,6 +227,10 @@ public:
 			request->connect("request_completed", callable_mp(this, &MasterServerListResponse::_on_request_completed));
 			request->request(p_url, p_headers, HTTPClient::METHOD_GET, String(""));
 		}
+
+		~MasterServerListResponse() {
+			request->queue_free();
+		}
 	};
 
 	class MasterServerResult : public RefCounted {
@@ -304,6 +308,10 @@ public:
 
 		MasterServerResponse() {
 			game_info.instantiate();
+		}
+
+		~MasterServerResponse() {
+			request->queue_free();
 		}
 	};
 

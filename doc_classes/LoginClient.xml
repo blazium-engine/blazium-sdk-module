@@ -28,6 +28,7 @@
 			<return type="void" />
 			<description>
 				Disconnect from the server.
+				Needs [method connect_to_server] to be called first.
 				Generates [signal disconnected_from_server] when disconnected.
 			</description>
 		</method>
@@ -36,6 +37,7 @@
 			<param index="0" name="login_type" type="String" />
 			<description>
 				Request login info using the login type specified.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LoginResponse] object that has a [signal LoginResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>

@@ -17,6 +17,22 @@
 		- [member lobby]: The lobby. Reflects changes to the lobby.
 		- [member host_data]: The current lobby private data. Only works if you are host.
 		- [member peer_data]: The current peer private data.
+		[codeblocks]
+		[gdscript]
+		func _ready():
+		    disconnected_from_server.connect(_disconnected_from_server)
+		    var res : LobbyResult = await connect_to_server().finished
+		    if res.has_error():
+		        print(res.error)
+		    var res_view: ViewLobbyResult =await create_lobby("Test lobby", false).finished
+		    if res_view.has_error():
+		        print(res_view.error)
+		    else:
+		        print(res_view.lobby.lobby_name)
+		func _disconnected_from_server(reason: String):
+		    print("Disconnected from server: " + reason)
+		[/gdscript]
+		[/codeblocks]
 	</description>
 	<tutorials>
 		<link title="Lobby SDK Demo">https://github.com/blazium-engine/blazium-lobby-sdk</link>
@@ -28,6 +44,7 @@
 			<param index="1" name="is_private" type="bool" default="false" />
 			<description>
 				Add data to the lobby. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_lobby_data].
 			</description>
@@ -37,6 +54,7 @@
 			<param index="0" name="tags" type="Dictionary" />
 			<description>
 				Add tags to the lobby. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_tagged].
 			</description>
@@ -48,6 +66,7 @@
 			<param index="2" name="is_private" type="bool" default="false" />
 			<description>
 				Add data to a peer. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_peer_data].
 			</description>
@@ -57,6 +76,7 @@
 			<param index="0" name="data" type="Dictionary" />
 			<description>
 				Add user data to your own peer.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_peer_user_data].
 			</description>
@@ -67,6 +87,7 @@
 			<param index="1" name="is_private" type="bool" default="false" />
 			<description>
 				Add data to all peers. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_peer_data].
 			</description>
@@ -88,6 +109,7 @@
 			<description>
 				Create a lobby and become host. If you are already in a lobby, you cannot create one. You need to leave first.
 				The new lobby can have a title, tags, max players and password. 0 max players means unlimited.
+				Needs [method connect_to_server] to be called first.
 				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_created] signal.
 			</description>
@@ -98,6 +120,7 @@
 			<param index="1" name="is_private" type="bool" default="false" />
 			<description>
 				Delete one or more keys from the lobby data. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_lobby_data].
 			</description>
@@ -107,6 +130,7 @@
 			<param index="0" name="keys" type="String[]" />
 			<description>
 				Delete one or more keys from the lobby tags. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_tagged].
 			</description>
@@ -118,6 +142,7 @@
 			<param index="2" name="is_private" type="bool" default="false" />
 			<description>
 				Delete one or more keys from the peer data. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_peer_data].
 			</description>
@@ -127,6 +152,7 @@
 			<param index="0" name="keys" type="String[]" />
 			<description>
 				Delete one or more keys from the peers user data.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_peer_user_data].
 			</description>
@@ -137,6 +163,7 @@
 			<param index="1" name="is_private" type="bool" default="false" />
 			<description>
 				Delete one or more keys from the peers data. Only works if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal received_peer_data].
 			</description>
@@ -145,6 +172,7 @@
 			<return type="LobbyResponse" />
 			<description>
 				Disconnect from the lobby server.
+				Needs [method connect_to_server] to be called first.
 				Generates [signal disconnected_from_server] signal.
 			</description>
 		</method>
@@ -161,6 +189,7 @@
 			<description>
 				Join a lobby. If you are already in a lobby, you cannot join another one. You need to leave first.
 				If the lobby you want to join is password protected, you need to provide the password.
+				Needs [method connect_to_server] to be called first.
 				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_joined].
 			</description>
@@ -170,6 +199,7 @@
 			<param index="0" name="peer_id" type="String" />
 			<description>
 				Kick a peer. You need to be host to do so.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal peer_left] signal with kicked set to true.
 			</description>
@@ -178,6 +208,7 @@
 			<return type="LobbyResponse" />
 			<description>
 				Leave a lobby. You need to be in a lobby to leave one.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_left].
 			</description>
@@ -186,6 +217,7 @@
 			<return type="LobbyResponse" />
 			<description>
 				Lists all lobbies. Lobbies that are sealed won't show in the list, except if you disconnected and trying to reconnect to a lobby.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobbies_listed].
 			</description>
@@ -195,6 +227,7 @@
 			<param index="0" name="data" type="Variant" />
 			<description>
 				Send a notification either to the host, or if you are host send data to all peers.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_notified] signal.
 			</description>
@@ -205,6 +238,7 @@
 			<param index="1" name="target_peer" type="String" />
 			<description>
 				Send a notification to a peer, works only if you are host.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_notified] signal.
 			</description>
@@ -214,6 +248,7 @@
 			<param index="0" name="chat_message" type="String" />
 			<description>
 				Send a chat message. Only works if you are in a lobby.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal peer_messaged].
 			</description>
@@ -223,6 +258,7 @@
 			<param index="0" name="ready" type="bool" />
 			<description>
 				Ready up in the lobby. You need to be in a lobby and unready to run this.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal peer_ready].
 			</description>
@@ -232,6 +268,7 @@
 			<param index="0" name="seal" type="bool" />
 			<description>
 				Seals the lobby. You need to be the host to do this and the lobby needs to be unsealed.
+				Needs [method connect_to_server] to be called first.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_sealed].
 			</description>

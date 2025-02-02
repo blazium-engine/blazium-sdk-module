@@ -44,13 +44,13 @@ class POGRClient : public BlaziumClient {
 private:
 	String session_id;
 	String POGR_URL = "https://api.pogr.io/v1/intake";
-	String POGR_CLIENT = "Blazium";
-	String POGR_BUILD = EXTERNAL_VERSION_FULL_BUILD;
+	String pogr_client_id;
+	String pogr_build;
 
 	Vector<String> get_init_headers() {
 		Vector<String> headers;
-		headers.append("POGR_CLIENT: " + POGR_CLIENT);
-		headers.append("POGR_BUILD: " + POGR_BUILD);
+		headers.append("POGR_CLIENT: " + pogr_client_id);
+		headers.append("POGR_BUILD: " + pogr_build);
 		return headers;
 	}
 
@@ -65,15 +65,22 @@ protected:
 		ClassDB::bind_method(D_METHOD("init"), &POGRClient::init);
 		ClassDB::bind_method(D_METHOD("end"), &POGRClient::end);
 		ClassDB::bind_method(D_METHOD("data", "data"), &POGRClient::data);
-		ClassDB::bind_method(D_METHOD("event", "event_name", "event_data", "event_flag", "event_key", "event_type", "event_sub_type"), &POGRClient::event);
-		ClassDB::bind_method(D_METHOD("logs", "tags", "data", "environment", "log", "service", "severity", "type"), &POGRClient::logs);
-		ClassDB::bind_method(D_METHOD("metrics", "tags", "environment", "metrics", "service"), &POGRClient::metrics);
+		ClassDB::bind_method(D_METHOD("event", "event_name", "sub_event", "event_key", "flag", "type", "tags", "data"), &POGRClient::event, DEFVAL("user-event"), DEFVAL(Dictionary()), DEFVAL(Dictionary()));
+		ClassDB::bind_method(D_METHOD("logs", "log", "severity", "environment", "service", "type", "tags", "data"), &POGRClient::logs, DEFVAL("info"), DEFVAL("dev"), DEFVAL("gameclient"), DEFVAL("user-event"), DEFVAL(Dictionary()), DEFVAL(Dictionary()));
+		ClassDB::bind_method(D_METHOD("metrics", "metrics", "environment", "service", "tags"), &POGRClient::metrics, DEFVAL("dev"), DEFVAL("gameclient"), DEFVAL(Dictionary()));
 		ClassDB::bind_method(D_METHOD("monitor", "settings"), &POGRClient::monitor);
 
 		ClassDB::bind_method(D_METHOD("get_client_id"), &POGRClient::get_client_id);
+		ClassDB::bind_method(D_METHOD("set_client_id", "client_id"), &POGRClient::set_client_id);
 		ClassDB::bind_method(D_METHOD("get_build_id"), &POGRClient::get_build_id);
+		ClassDB::bind_method(D_METHOD("set_build_id", "build_id"), &POGRClient::set_build_id);
 		ClassDB::bind_method(D_METHOD("get_pogr_url"), &POGRClient::get_pogr_url);
 		ClassDB::bind_method(D_METHOD("get_session_id"), &POGRClient::get_session_id);
+
+		ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "set_client_id", "get_client_id");
+		ADD_PROPERTY(PropertyInfo(Variant::STRING, "build_id"), "set_build_id", "get_build_id");
+
+		ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
 	}
 
 public:
@@ -102,7 +109,7 @@ public:
 	class POGRResponse : public RefCounted {
 		GDCLASS(POGRResponse, RefCounted);
 		HTTPRequest *request;
-
+		POGRClient *client;
 	protected:
 		static void _bind_methods() {
 			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "POGRResult")));
@@ -115,11 +122,13 @@ public:
 			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
 			if (p_code != 200 || result_str == "") {
 				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
+				client->emit_signal(SNAME("log_updated"), "error", result_str);
 			} else {
 				if (result_str != "") {
 					Dictionary result_dict = JSON::parse_string(result_str);
 					if (!result_dict.get("success", false)) {
 						result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
+						client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
 					} else {
 						result->set_result(result_str);
 					}
@@ -129,9 +138,14 @@ public:
 		}
 		void post_request(String p_url, Vector<String> p_headers, Dictionary p_data, POGRClient *p_client) {
 			request = memnew(HTTPRequest);
+			client = p_client;
 			p_client->add_child(request);
 			request->connect("request_completed", callable_mp(this, &POGRResponse::_on_request_completed));
 			request->request(p_url, p_headers, HTTPClient::METHOD_POST, JSON::stringify(p_data));
+		}
+		POGRResponse() {}
+		~POGRResponse() {
+			request->queue_free();
 		}
 	};
 
@@ -168,7 +182,7 @@ public:
 		return response;
 	}
 
-	Ref<POGRResponse> event(String event_name, Dictionary event_data, String event_flag, String event_key, String event_type, String event_sub_type) {
+	Ref<POGRResponse> event(String event_name, String sub_event, String event_key, String event_flag, String event_type, Dictionary tags_data, Dictionary event_data) {
 		Ref<POGRResponse> response;
 		response.instantiate();
 		Dictionary data;
@@ -177,12 +191,13 @@ public:
 		data["event_flag"] = event_flag;
 		data["event_key"] = event_key;
 		data["event_type"] = event_type;
-		data["sub_event"] = event_sub_type;
-		response->post_request(POGR_URL + "/end", get_session_headers(), data, this);
+		data["sub_event"] = sub_event;
+		data["tags"] = tags_data;
+		response->post_request(POGR_URL + "/event", get_session_headers(), data, this);
 		return response;
 	}
 
-	Ref<POGRResponse> logs(Dictionary p_tags, Dictionary p_data, String p_environment, String p_log, String p_service, String p_severity, String p_type) {
+	Ref<POGRResponse> logs(String p_log, String p_severity, String p_environment, String p_service, String p_type, Dictionary p_tags, Dictionary p_data) {
 		Ref<POGRResponse> response;
 		response.instantiate();
 		Dictionary data;
@@ -197,7 +212,7 @@ public:
 		return response;
 	}
 
-	Ref<POGRResponse> metrics(Dictionary p_tags, String p_environment, Dictionary p_metrics, String p_service) {
+	Ref<POGRResponse> metrics(Dictionary p_metrics, String p_environment, String p_service, Dictionary p_tags) {
 		Ref<POGRResponse> response;
 		response.instantiate();
 		Dictionary data;
@@ -205,7 +220,7 @@ public:
 		data["environment"] = p_environment;
 		data["metrics"] = p_metrics;
 		data["service"] = p_service;
-		response->post_request(POGR_URL + "/logs", get_session_headers(), data, this);
+		response->post_request(POGR_URL + "/metrics", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -217,12 +232,14 @@ public:
 		data["cpu_usage"] = Performance::get_singleton()->get_monitor(Performance::Monitor::TIME_FPS);
 		data["dlls_loaded"] = Array();
 		data["memory_usage"] = OS::get_singleton()->get_static_memory_usage();
-		response->post_request(POGR_URL + "/logs", get_session_headers(), data, this);
+		response->post_request(POGR_URL + "/monitor", get_session_headers(), data, this);
 		return response;
 	}
 
-	String get_client_id() const { return POGR_CLIENT; }
-	String get_build_id() const { return POGR_BUILD; }
+	String get_client_id() const { return pogr_client_id; }
+	String get_build_id() const { return pogr_build; }
+	void set_client_id(String p_client_id) { pogr_client_id = p_client_id; }
+	void set_build_id(String p_build_id) { pogr_build = p_build_id; }
 	String get_pogr_url() const { return POGR_URL; }
 	String get_session_id() {
 		return session_id;
