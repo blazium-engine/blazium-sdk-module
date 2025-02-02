@@ -137,13 +137,14 @@ public:
 			emit_signal(SNAME("finished"), result);
 		}
 		void post_request(String p_url, Vector<String> p_headers, Dictionary p_data, POGRClient *p_client) {
-			request = memnew(HTTPRequest);
 			client = p_client;
 			p_client->add_child(request);
 			request->connect("request_completed", callable_mp(this, &POGRResponse::_on_request_completed));
 			request->request(p_url, p_headers, HTTPClient::METHOD_POST, JSON::stringify(p_data));
 		}
-		POGRResponse() {}
+		POGRResponse() {
+			request = memnew(HTTPRequest);
+		}
 		~POGRResponse() {
 			request->queue_free();
 		}

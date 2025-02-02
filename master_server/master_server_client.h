@@ -222,10 +222,13 @@ public:
 			emit_signal(SNAME("finished"), result);
 		}
 		void call_request(String p_url, Vector<String> p_headers, MasterServerClient *p_client) {
-			request = memnew(HTTPRequest);
 			p_client->add_child(request);
 			request->connect("request_completed", callable_mp(this, &MasterServerListResponse::_on_request_completed));
 			request->request(p_url, p_headers, HTTPClient::METHOD_GET, String(""));
+		}
+
+		MasterServerListResponse() {
+			request = memnew(HTTPRequest);
 		}
 
 		~MasterServerListResponse() {
