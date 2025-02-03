@@ -4,6 +4,7 @@ Import("env")
 Import("env_modules")
 
 env_blazium_sdk = env_modules.Clone()
+env_blazium_sdk.add_source_files(env.modules_sources, "csv/*.cpp")
 env_blazium_sdk.add_source_files(env.modules_sources, "discord/*.cpp")
 env_blazium_sdk.add_source_files(env.modules_sources, "lobby/*.cpp")
 env_blazium_sdk.add_source_files(env.modules_sources, "login/*.cpp")

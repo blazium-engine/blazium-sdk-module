@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_importer_csv.cpp                                             */
+/*  resource_loader_csv.cpp                                               */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,78 +28,17 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "resource_importer_csv_translation.h"
+#include "resource_loader_csv.h"
+#include "resource_csv.h"
 
-#include "core/io/file_access.h"
-#include "core/io/resource_saver.h"
-
-void CSV::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_rows", "rows"), &CSV::set_rows);
-	ClassDB::bind_method(D_METHOD("get_rows"), &CSV::get_rows);
-
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "rows", PROPERTY_HINT_ARRAY_TYPE, "Dictionary"), "set_rows", "get_rows");
-}
-
-String ResourceImporterCSV::get_importer_name() const {
-	return "csv";
-}
-
-String ResourceImporterCSV::get_visible_name() const {
-	return "CSV";
-}
-
-void ResourceImporterCSV::get_recognized_extensions(List<String> *p_extensions) const {
-	p_extensions->push_back("csv");
-}
-
-String ResourceImporterCSV::get_save_extension() const {
-	return ""; //does not save a single resource
-}
-
-String ResourceImporterCSV::get_resource_type() const {
-	return "CSV";
-}
-
-bool ResourceImporterCSV::get_option_visibility(const String &p_path, const String &p_option, const HashMap<StringName, Variant> &p_options) const {
-	return true;
-}
-
-int ResourceImporterCSV::get_preset_count() const {
-	return 0;
-}
-
-String ResourceImporterCSV::get_preset_name(int p_idx) const {
-	return "";
-}
-
-void ResourceImporterCSV::get_import_options(const String &p_path, List<ImportOption> *r_options, int p_preset) const {
-	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab"), 0));
-}
-
-Error ResourceImporterCSV::import(const String &p_source_file, const String &p_save_path, const HashMap<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
-	String delimiter;
-	switch ((int)p_options["delimiter"]) {
-		case 0:
-			delimiter = ",";
-			break;
-		case 1:
-			delimiter = ";";
-			break;
-		case 2:
-			delimiter = "\t";
-			break;
-	}
-
-	Ref<FileAccess> f = FileAccess::open(p_source_file, FileAccess::READ);
-	ERR_FAIL_COND_V_MSG(f.is_null(), ERR_INVALID_PARAMETER, "Cannot open file from path '" + p_source_file + "'.");
-
-	Vector<String> header = f->get_csv_line(delimiter);
-	ERR_FAIL_COND_V(line.size() <= 1, ERR_PARSE_ERROR);
+Ref<Resource> ResourceFormatLoaderCSV::load(const String &p_path, const String &p_original_path, Error *r_error, bool p_use_sub_threads, float *r_progress, ResourceFormatLoader::CacheMode p_cache_mode) {
+	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ, r_error);
+	Vector<String> header = f->get_csv_line();
 	Ref<CSV> csv;
 	csv.instantiate();
 	TypedArray<Dictionary> rows;
 	do {
-		Vector<String> line = f->get_csv_line(delimiter);
+		Vector<String> line = f->get_csv_line();
 		Dictionary row;
 		for (int i = 0; i < line.size(); i++) {
 			row[header[i]] = line[i];
@@ -107,9 +46,21 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 		rows.push_back(row);
 	} while (!f->eof_reached());
 	csv->set_rows(rows);
-
-	return OK;
+    return csv;
 }
 
-ResourceImporterCSV::ResourceImporterCSV() {
+
+void ResourceFormatLoaderCSV::get_recognized_extensions(List<String> *p_extensions) const {
+	p_extensions->push_back("csv");
+}
+bool ResourceFormatLoaderCSV::handles_type(const String &p_type) const {
+	// When created it is a resource
+    return p_type == "CSV" || p_type == "Resource";
+}
+String ResourceFormatLoaderCSV::get_resource_type(const String &p_path) const {
+	String el = p_path.get_extension().to_lower();
+	if (el == "csv") {
+		return "CSV";
+	}
+	return "";
 }
