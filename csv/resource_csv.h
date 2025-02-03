@@ -37,8 +37,6 @@
 
 class CSV : public Resource {
     GDCLASS(CSV, Resource);
-	OBJ_SAVE_TYPE(CSV);
-	RES_BASE_EXTENSION("csv");
     TypedArray<Dictionary> rows;
 
 protected:
