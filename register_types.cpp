@@ -28,6 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#include "core/io/resource_importer.h"
 #include "register_types.h"
 #include "blazium_client.h"
 #include "lobby/scripted_lobby_client.h"
@@ -44,9 +45,16 @@
 #include "discord/discord_embedded_app_response.h"
 #include "jwt.h"
 #include "env.h"
+#include "csv/resource_loader_csv.h"
+#include "csv/resource_saver_csv.h"
+#include "csv/resource_csv.h"
+#include "csv/resource_importer_csv.h"
 
 static JWT *jwt_singleton_global = nullptr;
 static ENV *env_singleton_global = nullptr;
+static Ref<ResourceFormatLoaderCSV> csv_loader;
+static Ref<ResourceFormatSaverCSV> csv_saver;
+static Ref<ResourceImporterCSV> csv_importer;
 
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
@@ -58,6 +66,15 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		env_singleton_global = memnew(ENV);
 		GDREGISTER_CLASS(ENV);
 		Engine::get_singleton()->add_singleton(Engine::Singleton("ENV", ENV::get_singleton()));
+	}
+	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
+		GDREGISTER_CLASS(CSV);
+		csv_loader.instantiate();
+		csv_saver.instantiate();
+		csv_importer.instantiate();
+		ResourceLoader::add_resource_format_loader(csv_loader);
+		ResourceSaver::add_resource_format_saver(csv_saver);
+		ResourceFormatImporter::get_singleton()->add_importer(csv_importer);
 	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
 		// Blazium clients
@@ -98,5 +115,19 @@ void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		Engine::get_singleton()->remove_singleton("ENV");
 		memdelete(jwt_singleton_global);
 		memdelete(env_singleton_global);
+	}
+	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
+		if (csv_loader != nullptr) {
+			ResourceLoader::remove_resource_format_loader(csv_loader);
+			csv_loader.unref();
+		}
+		if (csv_saver != nullptr) {
+			ResourceSaver::remove_resource_format_saver(csv_saver);
+			csv_saver.unref();
+		}
+		if (csv_importer != nullptr) {
+			ResourceFormatImporter::get_singleton()->remove_importer(csv_importer);
+			csv_importer.unref();
+		}
 	}
 }

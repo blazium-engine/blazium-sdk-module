@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_importer_csv.h                                               */
+/*  resource_loader_csv.h                                                 */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,48 +28,21 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef RESOURCE_IMPORTER_CSV_H
-#define RESOURCE_IMPORTER_CSV_H
+#ifndef RESOURCE_LOADER_CSV_H
+#define RESOURCE_LOADER_CSV_H
 
-#include "core/io/resource_importer.h"
-#include "core/io/resource.h"
-#include "core/variant/typed_array.h"
-#include "core/variant/dictionary.h"
+#include "core/io/resource_loader.h"
 
-class CSV : public Resource {
-	GDCLASS(CSV, Resource);
-	//OBJ_SAVE_TYPE(CSV);
-	//RES_BASE_EXTENSION("csv");
+class ResourceFormatLoaderCSV : public ResourceFormatLoader {
+    GDCLASS(ResourceFormatLoaderCSV, ResourceFormatLoader);
 
-	TypedArray<Dictionary> rows;
 protected:
-	static void _bind_methods();
+    static void _bind_methods() {}
 
 public:
-	void set_rows(const TypedArray<Dictionary> &p_rows) { rows = p_rows; }
-	TypedArray<Dictionary> get_rows() const { return rows; }
-	CSV() {}
+    virtual Ref<Resource> load(const String &p_path, const String &p_original_path = "", Error *r_error = nullptr, bool p_use_sub_threads = false, float *r_progress = nullptr, CacheMode p_cache_mode = CACHE_MODE_REUSE) override;
+    virtual void get_recognized_extensions(List<String> *p_extensions) const override;
+    virtual bool handles_type(const String &p_type) const override;
+    virtual String get_resource_type(const String &p_path) const override;
 };
-
-class ResourceImporterCSV : public ResourceImporter {
-	GDCLASS(ResourceImporterCSV, ResourceImporter);
-
-public:
-	virtual String get_importer_name() const override;
-	virtual String get_visible_name() const override;
-	virtual void get_recognized_extensions(List<String> *p_extensions) const override;
-	virtual String get_save_extension() const override;
-	virtual String get_resource_type() const override;
-
-	virtual int get_preset_count() const override;
-	virtual String get_preset_name(int p_idx) const override;
-
-	virtual void get_import_options(const String &p_path, List<ImportOption> *r_options, int p_preset = 0) const override;
-	virtual bool get_option_visibility(const String &p_path, const String &p_option, const HashMap<StringName, Variant> &p_options) const override;
-
-	virtual Error import(const String &p_source_file, const String &p_save_path, const HashMap<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files = nullptr, Variant *r_metadata = nullptr) override;
-
-	ResourceImporterCSV();
-};
-
-#endif // RESOURCE_IMPORTER_CSV_H
+#endif // RESOURCE_LOADER_CSV_H
