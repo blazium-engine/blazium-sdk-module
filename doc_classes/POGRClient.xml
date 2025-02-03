@@ -62,7 +62,7 @@
 				[gdscript]
 				var res :POGRResult = await event("combat", "enemy_killed", "attack", "completed", "user-event").finished
 				if res.has_error():
-					print(res.error)
+				    print(res.error)
 				[/gdscript]
 				[/codeblocks]
 			</description>

@@ -21,7 +21,7 @@
 				if res.has_error():
 				    print(res.error)
 				else:
-					print(res.data)
+				    print(res.data)
 				[/gdscript]
 				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
@@ -42,7 +42,7 @@
 				if res.has_error():
 				    print(res.error)
 				else:
-					print(res.data)
+				    print(res.data)
 				[/gdscript]
 				[/codeblocks]
 				Returns a [DiscordEmbeddedAppResponse] object that has a [signal DiscordEmbeddedAppResponse.finished] signal that is emitted when finished.
@@ -125,7 +125,6 @@
 			<description>
 				Returns permissions for the current user in the currently connected channel. Wait for [method DiscordEmbeddedAppClient.is_ready] first.
 				Discord docs [url=Discord docs [url=https://discord.com/developers/docs/developer-tools/embedded-app-sdk#getchannelpermissions]discord.com/developers/docs/developer-tools/embedded-app-sdk#getchannelpermissions[/url]
-				[codeblocks]
 				[codeblocks]
 				[gdscript]
 				var res :DiscordEmbeddedAppResult = await get_channel_permissions().finished
