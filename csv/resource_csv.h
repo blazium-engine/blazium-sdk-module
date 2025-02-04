@@ -31,12 +31,12 @@
 #ifndef CSV_RESOURCE_H
 #define CSV_RESOURCE_H
 
-#include "core/io/resource.h"
+#include "scene/resources/text_file.h"
 #include "core/variant/typed_array.h"
 #include "core/variant/dictionary.h"
 
-class CSV : public Resource {
-    GDCLASS(CSV, Resource);
+class CSV : public TextFile {
+    GDCLASS(CSV, TextFile);
     TypedArray<Dictionary> rows;
 
 protected:
@@ -47,6 +47,8 @@ protected:
         ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "rows", PROPERTY_HINT_ARRAY_TYPE, "Dictionary"), "set_rows", "get_rows");
     }
 
+protected:
+	virtual bool editor_can_reload_from_file() override { return true; }
 public:
     void set_rows(const TypedArray<Dictionary> &p_rows) { rows = p_rows; }
     TypedArray<Dictionary> get_rows() const { return rows; }

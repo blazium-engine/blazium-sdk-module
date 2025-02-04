@@ -3,6 +3,7 @@
 #include "core/io/file_access.h"
 
 Error ResourceFormatSaverCSV::save(const Ref<Resource> &p_resource, const String &p_path, uint32_t p_flags) {
+	print_line("Saving ", p_path);
 	Ref<CSV> csv = p_resource;
 	ERR_FAIL_COND_V(csv.is_null(), ERR_INVALID_PARAMETER);
 	Ref<FileAccess> file = FileAccess::open(p_path, FileAccess::WRITE);
