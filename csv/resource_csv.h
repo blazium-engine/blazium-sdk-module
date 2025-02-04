@@ -49,7 +49,23 @@ protected:
 
 protected:
 	virtual bool editor_can_reload_from_file() override { return true; }
+
 public:
+    virtual void reload_from_file() override {
+        load_text(get_path());
+	    Ref<FileAccess> f = FileAccess::open(get_path(), FileAccess::READ);
+        Vector<String> header = f->get_csv_line();
+        TypedArray<Dictionary> rows;
+        do {
+            Vector<String> line = f->get_csv_line();
+            Dictionary row;
+            for (int i = 0; i < line.size(); i++) {
+                row[header[i]] = line[i];
+            }
+            rows.push_back(row);
+        } while (!f->eof_reached());
+        set_rows(rows);
+    }
     void set_rows(const TypedArray<Dictionary> &p_rows) { rows = p_rows; }
     TypedArray<Dictionary> get_rows() const { return rows; }
 };
