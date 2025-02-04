@@ -29,6 +29,8 @@
 /**************************************************************************/
 
 #include "resource_importer_csv.h"
+#include "resource_csv.h"
+#include "resource_loader_csv.h"
 #include "core/io/file_access.h"
 #include "core/io/resource_saver.h"
 
@@ -45,7 +47,7 @@ void ResourceImporterCSV::get_recognized_extensions(List<String> *p_extensions) 
 }
 
 String ResourceImporterCSV::get_save_extension() const {
-	return ""; //does not save a single resource
+	return "csv";
 }
 
 String ResourceImporterCSV::get_resource_type() const {
@@ -81,10 +83,17 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 			delimiter = "\t";
 			break;
 	}
-
+	print_line("importing ", p_source_file);
+	print_line("importing ", p_save_path);
 	Ref<FileAccess> f = FileAccess::open(p_source_file, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(f.is_null(), ERR_INVALID_PARAMETER, "Cannot open file from path '" + p_source_file + "'.");
+	
+	Ref<CSV> csv = ResourceLoader::load(p_source_file, "CSV");
+	if (csv.is_null()) {
+		csv.instantiate();
+	}
 
+	ResourceSaver::save(csv, p_save_path + ".csv");
 	return OK;
 }
 
