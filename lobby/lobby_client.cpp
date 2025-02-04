@@ -753,6 +753,7 @@ void LobbyClient::_notification(int p_what) {
 				if (_commands.has("connect")) {
 					Ref<LobbyResponse> response = _commands["connect"];
 					Ref<LobbyResponse::LobbyResult> result;
+					result.instantiate();
 					response->emit_signal("finished", result);
 					_commands.erase("connect");
 				}
@@ -774,6 +775,7 @@ void LobbyClient::_notification(int p_what) {
 				if (_commands.has("disconnect")) {
 					Ref<LobbyResponse> response = _commands["disconnect"];
 					Ref<LobbyResponse::LobbyResult> result;
+					result.instantiate();
 					response->emit_signal("finished", result);
 					_commands.erase("disconnect");
 				}
