@@ -32,24 +32,10 @@
 #include "resource_csv.h"
 
 Ref<Resource> ResourceFormatLoaderCSV::load(const String &p_path, const String &p_original_path, Error *r_error, bool p_use_sub_threads, float *r_progress, ResourceFormatLoader::CacheMode p_cache_mode) {
-	print_line("loading ", p_path);
-	print_line("loading ", p_original_path);
-	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ, r_error);
-	ERR_FAIL_COND_V_MSG(f.is_null(), Ref<Resource>(), "Cannot open file '" + p_path + "'.");
-	Vector<String> header = f->get_csv_line();
-	ERR_FAIL_COND_V_MSG(header.size() == 0, Ref<Resource>(), "CSV file does not have a header.");
 	Ref<CSV> csv;
 	csv.instantiate();
-	TypedArray<Dictionary> rows;
-	do {
-		Vector<String> line = f->get_csv_line();
-		Dictionary row;
-		for (int i = 0; i < line.size(); i++) {
-			row[header[i]] = line[i];
-		}
-		rows.push_back(row);
-	} while (!f->eof_reached());
-	csv->set_rows(rows);
+	csv->set_path(p_original_path);
+	csv->reload_from_file();
     return csv;
 }
 
@@ -58,8 +44,7 @@ void ResourceFormatLoaderCSV::get_recognized_extensions(List<String> *p_extensio
 	p_extensions->push_back("csv");
 }
 bool ResourceFormatLoaderCSV::handles_type(const String &p_type) const {
-	// When created it is a resource
-    return p_type == "CSV" || p_type == "Resource" || p_type == "TextFile";
+    return p_type == "CSV";
 }
 String ResourceFormatLoaderCSV::get_resource_type(const String &p_path) const {
 	String el = p_path.get_extension().to_lower();

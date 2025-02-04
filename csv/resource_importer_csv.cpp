@@ -90,11 +90,11 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 	
 	Ref<CSV> csv = ResourceLoader::load(p_source_file, "CSV");
 	if (csv.is_null()) {
+		ERR_PRINT("Failed to load CSV from path '" + p_source_file + "'.");
 		csv.instantiate();
 	}
 
-	ResourceSaver::save(csv, p_save_path + ".csv");
-	return OK;
+	return ResourceSaver::save(csv, p_save_path + ".csv");
 }
 
 ResourceImporterCSV::ResourceImporterCSV() {
