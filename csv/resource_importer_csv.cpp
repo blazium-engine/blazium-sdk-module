@@ -88,13 +88,17 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 	Ref<FileAccess> f = FileAccess::open(p_source_file, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(f.is_null(), ERR_INVALID_PARAMETER, "Cannot open file from path '" + p_source_file + "'.");
 	
-	Ref<CSV> csv = ResourceLoader::load(p_source_file, "CSV");
+	Ref<CSV> csv = ResourceLoader::load(p_source_file, "CSV", ResourceFormatLoader::CACHE_MODE_REPLACE);
 	if (csv.is_null()) {
 		ERR_PRINT("Failed to load CSV from path '" + p_source_file + "'.");
 		csv.instantiate();
 	}
-
-	return ResourceSaver::save(csv, p_save_path + ".csv");
+	Error err =  ResourceSaver::save(csv, p_save_path + ".csv");
+	if (err != OK) {
+		ERR_PRINT("Failed to save CSV to path '" + p_save_path + "'.");
+	}
+	r_gen_files->push_back(p_save_path + ".csv");
+	return OK;
 }
 
 ResourceImporterCSV::ResourceImporterCSV() {

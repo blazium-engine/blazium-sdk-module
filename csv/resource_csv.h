@@ -52,6 +52,7 @@ protected:
 
 public:
     virtual void reload_from_file() override {
+        ERR_PRINT("CSV::reload_from_file");
         load_text(get_path());
 	    Ref<FileAccess> f = FileAccess::open(get_path(), FileAccess::READ);
         Vector<String> header = f->get_csv_line();
