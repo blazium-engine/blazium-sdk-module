@@ -33,6 +33,8 @@
 
 Ref<Resource> ResourceFormatLoaderCSV::load(const String &p_path, const String &p_original_path, Error *r_error, bool p_use_sub_threads, float *r_progress, ResourceFormatLoader::CacheMode p_cache_mode) {
 	Ref<CSV> csv;
+	ERR_PRINT("loading " + p_path);
+	ERR_PRINT("loading " + p_original_path);
 	csv.instantiate();
 	csv->set_path(p_original_path);
 	csv->reload_from_file();
