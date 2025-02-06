@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="CSV" inherits="Resource" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		CSV file loaded as a [Dictionary] inside the [member rows].
+	</brief_description>
+	<description>
+		CSV file loaded as a [Dictionary] inside the [member rows].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="rows" type="Dictionary[]" setter="set_rows" getter="get_rows" default="[]">
+			Rows of the CSV file. If the headers checkbox is checked in the [ResourceImporterCSV] then the dictionary keys will be the header names, otherwise they will be numbers representing the index of the column.
+		</member>
+	</members>
+</class>
