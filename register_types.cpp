@@ -65,6 +65,7 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		GDREGISTER_CLASS(CSV);
+		GDREGISTER_CLASS(ResourceImporterCSV);
 		csv_importer.instantiate();
 		ResourceFormatImporter::get_singleton()->add_importer(csv_importer);
 	}
