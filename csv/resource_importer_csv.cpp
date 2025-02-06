@@ -30,7 +30,6 @@
 
 #include "resource_importer_csv.h"
 #include "resource_csv.h"
-#include "resource_loader_csv.h"
 #include "core/io/file_access.h"
 #include "core/io/resource_saver.h"
 
@@ -44,10 +43,11 @@ String ResourceImporterCSV::get_visible_name() const {
 
 void ResourceImporterCSV::get_recognized_extensions(List<String> *p_extensions) const {
 	p_extensions->push_back("csv");
+	p_extensions->push_back("tpv");
 }
 
 String ResourceImporterCSV::get_save_extension() const {
-	return "csv";
+	return "res";
 }
 
 String ResourceImporterCSV::get_resource_type() const {
@@ -68,6 +68,7 @@ String ResourceImporterCSV::get_preset_name(int p_idx) const {
 
 void ResourceImporterCSV::get_import_options(const String &p_path, List<ImportOption> *r_options, int p_preset) const {
 	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab"), 0));
+	r_options->push_back(ImportOption(PropertyInfo(Variant::BOOL, "headers"), true));
 }
 
 Error ResourceImporterCSV::import(const String &p_source_file, const String &p_save_path, const HashMap<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
@@ -83,21 +84,25 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 			delimiter = "\t";
 			break;
 	}
-	print_line("importing ", p_source_file);
-	print_line("importing ", p_save_path);
+	bool headers = p_options.get("headers");
 	Ref<FileAccess> f = FileAccess::open(p_source_file, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(f.is_null(), ERR_INVALID_PARAMETER, "Cannot open file from path '" + p_source_file + "'.");
 	
-	Ref<CSV> csv = ResourceLoader::load(p_source_file, "CSV", ResourceFormatLoader::CACHE_MODE_REPLACE);
-	if (csv.is_null()) {
+	Ref<CSV> csv;
+	csv.instantiate();
+	csv->headers = headers;
+	csv->delimiter = delimiter;
+	Error err = csv->load_file(p_source_file);
+	if (err != OK) {
 		ERR_PRINT("Failed to load CSV from path '" + p_source_file + "'.");
-		csv.instantiate();
+		return err;
 	}
-	Error err =  ResourceSaver::save(csv, p_save_path + ".csv");
+	err =  ResourceSaver::save(csv, p_save_path + ".res");
 	if (err != OK) {
 		ERR_PRINT("Failed to save CSV to path '" + p_save_path + "'.");
+		return err;
 	}
-	r_gen_files->push_back(p_save_path + ".csv");
+	r_gen_files->push_back(p_save_path + ".res");
 	return OK;
 }
 
