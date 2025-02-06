@@ -79,7 +79,7 @@ public:
 	void set_override_discord_path(String p_path) {
 		override_discord_path = p_path;
 		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
-			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
+			server_url = "wss://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 		}
 	}
 	String get_override_discord_path() const { return override_discord_path; }

@@ -209,7 +209,7 @@ public:
 
 	LoginClient() {
 		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
-			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
+			server_url = "wss://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 		} else {
 			server_url = "wss://login.blazium.app/connect";
 		}
