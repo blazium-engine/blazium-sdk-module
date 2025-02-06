@@ -40,6 +40,12 @@ class ResourceImporterCSV : public ResourceImporter {
 	GDCLASS(ResourceImporterCSV, ResourceImporter);
 
 public:
+	enum RowSeparator {
+		ROW_SEPARATOR_COMMA,
+		ROW_SEPARATOR_SEMICOLON,
+		ROW_SEPARATOR_TAB,
+		ROW_SEPARATOR_PIPE,
+	};
 	virtual String get_importer_name() const override;
 	virtual String get_visible_name() const override;
 	virtual void get_recognized_extensions(List<String> *p_extensions) const override;

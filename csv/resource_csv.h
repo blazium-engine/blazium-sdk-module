@@ -72,7 +72,6 @@ public:
             return err;
         }
         Vector<String> header = f->get_csv_line(delimiter);
-        TypedArray<Dictionary> rows;
         if (!headers) {
             Dictionary row;
             for (int i = 0; i < header.size(); i++) {
@@ -94,7 +93,6 @@ public:
                 rows.push_back(row);
             }
         } while (!f->eof_reached());
-        set_rows(rows);
         f->close();
         return OK;
     }

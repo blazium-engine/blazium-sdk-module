@@ -43,7 +43,8 @@ String ResourceImporterCSV::get_visible_name() const {
 
 void ResourceImporterCSV::get_recognized_extensions(List<String> *p_extensions) const {
 	p_extensions->push_back("csv");
-	p_extensions->push_back("tpv");
+	p_extensions->push_back("tsv");
+	p_extensions->push_back("psv");
 }
 
 String ResourceImporterCSV::get_save_extension() const {
@@ -67,7 +68,13 @@ String ResourceImporterCSV::get_preset_name(int p_idx) const {
 }
 
 void ResourceImporterCSV::get_import_options(const String &p_path, List<ImportOption> *r_options, int p_preset) const {
-	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab"), 0));
+	if (p_path.get_extension().contains("csv")) {
+		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_COMMA));
+	} else if (p_path.get_extension().contains("tsv")){
+		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_TAB));
+	} else if (p_path.get_extension().contains("psv")){
+		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_PIPE));
+	}
 	r_options->push_back(ImportOption(PropertyInfo(Variant::BOOL, "headers"), true));
 }
 
@@ -82,6 +89,9 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 			break;
 		case 2:
 			delimiter = "\t";
+			break;
+		case 3:
+			delimiter = "|";
 			break;
 	}
 	bool headers = p_options.get("headers");
