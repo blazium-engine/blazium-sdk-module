@@ -45,15 +45,11 @@
 #include "discord/discord_embedded_app_response.h"
 #include "jwt.h"
 #include "env.h"
-#include "csv/resource_loader_csv.h"
-#include "csv/resource_saver_csv.h"
 #include "csv/resource_csv.h"
 #include "csv/resource_importer_csv.h"
 
 static JWT *jwt_singleton_global = nullptr;
 static ENV *env_singleton_global = nullptr;
-static Ref<ResourceFormatLoaderCSV> csv_loader;
-static Ref<ResourceFormatSaverCSV> csv_saver;
 static Ref<ResourceImporterCSV> csv_importer;
 
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
@@ -69,11 +65,7 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		GDREGISTER_CLASS(CSV);
-		csv_loader.instantiate();
-		csv_saver.instantiate();
 		csv_importer.instantiate();
-		ResourceLoader::add_resource_format_loader(csv_loader);
-		ResourceSaver::add_resource_format_saver(csv_saver);
 		ResourceFormatImporter::get_singleton()->add_importer(csv_importer);
 	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
@@ -117,14 +109,6 @@ void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		memdelete(env_singleton_global);
 	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
-		if (csv_loader != nullptr) {
-			ResourceLoader::remove_resource_format_loader(csv_loader);
-			csv_loader.unref();
-		}
-		if (csv_saver != nullptr) {
-			ResourceSaver::remove_resource_format_saver(csv_saver);
-			csv_saver.unref();
-		}
 		if (csv_importer != nullptr) {
 			ResourceFormatImporter::get_singleton()->remove_importer(csv_importer);
 			csv_importer.unref();
