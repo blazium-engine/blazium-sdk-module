@@ -110,6 +110,7 @@ public:
 		GDCLASS(POGRResponse, RefCounted);
 		HTTPRequest *request;
 		POGRClient *client;
+		String request_command;
 	protected:
 		static void _bind_methods() {
 			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "POGRResult")));
@@ -120,27 +121,34 @@ public:
 			Ref<POGRResult> result;
 			result.instantiate();
 			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
+			// remove \n character
+			if (result_str.size() > 0 && result_str[result_str.length() - 1] == '\n') {
+				result_str = result_str.substr(0, result_str.length() - 1);
+			}
 			if (p_code != 200 || result_str == "") {
 				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
-				client->emit_signal(SNAME("log_updated"), "error", result_str);
+				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
 			} else {
 				if (result_str != "") {
 					Dictionary result_dict = JSON::parse_string(result_str);
 					if (!result_dict.get("success", false)) {
-						result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
-						client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
+						String error = result_dict.get("error", itos(p_code));
+						result->set_error(error);
+						client->emit_signal(SNAME("log_updated"), "error", result_dict);
 					} else {
 						result->set_result(result_str);
+						client->emit_signal(SNAME("log_updated"), request_command, JSON::stringify(result_dict.get("payload", "")));
 					}
 				}
 			}
 			emit_signal(SNAME("finished"), result);
 		}
-		void post_request(String p_url, Vector<String> p_headers, Dictionary p_data, POGRClient *p_client) {
+		void post_request(String p_pogr_url, String p_command, Vector<String> p_headers, Dictionary p_data, POGRClient *p_client) {
 			client = p_client;
 			p_client->add_child(request);
+			request_command = p_command;
 			request->connect("request_completed", callable_mp(this, &POGRResponse::_on_request_completed));
-			request->request(p_url, p_headers, HTTPClient::METHOD_POST, JSON::stringify(p_data));
+			request->request(p_pogr_url + "/" +p_command, p_headers, HTTPClient::METHOD_POST, JSON::stringify(p_data));
 		}
 		POGRResponse() {
 			request = memnew(HTTPRequest);
@@ -156,7 +164,7 @@ public:
 		response->connect("finished", callable_mp(this, &POGRClient::init_finished));
 		Dictionary dict_data;
 		dict_data["association_id"] = OS::get_singleton()->get_unique_id();
-		response->post_request(POGR_URL + "/init", get_init_headers(), dict_data, this);
+		response->post_request(POGR_URL, "init", get_init_headers(), dict_data, this);
 		return response;
 	}
 
@@ -172,14 +180,14 @@ public:
 	Ref<POGRResponse> data(Dictionary p_data) {
 		Ref<POGRResponse> response;
 		response.instantiate();
-		response->post_request(POGR_URL + "/data", get_session_headers(), p_data, this);
+		response->post_request(POGR_URL, "data", get_session_headers(), p_data, this);
 		return response;
 	}
 
 	Ref<POGRResponse> end() {
 		Ref<POGRResponse> response;
 		response.instantiate();
-		response->post_request(POGR_URL + "/end", get_session_headers(), Dictionary(), this);
+		response->post_request(POGR_URL, "end", get_session_headers(), Dictionary(), this);
 		return response;
 	}
 
@@ -194,7 +202,7 @@ public:
 		data["event_type"] = event_type;
 		data["sub_event"] = sub_event;
 		data["tags"] = tags_data;
-		response->post_request(POGR_URL + "/event", get_session_headers(), data, this);
+		response->post_request(POGR_URL, "event", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -209,7 +217,7 @@ public:
 		data["service"] = p_service;
 		data["severity"] = p_severity;
 		data["type"] = p_type;
-		response->post_request(POGR_URL + "/logs", get_session_headers(), data, this);
+		response->post_request(POGR_URL, "logs", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -221,7 +229,7 @@ public:
 		data["environment"] = p_environment;
 		data["metrics"] = p_metrics;
 		data["service"] = p_service;
-		response->post_request(POGR_URL + "/metrics", get_session_headers(), data, this);
+		response->post_request(POGR_URL, "metrics", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -233,7 +241,7 @@ public:
 		data["cpu_usage"] = Performance::get_singleton()->get_monitor(Performance::Monitor::TIME_FPS);
 		data["dlls_loaded"] = Array();
 		data["memory_usage"] = OS::get_singleton()->get_static_memory_usage();
-		response->post_request(POGR_URL + "/monitor", get_session_headers(), data, this);
+		response->post_request(POGR_URL, "monitor", get_session_headers(), data, this);
 		return response;
 	}
 

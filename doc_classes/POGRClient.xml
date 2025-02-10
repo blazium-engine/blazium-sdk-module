@@ -10,6 +10,13 @@
 		2. Send data using [method data], [method event], [method logs], [method metrics] and [method monitor] methods, depending on use case.
 		3. Close the session using [method end] method at the end of the game.
 		[b]Note:[/b] All methods are non blocking and can be awaited in order to get the result.
+		
+		For tags parameter, valid tags are:
+		[codeblocks]
+		[gdscript]
+		var valid_tags = ["steam_id", "twitch_id", "association_id", "pogr_game_session", "xbox_id", "battlenet_id", "twitter_id", "linkedin_id", "pogr_player_id", "discord_id", "override_timestamp"]
+		[/gdscript]
+		[/codeblocks]
 	</description>
 	<tutorials>
 	</tutorials>
@@ -154,8 +161,10 @@
 	</methods>
 	<members>
 		<member name="build_id" type="String" setter="set_build_id" getter="get_build_id" default="&quot;&quot;">
+			The build ID obtained from the pogr Game Client page.
 		</member>
 		<member name="client_id" type="String" setter="set_client_id" getter="get_client_id" default="&quot;&quot;">
+			The client ID obtained from the pogr Game Client page.
 		</member>
 	</members>
 	<signals>
