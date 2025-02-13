@@ -10,7 +10,7 @@
 		2. Send data using [method data], [method event], [method logs], [method metrics] and [method monitor] methods, depending on use case.
 		3. Close the session using [method end] method at the end of the game.
 		[b]Note:[/b] All methods are non blocking and can be awaited in order to get the result.
-		
+
 		For tags parameter, valid tags are:
 		[codeblocks]
 		[gdscript]
