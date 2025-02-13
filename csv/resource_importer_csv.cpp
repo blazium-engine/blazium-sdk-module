@@ -68,12 +68,12 @@ String ResourceImporterCSV::get_preset_name(int p_idx) const {
 }
 
 void ResourceImporterCSV::get_import_options(const String &p_path, List<ImportOption> *r_options, int p_preset) const {
-	if (p_path.get_extension().contains("csv")) {
-		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_COMMA));
-	} else if (p_path.get_extension().contains("tsv")){
+	if (p_path.get_extension().contains("tsv")){
 		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_TAB));
 	} else if (p_path.get_extension().contains("psv")){
 		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_PIPE));
+	} else {
+		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_COMMA));
 	}
 	r_options->push_back(ImportOption(PropertyInfo(Variant::BOOL, "headers"), true));
 }
