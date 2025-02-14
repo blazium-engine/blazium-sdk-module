@@ -46,6 +46,7 @@ private:
 	String POGR_URL = "https://api.pogr.io/v1/intake";
 	String pogr_client_id;
 	String pogr_build;
+	Array valid_tags;
 
 	Vector<String> get_init_headers() {
 		Vector<String> headers;
@@ -62,9 +63,9 @@ private:
 
 protected:
 	static void _bind_methods() {
-		ClassDB::bind_method(D_METHOD("init"), &POGRClient::init);
+		ClassDB::bind_method(D_METHOD("init", "association_id"), &POGRClient::init);
 		ClassDB::bind_method(D_METHOD("end"), &POGRClient::end);
-		ClassDB::bind_method(D_METHOD("data", "data"), &POGRClient::data);
+		ClassDB::bind_method(D_METHOD("data", "tags", "data"), &POGRClient::data);
 		ClassDB::bind_method(D_METHOD("event", "event_name", "sub_event", "event_key", "flag", "type", "tags", "data"), &POGRClient::event, DEFVAL("user-event"), DEFVAL(Dictionary()), DEFVAL(Dictionary()));
 		ClassDB::bind_method(D_METHOD("logs", "log", "severity", "environment", "service", "type", "tags", "data"), &POGRClient::logs, DEFVAL("info"), DEFVAL("dev"), DEFVAL("gameclient"), DEFVAL("user-event"), DEFVAL(Dictionary()), DEFVAL(Dictionary()));
 		ClassDB::bind_method(D_METHOD("metrics", "metrics", "environment", "service", "tags"), &POGRClient::metrics, DEFVAL("dev"), DEFVAL("gameclient"), DEFVAL(Dictionary()));
@@ -158,12 +159,25 @@ public:
 		}
 	};
 
-	Ref<POGRResponse> init() {
+	bool _validate_tags(Dictionary p_tags) {
+		Array keys = p_tags.keys();
+		for (int i = 0; i < p_tags.size(); i++) {
+			String key = keys[i];
+			if (valid_tags.find(key) == -1) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	Ref<POGRResponse> init(String p_association_id) {
 		Ref<POGRResponse> response;
 		response.instantiate();
 		response->connect("finished", callable_mp(this, &POGRClient::init_finished));
 		Dictionary dict_data;
-		dict_data["association_id"] = OS::get_singleton()->get_unique_id();
+		if (p_association_id != "") {
+			dict_data["association_id"] = p_association_id;
+		}
 		response->post_request(POGR_URL, "init", get_init_headers(), dict_data, this);
 		return response;
 	}
@@ -177,10 +191,13 @@ public:
 		}
 	}
 
-	Ref<POGRResponse> data(Dictionary p_data) {
+	Ref<POGRResponse> data(Dictionary tags_data, Dictionary p_data) {
 		Ref<POGRResponse> response;
 		response.instantiate();
-		response->post_request(POGR_URL, "data", get_session_headers(), p_data, this);
+		Dictionary data;
+		data["data"] = p_data;
+		data["tags"] = tags_data;
+		response->post_request(POGR_URL, "data", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -258,6 +275,20 @@ public:
 			return;
 		}
 		session_id = p_session_id;
+	}
+
+	POGRClient() {
+		valid_tags.append("steam_id");
+		valid_tags.append("twitch_id");
+		valid_tags.append("association_id");
+		valid_tags.append("pogr_game_session");
+		valid_tags.append("xbox_id");
+		valid_tags.append("battlenet_id");
+		valid_tags.append("twitter_id");
+		valid_tags.append("linkedin_id");
+		valid_tags.append("pogr_player_id");
+		valid_tags.append("discord_id");
+		valid_tags.append("override_timestamp");
 	}
 };
 
