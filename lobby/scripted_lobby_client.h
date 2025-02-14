@@ -94,6 +94,7 @@ public:
 
 	Ref<LobbyResponse> connect_to_server();
 	Ref<LobbyResponse> disconnect_from_server();
+	Ref<ViewLobbyResponse> quick_join(const String &p_name, const Dictionary &p_tags, int p_max_players);
 	Ref<ViewLobbyResponse> create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password);
 	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> leave_lobby();

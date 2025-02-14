@@ -85,6 +85,7 @@ void LobbyClient::_bind_methods() {
 	// Register methods
 	ClassDB::bind_method(D_METHOD("connect_to_server"), &LobbyClient::connect_to_server);
 	ClassDB::bind_method(D_METHOD("disconnect_from_server"), &LobbyClient::disconnect_from_server);
+	ClassDB::bind_method(D_METHOD("quick_join", "title", "tags", "max_players"), &LobbyClient::quick_join, DEFVAL(Dictionary()), DEFVAL(4));
 	ClassDB::bind_method(D_METHOD("create_lobby", "title", "sealed", "tags", "max_players", "password"), &LobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &LobbyClient::join_lobby, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &LobbyClient::leave_lobby);
@@ -218,6 +219,32 @@ Ref<LobbyResponse> LobbyClient::disconnect_from_server() {
 
 String LobbyClient::_increment_counter() {
 	return String::num(_counter++);
+}
+
+Ref<ViewLobbyResponse> LobbyClient::quick_join(const String &p_name, const Dictionary &p_tags, int p_max_players) {
+	Ref<ViewLobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
+	String id = _increment_counter();
+	Dictionary command;
+	command["command"] = "quick_join";
+	Dictionary data_dict;
+	command["data"] = data_dict;
+	data_dict["name"] = p_name;
+	data_dict["max_players"] = p_max_players;
+	data_dict["tags"] = p_tags;
+	data_dict["id"] = id;
+	Array command_array;
+	command_array.push_back(LOBBY_VIEW);
+	command_array.push_back(response);
+	_commands[id] = command_array;
+	_send_data(command);
+	return response;
 }
 
 Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password) {
