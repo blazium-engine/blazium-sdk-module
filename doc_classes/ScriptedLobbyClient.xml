@@ -168,6 +168,18 @@
 				Returns a [ScriptedLobbyResponse] object that has a [signal ScriptedLobbyResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
+		<method name="quick_join">
+			<return type="ViewLobbyResponse" />
+			<param index="0" name="title" type="String" />
+			<param index="1" name="tags" type="Dictionary" default="{}" />
+			<param index="2" name="max_players" type="int" default="4" />
+			<description>
+				Quick join a lobby or create one if none exist. If you are already in a lobby, you cannot join another one. You need to leave first.
+				Needs [method connect_to_server] to be called first.
+				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
+				Generates either [signal lobby_joined] or [signal lobby_created].
+			</description>
+		</method>
 		<method name="send_chat_message">
 			<return type="LobbyResponse" />
 			<param index="0" name="chat_message" type="String" />
