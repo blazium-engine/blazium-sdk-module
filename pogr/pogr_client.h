@@ -139,6 +139,9 @@ public:
 					} else {
 						result->set_result(result_str);
 						client->emit_signal(SNAME("log_updated"), request_command, JSON::stringify(result_dict.get("payload", "")));
+						if (request_command == "end") {
+							client->session_id = "";
+						}
 					}
 				}
 			}
@@ -150,6 +153,12 @@ public:
 			request_command = p_command;
 			request->connect("request_completed", callable_mp(this, &POGRResponse::_on_request_completed));
 			request->request(p_pogr_url + "/" +p_command, p_headers, HTTPClient::METHOD_POST, JSON::stringify(p_data));
+		}
+		void signal_finish(String p_error) {
+			Ref<POGRResult> result;
+			result.instantiate();
+			result->set_error(p_error);
+			emit_signal("finished", result);
 		}
 		POGRResponse() {
 			request = memnew(HTTPRequest);
@@ -194,6 +203,18 @@ public:
 	Ref<POGRResponse> data(Dictionary tags_data, Dictionary p_data) {
 		Ref<POGRResponse> response;
 		response.instantiate();
+		if (session_id == "") {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Session id is invalid. Call init first.");
+			return response;
+		}
+		if (!_validate_tags(tags_data)) {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Invalid tags.");
+			return response;
+		}
 		Dictionary data;
 		data["data"] = p_data;
 		data["tags"] = tags_data;
@@ -204,13 +225,31 @@ public:
 	Ref<POGRResponse> end() {
 		Ref<POGRResponse> response;
 		response.instantiate();
+		if (session_id == "") {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Session id is invalid. Call init first.");
+			return response;
+		}
 		response->post_request(POGR_URL, "end", get_session_headers(), Dictionary(), this);
 		return response;
 	}
 
-	Ref<POGRResponse> event(String event_name, String sub_event, String event_key, String event_flag, String event_type, Dictionary tags_data, Dictionary event_data) {
+	Ref<POGRResponse> event(String event_name, String sub_event, String event_key, String event_flag, String event_type, Dictionary p_tags, Dictionary event_data) {
 		Ref<POGRResponse> response;
 		response.instantiate();
+		if (session_id == "") {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Session id is invalid. Call init first.");
+			return response;
+		}
+		if (!_validate_tags(p_tags)) {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Invalid tags.");
+			return response;
+		}
 		Dictionary data;
 		data["event"] = event_name;
 		data["event_data"] = event_data;
@@ -218,7 +257,7 @@ public:
 		data["event_key"] = event_key;
 		data["event_type"] = event_type;
 		data["sub_event"] = sub_event;
-		data["tags"] = tags_data;
+		data["tags"] = p_tags;
 		response->post_request(POGR_URL, "event", get_session_headers(), data, this);
 		return response;
 	}
@@ -226,6 +265,18 @@ public:
 	Ref<POGRResponse> logs(String p_log, String p_severity, String p_environment, String p_service, String p_type, Dictionary p_tags, Dictionary p_data) {
 		Ref<POGRResponse> response;
 		response.instantiate();
+		if (session_id == "") {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Session id is invalid. Call init first.");
+			return response;
+		}
+		if (!_validate_tags(p_tags)) {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Invalid tags.");
+			return response;
+		}
 		Dictionary data;
 		data["tags"] = p_tags;
 		data["data"] = p_data;
@@ -241,6 +292,18 @@ public:
 	Ref<POGRResponse> metrics(Dictionary p_metrics, String p_environment, String p_service, Dictionary p_tags) {
 		Ref<POGRResponse> response;
 		response.instantiate();
+		if (session_id == "") {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Session id is invalid. Call init first.");
+			return response;
+		}
+		if (!_validate_tags(p_tags)) {
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &POGRResponse::signal_finish);
+			callable.call_deferred("Invalid tags.");
+			return response;
+		}
 		Dictionary data;
 		data["tags"] = p_tags;
 		data["environment"] = p_environment;

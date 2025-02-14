@@ -23,7 +23,8 @@
 	<methods>
 		<method name="data">
 			<return type="POGRResponse" />
-			<param index="0" name="data" type="Dictionary" />
+			<param index="0" name="tags" type="Dictionary" />
+			<param index="1" name="data" type="Dictionary" />
 			<description>
 				Send unstructured data. Call [method init] first.
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
@@ -88,6 +89,7 @@
 		</method>
 		<method name="init">
 			<return type="POGRResponse" />
+			<param index="0" name="association_id" type="String" />
 			<description>
 				Send init request. Needs to be called first. Needs to have set before [member client_id] and [member build_id].
 				Returns a [POGRResponse] object that has a [signal POGRResponse.finished] signal that is emitted when finished.
