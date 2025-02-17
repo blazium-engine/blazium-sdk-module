@@ -192,7 +192,7 @@ Ref<LobbyResponse> LobbyClient::disconnect_from_server() {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	// if there is another disconnect connect, finish that with error
@@ -227,7 +227,7 @@ Ref<ViewLobbyResponse> LobbyClient::quick_join(const String &p_name, const Dicti
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -253,7 +253,7 @@ Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, bool p_se
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -281,7 +281,7 @@ Ref<ViewLobbyResponse> LobbyClient::join_lobby(const String &p_lobby_id, const S
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -306,7 +306,7 @@ Ref<LobbyResponse> LobbyClient::leave_lobby() {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -329,7 +329,7 @@ Ref<LobbyResponse> LobbyClient::list_lobby() {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -352,7 +352,7 @@ Ref<LobbyResponse> LobbyClient::kick_peer(const String &p_peer_id) {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -376,7 +376,7 @@ Ref<LobbyResponse> LobbyClient::set_lobby_tags(const Dictionary &p_tags) {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -400,7 +400,7 @@ Ref<LobbyResponse> LobbyClient::del_lobby_tags(const TypedArray<String> &p_keys)
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -429,7 +429,7 @@ Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message) {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -453,7 +453,7 @@ Ref<LobbyResponse> LobbyClient::lobby_ready(bool p_ready) {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -480,7 +480,7 @@ Ref<LobbyResponse> LobbyClient::seal_lobby(bool seal) {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -507,7 +507,7 @@ Ref<LobbyResponse> LobbyClient::lobby_notify(const Variant &p_peer_data) {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -531,7 +531,7 @@ Ref<LobbyResponse> LobbyClient::peer_notify(const Variant &p_peer_data, const St
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -556,7 +556,7 @@ Ref<LobbyResponse> LobbyClient::add_user_data(const Dictionary &p_user_data) {
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -580,7 +580,7 @@ Ref<LobbyResponse> LobbyClient::del_user_data(const TypedArray<String> &p_keys) 
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -609,7 +609,7 @@ Ref<LobbyResponse> LobbyClient::lobby_data(const Dictionary &p_lobby_data, bool 
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -634,7 +634,7 @@ Ref<LobbyResponse> LobbyClient::del_lobby_data(const TypedArray<String> &p_keys,
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -664,7 +664,7 @@ Ref<LobbyResponse> LobbyClient::set_peer_data(const Dictionary &p_peer_data, con
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -690,7 +690,7 @@ Ref<LobbyResponse> LobbyClient::del_peer_data(const TypedArray<String> &p_keys, 
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -721,7 +721,7 @@ Ref<LobbyResponse> LobbyClient::set_peers_data(const Dictionary &p_peer_data, bo
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -746,7 +746,7 @@ Ref<LobbyResponse> LobbyClient::del_peers_data(const TypedArray<String> &p_keys,
 	if (!connected) {
 		// signal the finish deferred
 		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
-		callable.call_deferred("Not conneceted to the server.");
+		callable.call_deferred("Not connected to the server.");
 		return response;
 	}
 	String id = _increment_counter();
@@ -777,16 +777,16 @@ void LobbyClient::_notification(int p_what) {
 
 			WebSocketPeer::State state = _socket->get_ready_state();
 			if (state == WebSocketPeer::STATE_OPEN) {
+				if (!connected) {
+					connected = true;
+					emit_signal("log_updated", "connect_to_server", "Connected to: " + server_url);
+				}
 				if (_commands.has("connect")) {
 					Ref<LobbyResponse> response = _commands["connect"];
 					Ref<LobbyResponse::LobbyResult> result;
 					result.instantiate();
 					response->emit_signal("finished", result);
 					_commands.erase("connect");
-				}
-				if (!connected) {
-					connected = true;
-					emit_signal("log_updated", "connect_to_server", "Connected to: " + server_url);
 				}
 				while (_socket->get_available_packet_count() > 0) {
 					Vector<uint8_t> packet_buffer;
@@ -875,6 +875,7 @@ void LobbyClient::_clear_lobby() {
 void LobbyClient::_receive_data(const Dictionary &p_dict) {
 	String command = p_dict.get("command", "error");
 	String message = p_dict.get("message", "");
+	emit_signal("log_updated", command, message);
 	Dictionary data_dict = p_dict.get("data", Dictionary());
 	String message_id = data_dict.get("id", "");
 	Array command_array = _commands.get(message_id, Array());
@@ -1143,7 +1144,6 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else {
 		emit_signal("log_updated", "error", "Unknown command received.");
 	}
-	emit_signal("log_updated", command, message);
 	if (command_array.size() == 2 && command != "error") {
 		int command_type = command_array[0];
 		switch (command_type) {
