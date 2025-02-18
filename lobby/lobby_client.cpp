@@ -1087,14 +1087,19 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 		String target_peer_id = data_dict.get("target_peer", "");
 		bool is_private = data_dict.get("is_private", false);
 		Dictionary peer_data_variant = data_dict.get("peer_data", Dictionary());
+		if (is_private && target_peer_id == peer->get_id()) {
+			// private data, update self
+			peer_data = peer_data_variant;
+		}
+		if (target_peer_id == peer->get_id()) {
+			// private data, update self
+			peer->set_data(peer_data_variant);
+		}
 		for (int i = 0; i < peers.size(); ++i) {
 			Ref<LobbyPeer> updated_peer = peers[i];
 			if (updated_peer->get_id() == target_peer_id) {
 				// got peer data, update it
-				if (is_private && target_peer_id == peer->get_id()) {
-					// private data, update self
-					peer_data = peer_data_variant;
-				} else {
+				if (!is_private) {
 					// public peer data
 					updated_peer->set_data(peer_data_variant);
 				}
