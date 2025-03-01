@@ -40,7 +40,6 @@ void LobbyInfo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_players"), &LobbyInfo::get_players);
 	ClassDB::bind_method(D_METHOD("get_tags"), &LobbyInfo::get_tags);
 	ClassDB::bind_method(D_METHOD("get_data"), &LobbyInfo::get_data);
-	ClassDB::bind_method(D_METHOD("get_dict"), &LobbyInfo::get_dict);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "id"), "", "get_id");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "tags"), "", "get_tags");
@@ -51,7 +50,6 @@ void LobbyInfo::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_players"), "", "get_max_players");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "sealed"), "", "is_sealed");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "password_protected"), "", "is_password_protected");
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "dict"), "", "get_dict");
 }
 
 void LobbyInfo::set_id(const String &p_id) { id = p_id; }

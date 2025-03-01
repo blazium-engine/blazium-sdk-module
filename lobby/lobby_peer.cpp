@@ -37,14 +37,12 @@ void LobbyPeer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_disconnected"), &LobbyPeer::is_disconnected);
 	ClassDB::bind_method(D_METHOD("get_data"), &LobbyPeer::get_data);
 	ClassDB::bind_method(D_METHOD("get_order_id"), &LobbyPeer::get_order_id);
-	ClassDB::bind_method(D_METHOD("get_dict"), &LobbyPeer::get_dict);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "id"), "", "get_id");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "user_data"), "", "get_user_data");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "disconnected"), "", "is_disconnected");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "ready"), "", "is_ready");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data"), "", "get_data");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "order_id"), "", "get_order_id");
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "dict"), "", "get_dict");
 }
 
 void LobbyPeer::set_id(const String &p_id) { id = p_id; }
