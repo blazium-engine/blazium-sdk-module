@@ -785,7 +785,7 @@ void LobbyClient::_notification(int p_what) {
 					Ref<LobbyResponse> response = _commands["connect"];
 					Ref<LobbyResponse::LobbyResult> result;
 					result.instantiate();
-					response->emit_signal("finished", result);
+					response->call_deferred("emit_signal", "finished", result);
 					_commands.erase("connect");
 				}
 				while (_socket->get_available_packet_count() > 0) {
@@ -803,7 +803,7 @@ void LobbyClient::_notification(int p_what) {
 					Ref<LobbyResponse> response = _commands["disconnect"];
 					Ref<LobbyResponse::LobbyResult> result;
 					result.instantiate();
-					response->emit_signal("finished", result);
+					response->call_deferred("emit_signal", "finished", result);
 					_commands.erase("disconnect");
 				}
 				_clear_lobby();
@@ -1132,7 +1132,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 						Ref<LobbyResponse::LobbyResult> result;
 						result.instantiate();
 						result->set_error(message);
-						lobby_response->emit_signal("finished", result);
+						lobby_response->call_deferred("emit_signal", "finished", result);
 					}
 				} break;
 				case LOBBY_VIEW: {
@@ -1141,7 +1141,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 						Ref<ViewLobbyResponse::ViewLobbyResult> result;
 						result.instantiate();
 						result->set_error(message);
-						view_response->emit_signal("finished", result);
+						view_response->call_deferred("emit_signal", "finished", result);
 					}
 				} break;
 			}
@@ -1156,7 +1156,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 				Ref<LobbyResponse> response = command_array[1];
 				if (response.is_valid()) {
 					Ref<LobbyResponse::LobbyResult> result = Ref<LobbyResponse::LobbyResult>(memnew(LobbyResponse::LobbyResult));
-					response->emit_signal("finished", result);
+					response->call_deferred("emit_signal", "finished", result);
 				}
 			} break;
 			case LOBBY_VIEW: {
@@ -1175,7 +1175,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 					result.instantiate();
 					result->set_peers(peers_info);
 					result->set_lobby(lobby_info);
-					response->emit_signal("finished", result);
+					response->call_deferred("emit_signal", "finished", result);
 				}
 			} break;
 		}
