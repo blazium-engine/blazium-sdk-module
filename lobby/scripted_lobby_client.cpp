@@ -602,7 +602,7 @@ void ScriptedLobbyClient::_notification(int p_what) {
 					_commands.erase("disconnect");
 				}
 				_clear_lobby();
-				emit_signal("log_updated", "error", _socket->get_close_reason());
+				emit_signal("log_updated", "disconnected_from_server", _socket->get_close_reason());
 				emit_signal("disconnected_from_server", _socket->get_close_reason());
 				set_process_internal(false);
 				connected = false;
@@ -788,6 +788,10 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 		for (int i = 0; i < peers.size(); ++i) {
 			Ref<LobbyPeer> updated_peer = peers[i];
 			if (updated_peer->get_id() == String(peer_id)) {
+				if (updated_peer->is_ready()) {
+					// already ready
+					continue;
+				}
 				updated_peer->set_ready(true);
 				emit_signal("peer_ready", updated_peer, true);
 				break;
@@ -801,6 +805,10 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 		for (int i = 0; i < peers.size(); ++i) {
 			Ref<LobbyPeer> updated_peer = peers[i];
 			if (updated_peer->get_id() == String(data_dict.get("peer_id", ""))) {
+				if (!updated_peer->is_ready()) {
+					// already unready
+					continue;
+				}
 				updated_peer->set_ready(false);
 				emit_signal("peer_ready", updated_peer, false);
 				break;
