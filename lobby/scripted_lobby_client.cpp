@@ -868,7 +868,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 			peer_data = peer_data_variant;
 		}
 		if (!is_private && target_peer_id == peer->get_id()) {
-			// private data, update self
+			// public data, update self
 			peer->set_data(peer_data_variant);
 		}
 		for (int i = 0; i < peers.size(); ++i) {
