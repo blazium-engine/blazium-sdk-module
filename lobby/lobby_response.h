@@ -83,7 +83,7 @@ public:
 	class ViewLobbyResult : public RefCounted {
 		GDCLASS(ViewLobbyResult, RefCounted);
 		String error = "";
-		TypedArray<LobbyPeer> peers_info = TypedArray<LobbyPeer>();
+		TypedArray<LobbyPeer> peers_info;
 		Ref<LobbyInfo> lobby_info;
 
 	protected:

@@ -31,10 +31,10 @@
 #ifndef RESOURCE_IMPORTER_CSV_H
 #define RESOURCE_IMPORTER_CSV_H
 
-#include "core/io/resource_importer.h"
 #include "core/io/resource.h"
-#include "core/variant/typed_array.h"
+#include "core/io/resource_importer.h"
 #include "core/variant/dictionary.h"
+#include "core/variant/typed_array.h"
 
 class ResourceImporterCSV : public ResourceImporter {
 	GDCLASS(ResourceImporterCSV, ResourceImporter);

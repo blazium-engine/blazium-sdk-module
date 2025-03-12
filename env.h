@@ -31,17 +31,17 @@
 #ifndef ENV_H
 #define ENV_H
 
-#include "core/object/object.h"
 #include "core/object/class_db.h"
-#include "core/io/file_access.h"
+#include "core/object/object.h"
 #include "core/variant/typed_array.h"
 
 class ENV : public Object {
 	GDCLASS(ENV, Object);
 	static ENV *env_singleton;
-    bool debug = false;
-    Dictionary env_vars = Dictionary();
-    TypedArray<String> env_files;
+	bool debug = false;
+	Dictionary env_vars;
+	TypedArray<String> env_files;
+
 public:
 	static ENV *get_singleton();
 	static void _bind_methods();
@@ -51,12 +51,12 @@ public:
 	Dictionary populate(const Dictionary &p_env, bool override = false);
 	Dictionary refresh(bool override = false);
 	void clear();
-    Variant get_env(const String &p_key);
-    void set_env(const String &p_key, const Variant &p_value);
+	Variant get_env(const String &p_key);
+	void set_env(const String &p_key, const Variant &p_value);
 	bool has_env(const String &p_key);
 
-    bool get_debug() const { return debug; }
-    void set_debug(bool p_debug) { debug = p_debug; }
+	bool get_debug() const { return debug; }
+	void set_debug(bool p_debug) { debug = p_debug; }
 
 	void print_debug(String text);
 

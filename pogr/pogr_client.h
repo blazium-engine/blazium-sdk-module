@@ -34,7 +34,6 @@
 #include "../blazium_client.h"
 #include "core/io/json.h"
 #include "core/templates/vector.h"
-#include "core/version.h"
 #include "main/performance.h"
 #include "scene/main/http_request.h"
 
@@ -112,6 +111,7 @@ public:
 		HTTPRequest *request;
 		POGRClient *client;
 		String request_command;
+
 	protected:
 		static void _bind_methods() {
 			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "POGRResult")));
@@ -152,7 +152,7 @@ public:
 			p_client->add_child(request);
 			request_command = p_command;
 			request->connect("request_completed", callable_mp(this, &POGRResponse::_on_request_completed));
-			request->request(p_pogr_url + "/" +p_command, p_headers, HTTPClient::METHOD_POST, JSON::stringify(p_data));
+			request->request(p_pogr_url + "/" + p_command, p_headers, HTTPClient::METHOD_POST, JSON::stringify(p_data));
 		}
 		void signal_finish(String p_error) {
 			Ref<POGRResult> result;

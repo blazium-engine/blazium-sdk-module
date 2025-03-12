@@ -29,9 +29,9 @@
 /**************************************************************************/
 
 #include "resource_importer_csv.h"
-#include "resource_csv.h"
 #include "core/io/file_access.h"
 #include "core/io/resource_saver.h"
+#include "resource_csv.h"
 
 String ResourceImporterCSV::get_importer_name() const {
 	return "csv";
@@ -68,9 +68,9 @@ String ResourceImporterCSV::get_preset_name(int p_idx) const {
 }
 
 void ResourceImporterCSV::get_import_options(const String &p_path, List<ImportOption> *r_options, int p_preset) const {
-	if (p_path.get_extension().contains("tsv")){
+	if (p_path.get_extension().contains("tsv")) {
 		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_TAB));
-	} else if (p_path.get_extension().contains("psv")){
+	} else if (p_path.get_extension().contains("psv")) {
 		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_PIPE));
 	} else {
 		r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "delimiter", PROPERTY_HINT_ENUM, "Comma,Semicolon,Tab,Pipe"), RowSeparator::ROW_SEPARATOR_COMMA));
@@ -97,7 +97,7 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 	bool headers = p_options.get("headers");
 	Ref<FileAccess> f = FileAccess::open(p_source_file, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(f.is_null(), ERR_INVALID_PARAMETER, "Cannot open file from path '" + p_source_file + "'.");
-	
+
 	Ref<CSV> csv;
 	csv.instantiate();
 	csv->headers = headers;
@@ -107,7 +107,7 @@ Error ResourceImporterCSV::import(const String &p_source_file, const String &p_s
 		ERR_PRINT("Failed to load CSV from path '" + p_source_file + "'.");
 		return err;
 	}
-	err =  ResourceSaver::save(csv, p_save_path + ".res");
+	err = ResourceSaver::save(csv, p_save_path + ".res");
 	if (err != OK) {
 		ERR_PRINT("Failed to save CSV to path '" + p_save_path + "'.");
 		return err;

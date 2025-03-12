@@ -32,8 +32,8 @@
 #define SCRIPTED_LOBBY_CLIENT_H
 
 #include "../discord/discord_embedded_app_client.h"
-#include "scripted_lobby_response.h"
 #include "lobby_client.h"
+#include "scripted_lobby_response.h"
 
 class ScriptedLobbyClient : public BlaziumClient {
 	GDCLASS(ScriptedLobbyClient, BlaziumClient);
@@ -43,11 +43,11 @@ protected:
 	String server_url;
 	String reconnection_token = "";
 	String game_id = "";
-	Dictionary peer_data = Dictionary();
+	Dictionary peer_data;
 	Ref<LobbyInfo> lobby;
 	Ref<LobbyPeer> peer;
-	TypedArray<LobbyInfo> lobbies = TypedArray<LobbyInfo>();
-	TypedArray<LobbyPeer> peers = TypedArray<LobbyPeer>();
+	TypedArray<LobbyInfo> lobbies;
+	TypedArray<LobbyPeer> peers;
 
 	Ref<WebSocketPeer> _socket;
 	int _counter = 0;

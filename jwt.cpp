@@ -29,14 +29,15 @@
 /**************************************************************************/
 
 #include "jwt.h"
-#include "core/io/json.h"
 #include "core/core_bind.h"
+#include "core/io/json.h"
 
 JWT *JWT::jwt_singleton = nullptr;
 
 JWT *JWT::get_singleton() {
 	return jwt_singleton;
 }
+
 void JWT::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_header", "jwt"), &JWT::get_header);
 	ClassDB::bind_method(D_METHOD("get_payload", "jwt"), &JWT::get_payload);
@@ -52,14 +53,15 @@ Dictionary JWT::get_header(const String &p_jwt) {
 	if (singleton == nullptr) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
-    // pad with = if not multiple of 4
-    String padded_string = split[0];
-    while (padded_string.length() % 4 != 0) {
-        padded_string += "=";
-    }
+	// pad with = if not multiple of 4
+	String padded_string = split[0];
+	while (padded_string.length() % 4 != 0) {
+		padded_string += "=";
+	}
 	String json_utf8 = singleton->base64_to_utf8(padded_string);
 	return JSON::parse_string(json_utf8);
 }
+
 Dictionary JWT::get_payload(const String &p_jwt) {
 	// split first portion
 	Vector<String> split = p_jwt.split(".");
@@ -71,13 +73,14 @@ Dictionary JWT::get_payload(const String &p_jwt) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
 
-    // pad with = if not multiple of 4
-    String padded_string = split[1];
-    while (padded_string.length() % 4 != 0) {
-        padded_string += "=";
-    }
+	// pad with = if not multiple of 4
+	String padded_string = split[1];
+	while (padded_string.length() % 4 != 0) {
+		padded_string += "=";
+	}
 	String json_utf8 = singleton->base64_to_utf8(padded_string);
 	return JSON::parse_string(json_utf8);
 }
-JWT::JWT() {jwt_singleton = this; }
+
+JWT::JWT() { jwt_singleton = this; }
 JWT::~JWT() { jwt_singleton = nullptr; }

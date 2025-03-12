@@ -29,10 +29,10 @@
 /**************************************************************************/
 
 #include "./scripted_lobby_client.h"
+#include "../discord/discord_embedded_app_client.h"
 #include "./lobby_client.h"
 #include "lobby_info.h"
 #include "scene/main/node.h"
-#include "../discord/discord_embedded_app_client.h"
 
 ScriptedLobbyClient::ScriptedLobbyClient() {
 	if (DiscordEmbeddedAppClient::static_is_discord_environment()) {

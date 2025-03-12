@@ -29,8 +29,8 @@
 /**************************************************************************/
 
 #include "discord_embedded_app_client.h"
-#include "platform/web/api/javascript_bridge_singleton.h"
 #include "core/io/json.h"
+#include "platform/web/api/javascript_bridge_singleton.h"
 
 void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("close", "code", "message"), &DiscordEmbeddedAppClient::close);
@@ -70,30 +70,30 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_mobile_app_version"), &DiscordEmbeddedAppClient::get_mobile_app_version);
 	ClassDB::bind_method(D_METHOD("get_frame_id"), &DiscordEmbeddedAppClient::get_frame_id);
 
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "", "get_user_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "", "get_client_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_instance_id"), "", "get_user_instance_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_id"), "", "get_custom_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "referrer_id"), "", "get_referrer_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "platform"), "", "get_platform");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "guild_id"), "", "get_guild_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "channel_id"), "", "get_channel_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "location_id"), "", "get_location_id");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "sdk_version"), "", "get_sdk_version");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "mobile_app_version"), "", "get_mobile_app_version");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "frame_id"), "", "get_frame_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "", "get_user_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "", "get_client_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_instance_id"), "", "get_user_instance_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_id"), "", "get_custom_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "referrer_id"), "", "get_referrer_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "platform"), "", "get_platform");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "guild_id"), "", "get_guild_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "channel_id"), "", "get_channel_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "location_id"), "", "get_location_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "sdk_version"), "", "get_sdk_version");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "mobile_app_version"), "", "get_mobile_app_version");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "frame_id"), "", "get_frame_id");
 
 	ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
-    ADD_SIGNAL(MethodInfo("error", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("voice_state_update", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("speaking_start", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("speaking_stop", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("activity_layout_mode_update", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("orientation_update", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("thermal_state_update", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("activity_instance_participants_update", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("entitlement_create", PropertyInfo(Variant::DICTIONARY, "data")));
-    ADD_SIGNAL(MethodInfo("current_guild_member_update", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("error", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("voice_state_update", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("speaking_start", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("speaking_stop", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("activity_layout_mode_update", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("orientation_update", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("thermal_state_update", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("activity_instance_participants_update", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("entitlement_create", PropertyInfo(Variant::DICTIONARY, "data")));
+	ADD_SIGNAL(MethodInfo("current_guild_member_update", PropertyInfo(Variant::DICTIONARY, "data")));
 	ADD_SIGNAL(MethodInfo("current_user_update", PropertyInfo(Variant::DICTIONARY, "data")));
 
 	BIND_ENUM_CONSTANT(DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_UNHANDLED);
@@ -102,27 +102,26 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	BIND_ENUM_CONSTANT(DISCORD_EMBEDDED_APP_ORIENTATION_LOCK_STATE_LANDSCAPE);
 }
 
-
 void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
-    JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
-    if (!singleton) {
-        ERR_PRINT("JavaScriptBridge singleton is invalid");
-        return;
-    }
-    Array event_array = p_event;
-    if (event_array.size() != 1) {
-        ERR_PRINT("Event is invalid");
+	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
+	if (!singleton) {
+		ERR_PRINT("JavaScriptBridge singleton is invalid");
+		return;
+	}
+	Array event_array = p_event;
+	if (event_array.size() != 1) {
+		ERR_PRINT("Event is invalid");
 		print_line(event_array);
-        return;
-    }
-    // event is a tuple
-    // https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts#L281
-    Variant event_dict = event_array[0];
+		return;
+	}
+	// event is a tuple
+	// https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts#L281
+	Variant event_dict = event_array[0];
 	Variant data_arr = event_dict.get("data");
-    Ref<JavaScriptObject> json = singleton->get_interface("JSON");
+	Ref<JavaScriptObject> json = singleton->get_interface("JSON");
 	if (!json.is_valid()) {
-        ERR_PRINT("JavaScriptBridge JSON is invalid");
-        return;
+		ERR_PRINT("JavaScriptBridge JSON is invalid");
+		return;
 	}
 	String stringified_data = json->call("stringify", data_arr);
 	Array parsed_data_array = JSON::parse_string(stringified_data);
@@ -149,6 +148,7 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 		}
 	}
 }
+
 void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
 	print_line(p_data);
 	String event = p_data["evt"];
@@ -288,17 +288,17 @@ String _generate_nonce() {
 }
 
 void DiscordEmbeddedAppClient::subscribe_to_all_events() {
-    Array events;
-    events.push_back("VOICE_STATE_UPDATE");
-    events.push_back("SPEAKING_START");
-    events.push_back("SPEAKING_STOP");
-    events.push_back("ACTIVITY_LAYOUT_MODE_UPDATE");
-    events.push_back("ORIENTATION_UPDATE");
-    events.push_back("CURRENT_USER_UPDATE");
-    events.push_back("THERMAL_STATE_UPDATE");
-    events.push_back("ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE");
-    events.push_back("ENTITLEMENT_CREATE");
-    events.push_back("CURRENT_GUILD_MEMBER_UPDATE");
+	Array events;
+	events.push_back("VOICE_STATE_UPDATE");
+	events.push_back("SPEAKING_START");
+	events.push_back("SPEAKING_STOP");
+	events.push_back("ACTIVITY_LAYOUT_MODE_UPDATE");
+	events.push_back("ORIENTATION_UPDATE");
+	events.push_back("CURRENT_USER_UPDATE");
+	events.push_back("THERMAL_STATE_UPDATE");
+	events.push_back("ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE");
+	events.push_back("ENTITLEMENT_CREATE");
+	events.push_back("CURRENT_GUILD_MEMBER_UPDATE");
 	for (int i = 0; i < events.size(); i++) {
 		String event = events[i];
 		Dictionary args;
@@ -329,11 +329,11 @@ bool DiscordEmbeddedAppClient::is_discord_environment() {
 }
 
 bool DiscordEmbeddedAppClient::static_is_discord_environment() {
-    JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
-    if (!singleton) {
-        ERR_PRINT("JavaScriptBridge singleton is invalid");
-        return false;
-    }
+	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
+	if (!singleton) {
+		ERR_PRINT("JavaScriptBridge singleton is invalid");
+		return false;
+	}
 
 	// DiscordEmbed defined in platform/web/export/export_plugin.cpp
 	return singleton->eval("window.DiscordEmbed?.isDiscordEmbed() ?? false", true);

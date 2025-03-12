@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ThirdPartyClient" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Abstact base class for everything related to third party services.
+		Abstract base class for everything related to third party services.
 	</brief_description>
 	<description>
-		Abstact base class for everything related to third party services.
+		Abstract base class for everything related to third party services.
 	</description>
 	<tutorials>
 	</tutorials>

@@ -32,9 +32,6 @@
 #define SCRIPTED_LOBBY_RESPONSE_H
 
 #include "core/object/ref_counted.h"
-#include "core/variant/typed_array.h"
-#include "lobby_info.h"
-#include "lobby_peer.h"
 
 class ScriptedLobbyResponse : public RefCounted {
 	GDCLASS(ScriptedLobbyResponse, RefCounted);

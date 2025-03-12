@@ -29,9 +29,9 @@
 /**************************************************************************/
 
 #include "./lobby_client.h"
+#include "../discord/discord_embedded_app_client.h"
 #include "lobby_info.h"
 #include "scene/main/node.h"
-#include "../discord/discord_embedded_app_client.h"
 
 LobbyClient::LobbyClient() {
 	if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
@@ -207,8 +207,8 @@ Ref<LobbyResponse> LobbyClient::disconnect_from_server() {
 	set_process_internal(true);
 	_socket->close(1000, "Normal Closure");
 	connected = false;
-	host_data = Dictionary();
-	peer_data = Dictionary();
+	host_data.clear();
+	peer_data.clear();
 	peer->set_data(Dictionary());
 	lobbies.clear();
 	peers.clear();

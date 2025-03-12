@@ -28,27 +28,27 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "core/io/resource_importer.h"
 #include "register_types.h"
 #include "blazium_client.h"
-#include "lobby/scripted_lobby_client.h"
-#include "lobby/scripted_lobby_response.h"
+#include "core/io/resource_importer.h"
+#include "csv/resource_csv.h"
+#include "csv/resource_importer_csv.h"
+#include "discord/discord_embedded_app_client.h"
+#include "discord/discord_embedded_app_response.h"
+#include "env.h"
+#include "jwt.h"
 #include "lobby/lobby_client.h"
 #include "lobby/lobby_info.h"
 #include "lobby/lobby_peer.h"
 #include "lobby/lobby_response.h"
+#include "lobby/scripted_lobby_client.h"
+#include "lobby/scripted_lobby_response.h"
 #include "login/login_client.h"
 #include "master_server/master_server_client.h"
 #include "pogr/pogr_client.h"
 #include "third_party_client.h"
-#include "discord/discord_embedded_app_client.h"
-#include "discord/discord_embedded_app_response.h"
 #include "youtube/youtube_playables_client.h"
 #include "youtube/youtube_playables_response.h"
-#include "jwt.h"
-#include "env.h"
-#include "csv/resource_csv.h"
-#include "csv/resource_importer_csv.h"
 
 static JWT *jwt_singleton_global = nullptr;
 static ENV *env_singleton_global = nullptr;

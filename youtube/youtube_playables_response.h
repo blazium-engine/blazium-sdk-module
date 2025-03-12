@@ -31,26 +31,29 @@
 #ifndef YOUTUBE_PLAYABLES_RESPONSE_H
 #define YOUTUBE_PLAYABLES_RESPONSE_H
 
-#include "core/object/ref_counted.h"
 #include "core/io/json.h"
+#include "core/object/ref_counted.h"
 #include "platform/web/api/javascript_bridge_singleton.h"
 
 class YoutubePlayablesResponse : public RefCounted {
 	GDCLASS(YoutubePlayablesResponse, RefCounted);
 
 	Ref<JavaScriptObject> signal_finish_callback;
+
 protected:
 	static void _bind_methods() {
-        ClassDB::bind_method(D_METHOD("_signal_finish"), &YoutubePlayablesResponse::_signal_finish);
+		ClassDB::bind_method(D_METHOD("_signal_finish"), &YoutubePlayablesResponse::_signal_finish);
 
 		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "YoutubePlayablesResult")));
 	}
+
 public:
 	class YoutubePlayablesResult : public RefCounted {
 		GDCLASS(YoutubePlayablesResult, RefCounted);
 
 		String error;
 		String data;
+
 	protected:
 		static void _bind_methods() {
 			ClassDB::bind_method(D_METHOD("get_data"), &YoutubePlayablesResult::get_data);
@@ -60,6 +63,7 @@ public:
 			ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data"), "", "get_data");
 			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
 		}
+
 	public:
 		void set_error(String p_error) { this->error = p_error; }
 		bool has_error() const { return !error.is_empty(); }
@@ -70,6 +74,8 @@ public:
 	};
 
 	void _signal_finish(Array p_input) {
+		ERR_FAIL_COND(p_input.is_empty());
+
 		Dictionary dict = JSON::parse_string(p_input[0]);
 		Ref<YoutubePlayablesResult> result = Ref<YoutubePlayablesResult>();
 		result.instantiate();

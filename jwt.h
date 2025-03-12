@@ -31,18 +31,21 @@
 #ifndef JWT_H
 #define JWT_H
 
-#include "core/object/object.h"
 #include "core/object/class_db.h"
+#include "core/object/object.h"
 
 class JWT : public Object {
 	GDCLASS(JWT, Object);
+
 	static JWT *jwt_singleton;
+
 public:
 	static JWT *get_singleton();
 	static void _bind_methods();
 
 	Dictionary get_header(const String &p_jwt);
 	Dictionary get_payload(const String &p_jwt);
+
 	JWT();
 	~JWT();
 };

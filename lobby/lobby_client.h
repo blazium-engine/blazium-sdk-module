@@ -31,8 +31,8 @@
 #ifndef LOBBY_CLIENT_H
 #define LOBBY_CLIENT_H
 
-#include "../discord/discord_embedded_app_client.h"
 #include "../blazium_client.h"
+#include "../discord/discord_embedded_app_client.h"
 #include "core/io/json.h"
 #include "lobby_info.h"
 #include "lobby_peer.h"
@@ -49,12 +49,12 @@ protected:
 	String server_url;
 	String reconnection_token = "";
 	String game_id = "";
-	Dictionary host_data = Dictionary();
-	Dictionary peer_data = Dictionary();
+	Dictionary host_data;
+	Dictionary peer_data;
 	Ref<LobbyInfo> lobby;
 	Ref<LobbyPeer> peer;
-	TypedArray<LobbyInfo> lobbies = TypedArray<LobbyInfo>();
-	TypedArray<LobbyPeer> peers = TypedArray<LobbyPeer>();
+	TypedArray<LobbyInfo> lobbies;
+	TypedArray<LobbyPeer> peers;
 
 	Ref<WebSocketPeer> _socket;
 	int _counter = 0;

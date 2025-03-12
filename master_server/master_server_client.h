@@ -160,7 +160,7 @@ public:
 	class MasterServerListResult : public RefCounted {
 		GDCLASS(MasterServerListResult, RefCounted);
 		String error = "";
-		TypedArray<GameServerInfo> results = TypedArray<GameServerInfo>();
+		TypedArray<GameServerInfo> results;
 
 	protected:
 		static void _bind_methods() {
