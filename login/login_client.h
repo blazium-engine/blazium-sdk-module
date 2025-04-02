@@ -217,6 +217,12 @@ public:
 			request->connect("request_completed", callable_mp(this, &LoginAccessTokenResponse::_on_request_completed));
 			request->request(p_url, Vector<String>(), HTTPClient::METHOD_POST, JSON::stringify(p_data));
 		}
+		LoginAccessTokenResponse() {
+			request = memnew(HTTPRequest);
+		}
+		~LoginAccessTokenResponse() {
+			request->queue_free();
+		}
 	};
 
 protected:
@@ -375,10 +381,10 @@ public:
 		Dictionary command;
 		command["action"] = "getID";
 		command["type"] = p_type;
-		login_response = Ref<LoginIDResponse>();
-		login_response.instantiate();
+		login_id_response = Ref<LoginIDResponse>();
+		login_id_response.instantiate();
 		_send_data(command);
-		return login_response;
+		return login_id_response;
 	}
 
 	Ref<LoginAccessTokenResponse> request_access_token(String p_type, String p_auth_id, String p_code) {

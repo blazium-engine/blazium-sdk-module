@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="LoginIDResult" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		A result from a [LoginIDResponse].
 	</brief_description>
 	<description>
+		A result from a [LoginIDResponse]. Contains either result or error.
 	</description>
 	<tutorials>
 	</tutorials>
