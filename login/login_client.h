@@ -396,12 +396,12 @@ public:
 			callable.call_deferred("Not connected to login server.");
 			return response;
 		}
-		Dictionary data;
-		data["code"] = p_code;
+		Dictionary body_data;
+		body_data["code"] = p_code;
 		Ref<LoginAccessTokenResponse> response;
 		response.instantiate();
 		String access_code_route_with_path = access_code_route + "/" + p_type + "/" + p_code;
-		response->post_request(http_prefix + server_url + access_code_route_with_path, data, this);
+		response->post_request(http_prefix + server_url + access_code_route_with_path, body_data, this);
 		return response;
 	}
 
