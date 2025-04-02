@@ -51,17 +51,52 @@ protected:
 	bool connected = false;
 
 public:
-	class LoginResponse : public RefCounted {
-		GDCLASS(LoginResponse, RefCounted);
+	class LoginConnectResponse : public RefCounted {
+		GDCLASS(LoginConnectResponse, RefCounted);
 
 	protected:
 		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginResult")));
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginConnectResponse")));
 		}
 
 	public:
-		class LoginResult : public RefCounted {
-			GDCLASS(LoginResult, RefCounted);
+		class LoginConnectResult : public RefCounted {
+			GDCLASS(LoginConnectResult, RefCounted);
+
+			String error = "";
+
+		protected:
+			static void _bind_methods() {
+				ClassDB::bind_method(D_METHOD("has_error"), &LoginConnectResult::has_error);
+				ClassDB::bind_method(D_METHOD("get_error"), &LoginConnectResult::get_error);
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
+			}
+
+		public:
+			void set_error(String p_error) { this->error = p_error; }
+
+			bool has_error() const { return !error.is_empty(); }
+			String get_error() const { return error; }
+		};
+		void signal_finish(String p_error) {
+			Ref<LoginConnectResult> result;
+			result.instantiate();
+			result->set_error(p_error);
+			emit_signal("finished", result);
+		}
+	};
+
+	class LoginURLResponse : public RefCounted {
+		GDCLASS(LoginURLResponse, RefCounted);
+
+	protected:
+		static void _bind_methods() {
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginURLResponse")));
+		}
+
+	public:
+		class LoginURLResult : public RefCounted {
+			GDCLASS(LoginURLResult, RefCounted);
 
 			String error = "";
 			String login_url = "";
@@ -69,10 +104,10 @@ public:
 
 		protected:
 			static void _bind_methods() {
-				ClassDB::bind_method(D_METHOD("get_login_url"), &LoginResult::get_login_url);
-				ClassDB::bind_method(D_METHOD("get_login_type"), &LoginResult::get_login_type);
-				ClassDB::bind_method(D_METHOD("has_error"), &LoginResult::has_error);
-				ClassDB::bind_method(D_METHOD("get_error"), &LoginResult::get_error);
+				ClassDB::bind_method(D_METHOD("get_login_url"), &LoginURLResult::get_login_url);
+				ClassDB::bind_method(D_METHOD("get_login_type"), &LoginURLResult::get_login_type);
+				ClassDB::bind_method(D_METHOD("has_error"), &LoginURLResult::has_error);
+				ClassDB::bind_method(D_METHOD("get_error"), &LoginURLResult::get_error);
 				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
 				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_url"), "", "get_login_url");
 				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_type"), "", "get_login_type");
@@ -89,7 +124,7 @@ public:
 			String get_login_type() const { return login_type; }
 		};
 		void signal_finish(String p_error) {
-			Ref<LoginResult> result;
+			Ref<LoginURLResult> result;
 			result.instantiate();
 			result->set_error(p_error);
 			emit_signal("finished", result);
@@ -225,23 +260,191 @@ public:
 		}
 	};
 
+	class LoginVerifyTokenResponse : public RefCounted {
+		GDCLASS(LoginVerifyTokenResponse, RefCounted);
+		HTTPRequest *request;
+		LoginClient *client;
+		String request_command;
+
+	protected:
+		static void _bind_methods() {
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginVerifyTokenResponse")));
+		}
+
+	public:
+		class LoginVerifyTokenResult : public RefCounted {
+			GDCLASS(LoginVerifyTokenResult, RefCounted);
+
+			String error = "";
+			String login_access_token = "";
+			String login_type = "";
+
+		protected:
+			static void _bind_methods() {
+				ClassDB::bind_method(D_METHOD("get_login_access_token"), &LoginVerifyTokenResult::get_login_access_token);
+				ClassDB::bind_method(D_METHOD("get_login_type"), &LoginVerifyTokenResult::get_login_type);
+				ClassDB::bind_method(D_METHOD("has_error"), &LoginVerifyTokenResult::has_error);
+				ClassDB::bind_method(D_METHOD("get_error"), &LoginVerifyTokenResult::get_error);
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_access_token"), "", "get_login_access_token");
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_type"), "", "get_login_type");
+			}
+
+		public:
+			void set_login_type(String p_type) { this->login_type = p_type; }
+			void set_login_access_token(String p_access_token) { this->login_access_token = p_access_token; }
+			void set_error(String p_error) { this->error = p_error; }
+
+			bool has_error() const { return !error.is_empty(); }
+			String get_error() const { return error; }
+			String get_login_access_token() const { return login_access_token; }
+			String get_login_type() const { return login_type; }
+		};
+		
+		void _on_request_completed(int p_status, int p_code, const PackedStringArray &p_headers, const PackedByteArray &p_data) {
+			Ref<LoginVerifyTokenResult> result;
+			result.instantiate();
+			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
+			if (p_code != 200 || result_str == "") {
+				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
+				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
+			} else {
+				if (result_str != "") {
+					Dictionary result_dict = JSON::parse_string(result_str);
+					String token = result_dict.get("url", "");
+					String jwt = result_dict.get("jwt", "");
+					String type = result_dict.get("type", "");
+					result->set_login_access_token(token);
+					result->set_login_type(type);
+					client->emit_signal(SNAME("received_jwt"), jwt, type, token);
+				}
+			}
+			emit_signal(SNAME("finished"), result);
+		}
+		
+		void signal_finish(String p_error) {
+			Ref<LoginVerifyTokenResult> result;
+			result.instantiate();
+			result->set_error(p_error);
+			emit_signal("finished", result);
+		}
+
+		void post_request(String p_url, Dictionary p_data, LoginClient *p_client) {
+			client = p_client;
+			p_client->add_child(request);
+			request->connect("request_completed", callable_mp(this, &LoginVerifyTokenResponse::_on_request_completed));
+			request->request(p_url, Vector<String>(), HTTPClient::METHOD_POST, JSON::stringify(p_data));
+		}
+		LoginVerifyTokenResponse() {
+			request = memnew(HTTPRequest);
+		}
+		~LoginVerifyTokenResponse() {
+			request->queue_free();
+		}
+	};
+
+	class LoginRefreshTokenResponse : public RefCounted {
+		GDCLASS(LoginRefreshTokenResponse, RefCounted);
+		HTTPRequest *request;
+		LoginClient *client;
+		String request_command;
+
+	protected:
+		static void _bind_methods() {
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginRefreshTokenResponse")));
+		}
+
+	public:
+		class LoginRefreshTokenResult : public RefCounted {
+			GDCLASS(LoginRefreshTokenResult, RefCounted);
+
+			String error = "";
+			String login_access_token = "";
+			String login_type = "";
+
+		protected:
+			static void _bind_methods() {
+				ClassDB::bind_method(D_METHOD("get_login_access_token"), &LoginRefreshTokenResult::get_login_access_token);
+				ClassDB::bind_method(D_METHOD("get_login_type"), &LoginRefreshTokenResult::get_login_type);
+				ClassDB::bind_method(D_METHOD("has_error"), &LoginRefreshTokenResult::has_error);
+				ClassDB::bind_method(D_METHOD("get_error"), &LoginRefreshTokenResult::get_error);
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_access_token"), "", "get_login_access_token");
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_type"), "", "get_login_type");
+			}
+
+		public:
+			void set_login_type(String p_type) { this->login_type = p_type; }
+			void set_login_access_token(String p_access_token) { this->login_access_token = p_access_token; }
+			void set_error(String p_error) { this->error = p_error; }
+
+			bool has_error() const { return !error.is_empty(); }
+			String get_error() const { return error; }
+			String get_login_access_token() const { return login_access_token; }
+			String get_login_type() const { return login_type; }
+		};
+		
+		void _on_request_completed(int p_status, int p_code, const PackedStringArray &p_headers, const PackedByteArray &p_data) {
+			Ref<LoginRefreshTokenResult> result;
+			result.instantiate();
+			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
+			if (p_code != 200 || result_str == "") {
+				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
+				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
+			} else {
+				if (result_str != "") {
+					Dictionary result_dict = JSON::parse_string(result_str);
+					String token = result_dict.get("url", "");
+					String jwt = result_dict.get("jwt", "");
+					String type = result_dict.get("type", "");
+					result->set_login_access_token(token);
+					result->set_login_type(type);
+					client->emit_signal(SNAME("received_jwt"), jwt, type, token);
+				}
+			}
+			emit_signal(SNAME("finished"), result);
+		}
+		
+		void signal_finish(String p_error) {
+			Ref<LoginRefreshTokenResult> result;
+			result.instantiate();
+			result->set_error(p_error);
+			emit_signal("finished", result);
+		}
+
+		void post_request(String p_url, Dictionary p_data, LoginClient *p_client) {
+			client = p_client;
+			p_client->add_child(request);
+			request->connect("request_completed", callable_mp(this, &LoginRefreshTokenResponse::_on_request_completed));
+			request->request(p_url, Vector<String>(), HTTPClient::METHOD_POST, JSON::stringify(p_data));
+		}
+		LoginRefreshTokenResponse() {
+			request = memnew(HTTPRequest);
+		}
+		~LoginRefreshTokenResponse() {
+			request->queue_free();
+		}
+	};
+
 protected:
 	Ref<WebSocketPeer> _socket;
-	Ref<LoginResponse> login_response;
+	Ref<LoginURLResponse> login_url_response;
+	Ref<LoginVerifyTokenResponse> token_verify_response;
+	Ref<LoginRefreshTokenResponse> token_refresh_response;
 	Ref<LoginIDResponse> login_id_response;
-	Ref<LoginResponse> connect_response;
+	Ref<LoginConnectResponse> connect_response;
 
 	void _receive_data(const Dictionary &p_data) {
 		String action = p_data.get("action", "");
 		if (action == "login_url") {
 			String url = p_data.get("url", "");
 			String type = p_data.get("type", "");
-			Ref<LoginResponse::LoginResult> login_result;
-			login_result.instantiate();
-			login_result->set_login_url(url);
-			login_result->set_login_type(type);
-			login_response->emit_signal("finished", login_result);
-			login_response = Ref<LoginResponse>();
+			Ref<LoginURLResponse::LoginURLResult> login_url_result;
+			login_url_result.instantiate();
+			login_url_result->set_login_url(url);
+			login_url_result->set_login_type(type);
+			login_url_result->emit_signal("finished", login_url_result);
+			login_url_response = Ref<LoginURLResponse>();
 		}
 		if (action == "conn_id") {
 			String id = p_data.get("id", "");
@@ -251,15 +454,21 @@ protected:
 			login_id_result->set_login_id(id);
 			login_id_result->set_login_type(type);
 			login_id_response->emit_signal("finished", login_id_result);
-			login_id_response = Ref<LoginResponse>();
+			login_id_response = Ref<LoginIDResponse>();
 		}
 		if (action == "error") {
 			String error = p_data.get("error", "");
-			if (login_response.is_valid()) {
-				Ref<LoginResponse::LoginResult> login_result;
-				login_result.instantiate();
-				login_result->set_error(error);
-				login_response->emit_signal("finished", login_result);
+			if (login_url_response.is_valid()) {
+				Ref<LoginURLResponse::LoginURLResult> login_url_result;
+				login_url_result.instantiate();
+				login_url_result->set_error(error);
+				login_url_response->emit_signal("finished", login_url_result);
+			}
+			if (login_id_response.is_valid()) {
+				Ref<LoginIDResponse::LoginIDResult> login_id_result;
+				login_id_result.instantiate();
+				login_id_result->set_error(error);
+				login_id_response->emit_signal("finished", login_id_result);
 			}
 			if (login_id_response.is_valid()) {
 				Ref<LoginIDResponse::LoginIDResult> login_id_result;
@@ -288,7 +497,7 @@ protected:
 					if (!connected) {
 						connected = true;
 						if (connect_response.is_valid()) {
-							Ref<LoginResponse::LoginResult> connected_result;
+							Ref<LoginConnectResponse::LoginConnectResult> connected_result;
 							connected_result.instantiate();
 							connect_response->emit_signal("finished", connected_result);
 						}
@@ -341,7 +550,7 @@ public:
 
 	bool get_connected() { return connected; }
 
-	Ref<LoginResponse> connect_to_server();
+	Ref<LoginConnectResponse> connect_to_server();
 	void disconnect_from_server();
 	void set_override_discord_path(String p_path) {
 		override_discord_path = p_path;
@@ -351,22 +560,22 @@ public:
 	}
 	String get_override_discord_path() const { return override_discord_path; }
 
-	Ref<LoginResponse> request_login_info(String p_type) {
+	Ref<LoginURLResponse> request_login_info(String p_type) {
 		if (!connected) {
-			Ref<LoginResponse> response = Ref<LoginResponse>();
+			Ref<LoginURLResponse> response = Ref<LoginURLResponse>();
 			response.instantiate();
 			// signal the finish deferred
-			Callable callable = callable_mp(*response, &LoginResponse::signal_finish);
+			Callable callable = callable_mp(*response, &LoginURLResponse::signal_finish);
 			callable.call_deferred("Not connected to login server.");
 			return response;
 		}
 		Dictionary command;
 		command["action"] = "getLogin";
 		command["type"] = p_type;
-		login_response = Ref<LoginResponse>();
-		login_response.instantiate();
+		login_url_response = Ref<LoginURLResponse>();
+		login_url_response.instantiate();
 		_send_data(command);
-		return login_response;
+		return login_url_response;
 	}
 
 	Ref<LoginIDResponse> request_auth_id(String p_type) {

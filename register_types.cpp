@@ -94,8 +94,12 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(MasterServerClient::MasterServerListResponse);
 		GDREGISTER_CLASS(MasterServerClient::MasterServerListResult);
 		GDREGISTER_CLASS(LoginClient);
-		GDREGISTER_CLASS(LoginClient::LoginResponse);
-		GDREGISTER_CLASS(LoginClient::LoginResponse::LoginResult);
+		GDREGISTER_CLASS(LoginClient::LoginConnectResponse);
+		GDREGISTER_CLASS(LoginClient::LoginConnectResponse::LoginConnectResult);
+		GDREGISTER_CLASS(LoginClient::LoginVerifyTokenResponse);
+		GDREGISTER_CLASS(LoginClient::LoginVerifyTokenResponse::LoginVerifyTokenResult);
+		GDREGISTER_CLASS(LoginClient::LoginRefreshTokenResponse);
+		GDREGISTER_CLASS(LoginClient::LoginRefreshTokenResponse::LoginRefreshTokenResult);
 		GDREGISTER_CLASS(LoginClient::LoginIDResponse);
 		GDREGISTER_CLASS(LoginClient::LoginIDResponse::LoginIDResult);
 		GDREGISTER_CLASS(LoginClient::LoginAccessTokenResponse);

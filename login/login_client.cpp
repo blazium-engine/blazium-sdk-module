@@ -65,12 +65,12 @@ void LoginClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("received_jwt", PropertyInfo(Variant::STRING, "jwt"), PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::STRING, "access_token")));
 }
 
-Ref<LoginClient::LoginResponse> LoginClient::connect_to_server() {
+Ref<LoginClient::LoginConnectResponse> LoginClient::connect_to_server() {
 	if (connected) {
-		Ref<LoginResponse> response = Ref<LoginResponse>();
+		Ref<LoginConnectResponse> response = Ref<LoginConnectResponse>();
 		response.instantiate();
 		// signal the finish deferred
-		Callable callable = callable_mp(*response, &LoginResponse::signal_finish);
+		Callable callable = callable_mp(*response, &LoginConnectResponse::signal_finish);
 		callable.call_deferred("Already connected to the server.");
 		return response;
 	}
@@ -85,11 +85,11 @@ Ref<LoginClient::LoginResponse> LoginClient::connect_to_server() {
 		set_process_internal(false);
 		emit_signal("log_updated", "error", "Unable to connect to server at: " + connect_url);
 		connected = false;
-		return Ref<LoginResponse>();
+		return Ref<LoginConnectResponse>();
 	}
 	set_process_internal(true);
 	emit_signal("log_updated", "connect_to_server", "Connecting to: " + connect_url);
-	connect_response = Ref<LoginResponse>();
+	connect_response = Ref<LoginConnectResponse>();
 	connect_response.instantiate();
 	return connect_response;
 }

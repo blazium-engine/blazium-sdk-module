@@ -17,7 +17,7 @@
 	</tutorials>
 	<methods>
 		<method name="connect_to_server">
-			<return type="LoginResponse" />
+			<return type="LoginConnectResponse" />
 			<description>
 				Connects to the server specified in [member server_url] using the game id specified in [member game_id]. Must be done before requesting login info.
 				Generates [signal connected_to_server] when connected.
@@ -53,7 +53,7 @@
 			</description>
 		</method>
 		<method name="request_login_info">
-			<return type="LoginResponse" />
+			<return type="LoginURLResponse" />
 			<param index="0" name="login_type" type="String" />
 			<description>
 				Request login info using the login type specified.
