@@ -32,10 +32,19 @@
 
 void LoginClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("request_login_info", "login_type"), &LoginClient::request_login_info);
+	ClassDB::bind_method(D_METHOD("request_auth_id", "login_type"), &LoginClient::request_auth_id);
+	ClassDB::bind_method(D_METHOD("request_access_token", "login_type", "auth_id", "code"), &LoginClient::request_access_token);
+
 	ClassDB::bind_method(D_METHOD("set_server_url", "server_url"), &LoginClient::set_server_url);
 	ClassDB::bind_method(D_METHOD("get_server_url"), &LoginClient::get_server_url);
 	ClassDB::bind_method(D_METHOD("set_game_id", "game_id"), &LoginClient::set_game_id);
 	ClassDB::bind_method(D_METHOD("get_game_id"), &LoginClient::get_game_id);
+
+	ClassDB::bind_method(D_METHOD("set_websocket_prefix", "websocket_prefix"), &LoginClient::set_websocket_prefix);
+	ClassDB::bind_method(D_METHOD("get_websocket_prefix"), &LoginClient::get_websocket_prefix);
+	ClassDB::bind_method(D_METHOD("set_http_prefix", "http_prefix"), &LoginClient::set_http_prefix);
+	ClassDB::bind_method(D_METHOD("get_http_prefix"), &LoginClient::get_http_prefix);
+
 	ClassDB::bind_method(D_METHOD("get_connected"), &LoginClient::get_connected);
 	ClassDB::bind_method(D_METHOD("set_override_discord_path", "override_discord_path"), &LoginClient::set_override_discord_path);
 	ClassDB::bind_method(D_METHOD("get_override_discord_path"), &LoginClient::get_override_discord_path);
@@ -45,6 +54,8 @@ void LoginClient::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "server_url", PROPERTY_HINT_NONE, ""), "set_server_url", "get_server_url");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "game_id", PROPERTY_HINT_NONE, ""), "set_game_id", "get_game_id");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "http_prefix", PROPERTY_HINT_NONE, ""), "set_http_prefix", "get_http_prefix");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "websocket_prefix", PROPERTY_HINT_NONE, ""), "set_websocket_prefix", "get_websocket_prefix");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "connected"), "", "get_connected");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "discord_embedded_app/path"), "set_override_discord_path", "get_override_discord_path");
 
@@ -68,15 +79,16 @@ Ref<LoginClient::LoginResponse> LoginClient::connect_to_server() {
 	protocols.push_back("blazium");
 	protocols.push_back(game_id);
 	_socket->set_supported_protocols(protocols);
-	Error err = _socket->connect_to_url(url);
+	String connect_url = websocket_prefix + url + connect_route;
+	Error err = _socket->connect_to_url(connect_url);
 	if (err != OK) {
 		set_process_internal(false);
-		emit_signal("log_updated", "error", "Unable to connect to server at: " + url);
+		emit_signal("log_updated", "error", "Unable to connect to server at: " + connect_url);
 		connected = false;
 		return Ref<LoginResponse>();
 	}
 	set_process_internal(true);
-	emit_signal("log_updated", "connect_to_server", "Connecting to: " + url);
+	emit_signal("log_updated", "connect_to_server", "Connecting to: " + connect_url);
 	connect_response = Ref<LoginResponse>();
 	connect_response.instantiate();
 	return connect_response;

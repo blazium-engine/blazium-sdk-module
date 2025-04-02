@@ -32,6 +32,26 @@
 				Generates [signal disconnected_from_server] when disconnected.
 			</description>
 		</method>
+		<method name="request_access_token">
+			<return type="LoginAccessTokenResponse" />
+			<param index="0" name="login_type" type="String" />
+			<param index="1" name="auth_id" type="String" />
+			<param index="2" name="code" type="String" />
+			<description>
+				Request login auth id using the login type specified, auth_id and access code.
+				Needs [method connect_to_server] to be called first.
+				Returns a [LoginAccessTokenResponse] object that has a [signal LoginAccessTokenResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
+		<method name="request_auth_id">
+			<return type="LoginIDResponse" />
+			<param index="0" name="login_type" type="String" />
+			<description>
+				Request login auth id using the login type specified.
+				Needs [method connect_to_server] to be called first.
+				Returns a [LoginIDResponse] object that has a [signal LoginIDResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
 		<method name="request_login_info">
 			<return type="LoginResponse" />
 			<param index="0" name="login_type" type="String" />
@@ -46,16 +66,22 @@
 		<member name="connected" type="bool" setter="" getter="get_connected" default="false">
 			Client connected state.
 		</member>
-		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;blazium/login/connect&quot;">
+		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;blazium/login&quot;">
 			Set to what path this client should use when connecting to the discord embedded app.
 		</member>
 		<member name="game_id" type="String" setter="set_game_id" getter="get_game_id" default="&quot;&quot;">
 			Set what game id this client should use when connecting to the server. If this is missing connection will error.
 			Can only contain alphanumeric characters.
 		</member>
-		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;wss://login.blazium.app/connect&quot;">
+		<member name="http_prefix" type="String" setter="set_http_prefix" getter="get_http_prefix" default="&quot;https://&quot;">
+			The http prefix that will be added to the url. If you want to use http instead of https, set it there.
+		</member>
+		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;login.blazium.app&quot;">
 			Set to what url this client should connect to.
 			For discord embedded app environment, replaces the url with [url=wss://client_id.discordsays.com/.proxy/blazium/login/connect]client_id.discordsays.com/.proxy/blazium/login/connect[/url] if left default, where client_id is the client id from the discord embedded app url (automatically detected).
+		</member>
+		<member name="websocket_prefix" type="String" setter="set_websocket_prefix" getter="get_websocket_prefix" default="&quot;wss://&quot;">
+			The http prefix that will be added to the url. If you want to use ws instead of wss, set it there.
 		</member>
 	</members>
 	<signals>
