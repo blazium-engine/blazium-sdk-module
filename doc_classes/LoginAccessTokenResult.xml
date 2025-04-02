@@ -24,7 +24,7 @@
 			The Login access token.
 		</member>
 		<member name="login_type" type="String" setter="" getter="get_login_type" default="&quot;&quot;">
-		 	The Login type.
+			The Login type.
 		</member>
 	</members>
 </class>
