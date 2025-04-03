@@ -33,6 +33,8 @@ def get_doc_classes():
 		"MasterServerListResponse",
 		"GameServerInfo",
 		"LoginClient",
+		"LoginURLResponse",
+		"LoginURLResult",
 		"LoginConnectResponse",
 		"LoginConnectResult",
 		"LoginVerifyTokenResponse",

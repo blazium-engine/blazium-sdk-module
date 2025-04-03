@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="LoginRefreshTokenResponse" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Refresh Token response from a [LobbyClient] call.
+		Refresh Token response from a [LoginClient] call.
 	</brief_description>
 	<description>
-		Refresh Token from a [LobbyClient] call. Await on [signal finished] signal to get the [LoginRefreshTokenResult].
+		Refresh Token response from a [LoginClient] call. Await on [signal finished] signal to get the [LoginRefreshTokenResult].
 	</description>
 	<tutorials>
 	</tutorials>

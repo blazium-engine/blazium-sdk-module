@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="LoginAccessTokenResponse" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Access Token response from a [LobbyClient] call.
+		Access Token response from a [LoginClient] call.
 	</brief_description>
 	<description>
-		Access Token response from a [LobbyClient] call. Await on [signal finished] signal to get the [LobbyResult].
+		Access Token response from a [LoginClient] call. Await on [signal finished] signal to get the [LoginAccessTokenResult].
 	</description>
 	<tutorials>
 	</tutorials>
