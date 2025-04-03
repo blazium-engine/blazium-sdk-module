@@ -32,6 +32,15 @@
 				Generates [signal disconnected_from_server] when disconnected.
 			</description>
 		</method>
+		<method name="refresh_jwt_token">
+			<return type="LoginRefreshTokenResponse" />
+			<param index="0" name="refresh_token" type="String" />
+			<description>
+				Refresh the jwt token using the refresh token.
+				Needs [method connect_to_server] to be called first.
+				Returns a [LoginRefreshTokenResponse] object that has a [signal LoginRefreshTokenResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
 		<method name="request_access_token">
 			<return type="LoginAccessTokenResponse" />
 			<param index="0" name="login_type" type="String" />
@@ -59,6 +68,15 @@
 				Request login info using the login type specified.
 				Needs [method connect_to_server] to be called first.
 				Returns a [LoginURLResponse] object that has a [signal LoginURLResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
+		<method name="verify_jwt_token">
+			<return type="LoginVerifyTokenResponse" />
+			<param index="0" name="jwt_token" type="String" />
+			<description>
+				Verify the jwt token is still valid.
+				Needs [method connect_to_server] to be called first.
+				Returns a [LoginVerifyTokenResponse] object that has a [signal LoginVerifyTokenResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 	</methods>
