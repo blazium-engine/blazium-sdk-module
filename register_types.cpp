@@ -96,6 +96,8 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LoginClient);
 		GDREGISTER_CLASS(LoginClient::LoginConnectResponse);
 		GDREGISTER_CLASS(LoginClient::LoginConnectResponse::LoginConnectResult);
+		GDREGISTER_CLASS(LoginClient::LoginURLResponse);
+		GDREGISTER_CLASS(LoginClient::LoginURLResponse::LoginURLResult);
 		GDREGISTER_CLASS(LoginClient::LoginVerifyTokenResponse);
 		GDREGISTER_CLASS(LoginClient::LoginVerifyTokenResponse::LoginVerifyTokenResult);
 		GDREGISTER_CLASS(LoginClient::LoginRefreshTokenResponse);

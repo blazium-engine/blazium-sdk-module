@@ -21,7 +21,7 @@
 			<description>
 				Connects to the server specified in [member server_url] using the game id specified in [member game_id]. Must be done before requesting login info.
 				Generates [signal connected_to_server] when connected.
-				Returns a [LoginResponse] object that has a [signal LoginResponse.finished] signal that is emitted when finished.
+				Returns a [LoginConnectResponse] object that has a [signal LoginConnectResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="disconnect_from_server">
@@ -58,7 +58,7 @@
 			<description>
 				Request login info using the login type specified.
 				Needs [method connect_to_server] to be called first.
-				Returns a [LoginResponse] object that has a [signal LoginResponse.finished] signal that is emitted when finished.
+				Returns a [LoginURLResponse] object that has a [signal LoginURLResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 	</methods>

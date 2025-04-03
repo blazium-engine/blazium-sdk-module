@@ -10,7 +10,7 @@
 	</tutorials>
 	<signals>
 		<signal name="finished">
-			<param index="0" name="result" type="LoginAccessTokenResponse" />
+			<param index="0" name="result" type="LoginAccessTokenResult" />
 			<description>
 				Signal emitted when the request is finished.
 			</description>

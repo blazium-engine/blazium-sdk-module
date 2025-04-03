@@ -56,7 +56,7 @@ public:
 
 	protected:
 		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginConnectResponse")));
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginConnectResult")));
 		}
 
 	public:
@@ -91,7 +91,7 @@ public:
 
 	protected:
 		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginURLResponse")));
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginURLResult")));
 		}
 
 	public:
@@ -184,7 +184,7 @@ public:
 
 	protected:
 		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginAccessTokenResponse")));
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginAccessTokenResult")));
 		}
 
 	public:
@@ -225,6 +225,7 @@ public:
 			if (p_code != 200 || result_str == "") {
 				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
 				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
+				emit_signal("log_updated", "error", result_str + " " + p_code);
 			} else {
 				if (result_str != "") {
 					Dictionary result_dict = JSON::parse_string(result_str);
@@ -235,6 +236,7 @@ public:
 					result->set_login_type(type);
 					client->emit_signal(SNAME("received_jwt"), jwt, type, token);
 				}
+				emit_signal("log_updated", "request_access_token", "Success");
 			}
 			emit_signal(SNAME("finished"), result);
 		}
@@ -268,7 +270,7 @@ public:
 
 	protected:
 		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginVerifyTokenResponse")));
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginVerifyTokenResult")));
 		}
 
 	public:
@@ -351,7 +353,7 @@ public:
 
 	protected:
 		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginRefreshTokenResponse")));
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginRefreshTokenResult")));
 		}
 
 	public:
@@ -429,13 +431,11 @@ public:
 protected:
 	Ref<WebSocketPeer> _socket;
 	Ref<LoginURLResponse> login_url_response;
-	Ref<LoginVerifyTokenResponse> token_verify_response;
-	Ref<LoginRefreshTokenResponse> token_refresh_response;
 	Ref<LoginIDResponse> login_id_response;
 	Ref<LoginConnectResponse> connect_response;
 
 	void _receive_data(const Dictionary &p_data) {
-		String action = p_data.get("action", "");
+		String action = p_data.get("action", "error");
 		if (action == "login_url") {
 			String url = p_data.get("url", "");
 			String type = p_data.get("type", "");
@@ -443,8 +443,8 @@ protected:
 			login_url_result.instantiate();
 			login_url_result->set_login_url(url);
 			login_url_result->set_login_type(type);
-			login_url_result->emit_signal("finished", login_url_result);
-			login_url_response = Ref<LoginURLResponse>();
+			login_url_response->emit_signal("finished", login_url_result);
+			emit_signal("log_updated", "request_login_url", "Success");
 		}
 		if (action == "conn_id") {
 			String id = p_data.get("id", "");
@@ -454,7 +454,16 @@ protected:
 			login_id_result->set_login_id(id);
 			login_id_result->set_login_type(type);
 			login_id_response->emit_signal("finished", login_id_result);
-			login_id_response = Ref<LoginIDResponse>();
+			emit_signal("log_updated", "request_auth_id", "Success");
+		}
+		if (action == "jwt") {
+			String jwt = p_data.get("url", "");
+			String type = p_data.get("type", "");
+			String access_token = p_data.get("access_token", "");
+			if (p_data.has("url")) {
+				emit_signal("received_jwt", jwt, type, access_token);
+			}
+			emit_signal("log_updated", "received_jwt", "Success");
 		}
 		if (action == "error") {
 			String error = p_data.get("error", "");
@@ -470,20 +479,7 @@ protected:
 				login_id_result->set_error(error);
 				login_id_response->emit_signal("finished", login_id_result);
 			}
-			if (login_id_response.is_valid()) {
-				Ref<LoginIDResponse::LoginIDResult> login_id_result;
-				login_id_result.instantiate();
-				login_id_result->set_error(error);
-				login_id_response->emit_signal("finished", login_id_result);
-			}
-		}
-		if (action == "jwt") {
-			String jwt = p_data.get("url", "");
-			String type = p_data.get("type", "");
-			String access_token = p_data.get("access_token", "");
-			if (p_data.has("url")) {
-				emit_signal("received_jwt", jwt, type, access_token);
-			}
+			emit_signal("log_updated", "error", error);
 		}
 	}
 
@@ -509,6 +505,7 @@ protected:
 						Vector<uint8_t> packet_buffer;
 						Error err = _socket->get_packet_buffer(packet_buffer);
 						if (err != OK) {
+							emit_signal("log_updated", "error", "Unable to get packet.");
 							return;
 						}
 						String packet_string = String::utf8((const char *)packet_buffer.ptr(), packet_buffer.size());
@@ -572,8 +569,6 @@ public:
 		Dictionary command;
 		command["action"] = "getLogin";
 		command["type"] = p_type;
-		login_url_response = Ref<LoginURLResponse>();
-		login_url_response.instantiate();
 		_send_data(command);
 		return login_url_response;
 	}
@@ -590,8 +585,6 @@ public:
 		Dictionary command;
 		command["action"] = "getID";
 		command["type"] = p_type;
-		login_id_response = Ref<LoginIDResponse>();
-		login_id_response.instantiate();
 		_send_data(command);
 		return login_id_response;
 	}
@@ -622,6 +615,8 @@ public:
 		}
 		_socket = Ref<WebSocketPeer>(WebSocketPeer::create());
 		set_process_internal(false);
+		login_id_response.instantiate();
+		login_url_response.instantiate();
 	}
 
 	~LoginClient() {

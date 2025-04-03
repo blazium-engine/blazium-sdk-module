@@ -10,7 +10,7 @@
 	</tutorials>
 	<signals>
 		<signal name="finished">
-			<param index="0" name="result" type="LoginConnectResponse" />
+			<param index="0" name="result" type="LoginConnectResult" />
 			<description>
 				Signal emitted when the request is finished.
 			</description>
