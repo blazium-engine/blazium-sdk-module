@@ -194,34 +194,19 @@ public:
 			GDCLASS(LoginAccessTokenResult, RefCounted);
 
 			String error = "";
-			String login_access_token = "";
-			String login_type = "";
-			String login_jwt = "";
 
 		protected:
 			static void _bind_methods() {
-				ClassDB::bind_method(D_METHOD("get_login_jwt"), &LoginAccessTokenResult::get_login_jwt);
-				ClassDB::bind_method(D_METHOD("get_login_access_token"), &LoginAccessTokenResult::get_login_access_token);
-				ClassDB::bind_method(D_METHOD("get_login_type"), &LoginAccessTokenResult::get_login_type);
 				ClassDB::bind_method(D_METHOD("has_error"), &LoginAccessTokenResult::has_error);
 				ClassDB::bind_method(D_METHOD("get_error"), &LoginAccessTokenResult::get_error);
 				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
-				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_access_token"), "", "get_login_access_token");
-				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_type"), "", "get_login_type");
-				ADD_PROPERTY(PropertyInfo(Variant::STRING, "login_jwt"), "", "get_login_jwt");
 			}
 
 		public:
-			void set_login_jwt(String p_login_jwt) { this->login_jwt = p_login_jwt; }
-			void set_login_type(String p_type) { this->login_type = p_type; }
-			void set_login_access_token(String p_access_token) { this->login_access_token = p_access_token; }
 			void set_error(String p_error) { this->error = p_error; }
 
 			bool has_error() const { return !error.is_empty(); }
 			String get_error() const { return error; }
-			String get_login_access_token() const { return login_access_token; }
-			String get_login_type() const { return login_type; }
-			String get_login_jwt() const { return login_jwt; }
 		};
 		
 		void _on_request_completed(int p_status, int p_code, const PackedStringArray &p_headers, const PackedByteArray &p_data) {
@@ -233,16 +218,6 @@ public:
 				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
 				emit_signal("log_updated", "error", result_str + " " + p_code);
 			} else {
-				if (result_str != "") {
-					Dictionary result_dict = JSON::parse_string(result_str);
-					String token = result_dict.get("url", "");
-					String jwt = result_dict.get("jwt", "");
-					String type = result_dict.get("type", "");
-					result->set_login_access_token(token);
-					result->set_login_type(type);
-					result->set_login_jwt(jwt);
-					client->emit_signal(SNAME("received_jwt"), jwt, type, token);
-				}
 				emit_signal("log_updated", "request_access_token", "Success");
 			}
 			emit_signal(SNAME("finished"), result);

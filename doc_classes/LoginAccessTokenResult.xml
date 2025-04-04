@@ -20,14 +20,5 @@
 		<member name="error" type="String" setter="" getter="get_error" default="&quot;&quot;">
 			Gets the error message.
 		</member>
-		<member name="login_access_token" type="String" setter="" getter="get_login_access_token" default="&quot;&quot;">
-			The Login access token.
-		</member>
-		<member name="login_jwt" type="String" setter="" getter="get_login_jwt" default="&quot;&quot;">
-			The Login JWT.
-		</member>
-		<member name="login_type" type="String" setter="" getter="get_login_type" default="&quot;&quot;">
-			The Login type.
-		</member>
 	</members>
 </class>
