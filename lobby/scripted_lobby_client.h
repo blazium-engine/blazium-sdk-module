@@ -45,6 +45,7 @@ protected:
 	String game_id = "";
 	Dictionary peer_data = Dictionary();
 	Ref<LobbyInfo> lobby;
+	Ref<LobbyPeer> empty_peer;
 	Ref<LobbyPeer> peer;
 	TypedArray<LobbyInfo> lobbies = TypedArray<LobbyInfo>();
 	TypedArray<LobbyPeer> peers = TypedArray<LobbyPeer>();

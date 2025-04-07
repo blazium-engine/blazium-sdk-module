@@ -53,6 +53,7 @@ protected:
 	Dictionary peer_data = Dictionary();
 	Ref<LobbyInfo> lobby;
 	Ref<LobbyPeer> peer;
+	Ref<LobbyPeer> empty_peer;
 	TypedArray<LobbyInfo> lobbies = TypedArray<LobbyInfo>();
 	TypedArray<LobbyPeer> peers = TypedArray<LobbyPeer>();
 

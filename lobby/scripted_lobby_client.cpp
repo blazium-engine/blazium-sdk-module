@@ -42,6 +42,7 @@ ScriptedLobbyClient::ScriptedLobbyClient() {
 	}
 	lobby.instantiate();
 	peer.instantiate();
+	empty_peer.instantiate();
 	_socket = Ref<WebSocketPeer>(WebSocketPeer::create());
 	set_process_internal(false);
 }
@@ -764,12 +765,17 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "peer_chat") {
 		String peer_id = data_dict.get("from_peer", "");
 		String chat_data = data_dict.get("chat_data", "");
+		bool message_sent = false;
 		for (int i = 0; i < peers.size(); ++i) {
 			Ref<LobbyPeer> found_peer = peers[i];
 			if (found_peer->get_id() == peer_id) {
 				emit_signal("peer_messaged", found_peer, chat_data);
+				message_sent = true;
 				break;
 			}
+		}
+		if (!message_sent) {
+			emit_signal("peer_messaged", empty_peer, chat_data);
 		}
 	} else if (command == "peer_user_data") {
 		String peer_id = data_dict.get("peer_id", "");
