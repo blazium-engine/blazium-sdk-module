@@ -46,7 +46,7 @@ protected:
 	String websocket_prefix = "wss://";
 	String http_prefix = "https://";
 	String game_id = "";
-	String connect_route = "/connect";
+	String connect_route = "/api/v1/connect";
 	String access_code_route = "/auth";
 	String verify_jwt_route = "/token/verify";
 	String refresh_jwt_route = "/token/refresh";
