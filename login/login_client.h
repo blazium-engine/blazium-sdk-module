@@ -392,7 +392,7 @@ protected:
 	void _receive_data(const Dictionary &p_data) {
 		String action = p_data.get("action", "error");
 		if (action == "login_url") {
-			String url = p_data.get("url", "");
+			String url = p_data.get("login_url", "");
 			String type = p_data.get("type", "");
 			Ref<LoginURLResponse::LoginURLResult> login_url_result;
 			login_url_result.instantiate();
@@ -412,7 +412,7 @@ protected:
 			emit_signal("log_updated", "request_auth_id", "Success");
 		}
 		if (action == "jwt") {
-			String jwt = p_data.get("url", "");
+			String jwt = p_data.get("jwt", "");
 			String type = p_data.get("type", "");
 			String access_token = p_data.get("access_token", "");
 			if (p_data.has("url")) {
