@@ -415,7 +415,7 @@ protected:
 			String jwt = p_data.get("jwt", "");
 			String type = p_data.get("type", "");
 			String access_token = p_data.get("access_token", "");
-			if (p_data.has("url")) {
+			if (p_data.has("jwt")) {
 				emit_signal("received_jwt", jwt, type, access_token);
 			}
 			emit_signal("log_updated", "received_jwt", "Success");
