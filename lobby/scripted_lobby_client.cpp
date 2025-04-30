@@ -205,7 +205,7 @@ Ref<LobbyResponse> ScriptedLobbyClient::disconnect_from_server() {
 }
 
 String ScriptedLobbyClient::_increment_counter() {
-	return String::num(_counter++);
+	return String::num_int64(_counter++);
 }
 
 Ref<ViewLobbyResponse> ScriptedLobbyClient::quick_join(const String &p_name, const Dictionary &p_tags, int p_max_players) {
