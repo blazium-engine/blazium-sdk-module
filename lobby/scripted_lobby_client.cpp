@@ -577,13 +577,6 @@ void ScriptedLobbyClient::_notification(int p_what) {
 					connected = true;
 					emit_signal("log_updated", "connect_to_server", "Connected to: " + server_url);
 				}
-				if (_commands.has("connect")) {
-					Ref<LobbyResponse> response = _commands["connect"];
-					Ref<LobbyResponse::LobbyResult> result;
-					result.instantiate();
-					response->call_deferred("emit_signal", "finished", result);
-					_commands.erase("connect");
-				}
 				while (_socket->get_available_packet_count() > 0) {
 					Vector<uint8_t> packet_buffer;
 					Error err = _socket->get_packet_buffer(packet_buffer);
@@ -700,6 +693,13 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 		peer->set_dict(peer_dict);
 		lobby->set_id(peer_dict.get("lobby_id", ""));
 		reconnection_token = peer_dict.get("reconnection_token", "");
+		if (_commands.has("connect")) {
+			Ref<LobbyResponse> response = _commands["connect"];
+			Ref<LobbyResponse::LobbyResult> result;
+			result.instantiate();
+			response->call_deferred("emit_signal", "finished", result);
+			_commands.erase("connect");
+		}
 		emit_signal("connected_to_server", peer, reconnection_token);
 	} else if (command == "lobby_created") {
 		lobbies.clear();
