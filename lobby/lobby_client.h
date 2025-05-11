@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef LOBBY_CLIENT_H
-#define LOBBY_CLIENT_H
+#pragma once
 
 #include "../discord/discord_embedded_app_client.h"
 #include "../blazium_client.h"
@@ -134,5 +133,3 @@ public:
 	LobbyClient();
 	~LobbyClient();
 };
-
-#endif // LOBBY_CLIENT_H

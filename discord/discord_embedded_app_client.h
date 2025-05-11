@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DISCORD_EMBEDDED_APP_CLIENT_H
-#define DISCORD_EMBEDDED_APP_CLIENT_H
+#pragma once
 
 #include "../third_party_client.h"
 #include "platform/web/api/javascript_bridge_singleton.h"
@@ -126,4 +125,3 @@ public:
 };
 
 VARIANT_ENUM_CAST(DiscordEmbeddedAppClient::DiscordEmbeddedAppOrientationLockState);
-#endif // DISCORD_EMBEDDED_APP_CLIENT_H

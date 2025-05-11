@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JWT_H
-#define JWT_H
+#pragma once
 
 #include "core/object/object.h"
 #include "core/object/class_db.h"
@@ -46,5 +45,3 @@ public:
 	JWT();
 	~JWT();
 };
-
-#endif // JWT_H

@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DISCORD_EMBEDDED_APP_RESPONSE_H
-#define DISCORD_EMBEDDED_APP_RESPONSE_H
+#pragma once
 
 #include "core/object/ref_counted.h"
 
@@ -72,5 +71,3 @@ public:
 		emit_signal("finished", result);
 	}
 };
-
-#endif // DISCORD_EMBEDDED_APP_RESPONSE_H

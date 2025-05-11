@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef YOUTUBE_PLAYABLES_CLIENT_H
-#define YOUTUBE_PLAYABLES_CLIENT_H
+#pragma once
 
 #include "youtube_playables_response.h"
 #include "../third_party_client.h"
@@ -69,5 +68,3 @@ public:
 
     YoutubePlayablesClient();
 };
-
-#endif // YOUTUBE_PLAYABLES_CLIENT_H

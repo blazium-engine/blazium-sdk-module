@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef ENV_H
-#define ENV_H
+#pragma once
 
 #include "core/object/object.h"
 #include "core/object/class_db.h"
@@ -63,5 +62,3 @@ public:
 	ENV();
 	~ENV();
 };
-
-#endif // ENV_H
