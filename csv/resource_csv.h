@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef RESOURCE_CSV_H
-#define RESOURCE_CSV_H
+#pragma once
 
 #include "core/io/resource.h"
 #include "core/variant/typed_array.h"
@@ -58,5 +57,3 @@ public:
 	Variant convert_to_variant(const String &p_text);
 	Error load_file(String p_path);
 };
-
-#endif // RESOURCE_CSV_H

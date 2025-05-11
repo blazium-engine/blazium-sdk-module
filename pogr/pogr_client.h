@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef POGR_CLIENT_H
-#define POGR_CLIENT_H
+#pragma once
 
 #include "../blazium_client.h"
 #include "core/io/json.h"
@@ -357,5 +356,3 @@ public:
 		valid_tags.append("override_timestamp");
 	}
 };
-
-#endif // POGR_CLIENT_H

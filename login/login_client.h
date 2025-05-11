@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef LOGIN_CLIENT_H
-#define LOGIN_CLIENT_H
+#pragma once
 
 #include "../blazium_client.h"
 #include "../discord/discord_embedded_app_client.h"
@@ -544,5 +543,3 @@ public:
 		set_process_internal(false);
 	}
 };
-
-#endif // LOGIN_CLIENT_H

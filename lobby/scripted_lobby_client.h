@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SCRIPTED_LOBBY_CLIENT_H
-#define SCRIPTED_LOBBY_CLIENT_H
+#pragma once
 
 #include "../discord/discord_embedded_app_client.h"
 #include "scripted_lobby_response.h"
@@ -119,5 +118,3 @@ public:
 	ScriptedLobbyClient();
 	~ScriptedLobbyClient();
 };
-
-#endif // SCRIPTED_LOBBY_CLIENT_H

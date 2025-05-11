@@ -48,7 +48,7 @@ Dictionary JWT::get_header(const String &p_jwt) {
 	if (split.size() < 2) {
 		return {};
 	}
-	core_bind::Marshalls *singleton = core_bind::Marshalls::get_singleton();
+	CoreBind::Marshalls *singleton = CoreBind::Marshalls::get_singleton();
 	if (singleton == nullptr) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
@@ -66,7 +66,7 @@ Dictionary JWT::get_payload(const String &p_jwt) {
 	if (split.size() < 2) {
 		return {};
 	}
-	core_bind::Marshalls *singleton = core_bind::Marshalls::get_singleton();
+	CoreBind::Marshalls *singleton = CoreBind::Marshalls::get_singleton();
 	if (singleton == nullptr) {
 		ERR_PRINT("Failed to get Marshalls singleton.");
 	}
