@@ -95,7 +95,7 @@ void LobbyClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &LobbyClient::leave_lobby);
 	ClassDB::bind_method(D_METHOD("list_lobbies"), &LobbyClient::list_lobby);
 	ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"), &LobbyClient::kick_peer);
-	ClassDB::bind_method(D_METHOD("send_chat_message", "chat_message"), &LobbyClient::lobby_chat);
+	ClassDB::bind_method(D_METHOD("send_chat_message", "chat_message", "chat_metadata"), &LobbyClient::lobby_chat, DEFVAL(Dictionary()));
 	ClassDB::bind_method(D_METHOD("set_lobby_ready", "ready"), &LobbyClient::lobby_ready);
 	ClassDB::bind_method(D_METHOD("add_lobby_tags", "tags"), &LobbyClient::set_lobby_tags);
 	ClassDB::bind_method(D_METHOD("del_lobby_tags", "keys"), &LobbyClient::del_lobby_tags);
@@ -135,7 +135,7 @@ void LobbyClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("peer_reconnected", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
 	ADD_SIGNAL(MethodInfo("peer_left", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::BOOL, "kicked")));
 	ADD_SIGNAL(MethodInfo("peer_disconnected", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
-	ADD_SIGNAL(MethodInfo("peer_messaged", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::STRING, "chat_message")));
+	ADD_SIGNAL(MethodInfo("peer_messaged", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::STRING, "chat_message"), PropertyInfo(Variant::DICTIONARY, "chat_metadata")));
 	ADD_SIGNAL(MethodInfo("peer_ready", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::BOOL, "is_ready")));
 	ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
 }
@@ -498,7 +498,7 @@ Ref<LobbyResponse> LobbyClient::del_lobby_tags(const TypedArray<String> &p_keys)
 	return response;
 }
 
-Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message) {
+Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message, const Dictionary &p_chat_metadata) {
 	Ref<LobbyResponse> response;
 	response.instantiate();
 	if (!connected) {
@@ -513,6 +513,7 @@ Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message) {
 	Dictionary data_dict;
 	command["data"] = data_dict;
 	data_dict["chat"] = p_chat_message;
+	data_dict["metadata"] = p_chat_metadata;
 	data_dict["id"] = id;
 	Array command_array;
 	command_array.push_back(LOBBY_REQUEST);
@@ -1067,17 +1068,18 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "peer_chat") {
 		String peer_id = data_dict.get("from_peer", "");
 		String chat_data = data_dict.get("chat_data", "");
+		Dictionary chat_metadata = data_dict.get("chat_metadata", Dictionary());
 		bool message_sent = false;
 		for (int i = 0; i < peers.size(); ++i) {
 			Ref<LobbyPeer> found_peer = peers[i];
 			if (found_peer->get_id() == peer_id) {
-				emit_signal("peer_messaged", found_peer, chat_data);
+				emit_signal("peer_messaged", found_peer, chat_data, chat_metadata);
 				message_sent = true;
 				break;
 			}
 		}
 		if (!message_sent) {
-			emit_signal("peer_messaged", empty_peer, chat_data);
+			emit_signal("peer_messaged", empty_peer, chat_data, chat_metadata);
 		}
 	} else if (command == "peer_user_data") {
 		String peer_id = data_dict.get("peer_id", "");

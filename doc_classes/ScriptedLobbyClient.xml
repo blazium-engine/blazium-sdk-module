@@ -183,6 +183,7 @@
 		<method name="send_chat_message">
 			<return type="LobbyResponse" />
 			<param index="0" name="chat_message" type="String" />
+			<param index="1" name="chat_metadata" type="Dictionary" default="{}" />
 			<description>
 				Send a chat message. Only works if you are in a lobby.
 				Needs [method connect_to_server] to be called first.
@@ -376,6 +377,7 @@
 		<signal name="peer_messaged">
 			<param index="0" name="peer" type="LobbyPeer" />
 			<param index="1" name="chat_message" type="String" />
+			<param index="2" name="chat_metadata" type="Dictionary" />
 			<description>
 				Signal generated after a peer sends a chat message.
 			</description>

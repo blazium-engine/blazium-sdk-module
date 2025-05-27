@@ -111,7 +111,7 @@ public:
 	Ref<LobbyResponse> set_lobby_tags(const Dictionary &p_tags);
 	Ref<LobbyResponse> del_lobby_tags(const TypedArray<String> &p_keys);
 
-	Ref<LobbyResponse> lobby_chat(const String &chat_message);
+	Ref<LobbyResponse> lobby_chat(const String &chat_message, const Dictionary &p_chat_metadata);
 	Ref<LobbyResponse> lobby_ready(bool p_ready);
 	Ref<LobbyResponse> seal_lobby(bool seal);
 	Ref<ScriptedLobbyResponse> lobby_call(const String &p_method, const Array &p_args);
