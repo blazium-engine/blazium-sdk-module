@@ -313,7 +313,7 @@
 			</description>
 		</signal>
 		<signal name="lobby_notified">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<description>
 				Signal generated after a notification is received.
 			</description>
@@ -396,13 +396,13 @@
 			</description>
 		</signal>
 		<signal name="received_lobby_data">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<description>
 				Signal generated after data is sent to the lobby.
 			</description>
 		</signal>
 		<signal name="received_peer_data">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<param index="1" name="to_peer" type="LobbyPeer" />
 			<param index="2" name="is_private" type="bool" />
 			<description>
@@ -411,7 +411,7 @@
 		</signal>
 		<signal name="received_peer_user_data">
 			<param index="0" name="peer" type="LobbyPeer" />
-			<param index="1" name="data" type="Object" />
+			<param index="1" name="data" type="Dictionary" />
 			<description>
 				Signal generated after user data is sent to peer.
 			</description>
