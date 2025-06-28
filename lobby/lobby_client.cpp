@@ -126,7 +126,6 @@ void LobbyClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("lobby_joined", PropertyInfo(Variant::OBJECT, "lobby", PROPERTY_HINT_RESOURCE_TYPE, "LobbyInfo"), PropertyInfo(Variant::ARRAY, "peers", PROPERTY_HINT_ARRAY_TYPE, "LobbyPeer")));
 	ADD_SIGNAL(MethodInfo("lobby_left", PropertyInfo(Variant::BOOL, "kicked")));
 	ADD_SIGNAL(MethodInfo("lobby_sealed", PropertyInfo(Variant::BOOL, "sealed")));
-	ADD_SIGNAL(MethodInfo("lobby_hosted", PropertyInfo(Variant::OBJECT, "host", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
 	ADD_SIGNAL(MethodInfo("lobby_tagged", PropertyInfo(Variant::DICTIONARY, "tags")));
 	ADD_SIGNAL(MethodInfo("lobby_passworded", PropertyInfo(Variant::BOOL, "password_protected")));
 	ADD_SIGNAL(MethodInfo("lobby_resized", PropertyInfo(Variant::INT, "max_players")));
@@ -1036,19 +1035,6 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "lobby_unsealed") {
 		lobby->set_sealed(false);
 		emit_signal("lobby_sealed", false);
-	} else if (command == "lobby_hosted") {
-		Ref<LobbyPeer> new_host = Ref<LobbyPeer>(memnew(LobbyPeer));
-		String new_host_id = data_dict.get("host_id", String());
-		// find the new host in the peers array
-		for (int i = 0; i < peers.size(); ++i) {
-			Ref<LobbyPeer> peer_info = peers[i];
-			if (peer_info->get_id() == new_host_id) {
-				new_host->set_dict(peer_info->get_dict(), false);
-				break;
-			}
-		}
-		lobby->set_host(new_host_id);
-		emit_signal("lobby_hosted", new_host);
 	} else if (command == "lobby_tags") {
 		lobby->set_delta_tags(data_dict.get("tags", Dictionary()));
 		emit_signal("lobby_tagged", lobby->get_tags());

@@ -299,12 +299,6 @@
 				Signal generated after a lobby is created.
 			</description>
 		</signal>
-		<signal name="lobby_hosted">
-			<param index="0" name="host" type="LobbyPeer" />
-			<description>
-				Signal generated after a lobby host is changed. If there is no host, a peer without id will be sent.
-			</description>
-		</signal>
 		<signal name="lobby_joined">
 			<param index="0" name="lobby" type="LobbyInfo" />
 			<param index="1" name="peers" type="LobbyPeer[]" />
