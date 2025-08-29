@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef YOUTUBE_PLAYABLES_RESPONSE_H
-#define YOUTUBE_PLAYABLES_RESPONSE_H
+#pragma once
 
 #include "core/io/json.h"
 #include "core/object/ref_counted.h"
@@ -104,5 +103,3 @@ public:
 		return signal_finish_callback;
 	}
 };
-
-#endif // YOUTUBE_PLAYABLES_RESPONSE_H

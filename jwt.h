@@ -28,15 +28,15 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JWT_H
-#define JWT_H
+#pragma once
 
-#include "core/object/object.h"
 #include "core/object/class_db.h"
+#include "core/object/object.h"
 
 class JWT : public Object {
 	GDCLASS(JWT, Object);
 	static JWT *jwt_singleton;
+
 public:
 	static JWT *get_singleton();
 	static void _bind_methods();
@@ -46,5 +46,3 @@ public:
 	JWT();
 	~JWT();
 };
-
-#endif // JWT_H

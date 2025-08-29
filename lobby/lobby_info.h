@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef LOBBY_INFO_H
-#define LOBBY_INFO_H
+#pragma once
 
 #include "core/io/resource.h"
 
@@ -74,5 +73,3 @@ public:
 	bool is_sealed() const;
 	bool is_password_protected() const;
 };
-
-#endif // LOBBY_INFO_H

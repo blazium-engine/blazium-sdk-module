@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef MASTER_SERVER_CLIENT_H
-#define MASTER_SERVER_CLIENT_H
+#pragma once
 
 #include "../blazium_client.h"
 #include "../discord/discord_embedded_app_client.h"
@@ -361,5 +360,3 @@ public:
 		}
 	}
 };
-
-#endif // MASTER_SERVER_CLIENT_H

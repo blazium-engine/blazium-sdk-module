@@ -28,46 +28,45 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef YOUTUBE_PLAYABLES_CLIENT_H
-#define YOUTUBE_PLAYABLES_CLIENT_H
+#pragma once
 
-#include "youtube_playables_response.h"
 #include "../third_party_client.h"
-#include "scene/main/node.h"
 #include "platform/web/api/javascript_bridge_singleton.h"
+#include "scene/main/node.h"
+#include "youtube_playables_response.h"
 
 // https://developers.google.com/youtube/gaming/playables/reference/sdk
 // https://github.com/google/web-game-samples/blob/main/phaser/src/YouTubePlayables.js
 class YoutubePlayablesClient : public ThirdPartyClient {
-    GDCLASS(YoutubePlayablesClient, ThirdPartyClient);
+	GDCLASS(YoutubePlayablesClient, ThirdPartyClient);
 
-    Ref<JavaScriptObject> ytgameRef;
+	Ref<JavaScriptObject> ytgameRef;
 
-    Ref<JavaScriptObject> on_audio_enabled_change_callback;
-    Ref<JavaScriptObject> on_pause_callback;
-    Ref<JavaScriptObject> on_resume_callback;
+	Ref<JavaScriptObject> on_audio_enabled_change_callback;
+	Ref<JavaScriptObject> on_pause_callback;
+	Ref<JavaScriptObject> on_resume_callback;
 
-    // Needed to have is_audio_enabled return the right value
-    bool audio_enabled = true;
+	// Needed to have is_audio_enabled return the right value
+	bool audio_enabled = true;
+
 protected:
-    static void _bind_methods();
+	static void _bind_methods();
+
 public:
-    void _emit_audio_enabled_change(Array);
-    void _emit_pause();
-    void _emit_resume();
+	void _emit_audio_enabled_change(Array);
+	void _emit_pause();
+	void _emit_resume();
 
-    void log_error();
-    void log_warning();
-    bool is_audio_enabled();
-    bool is_youtube_environment();
-    String get_sdk_version();
-    Ref<YoutubePlayablesResponse> load_data();
-    Ref<YoutubePlayablesResponse> save_data(String);
-    Ref<YoutubePlayablesResponse> send_score(int32_t);
-    Ref<YoutubePlayablesResponse> open_yt_content(String);
-    Ref<YoutubePlayablesResponse> get_language();
+	void log_error();
+	void log_warning();
+	bool is_audio_enabled();
+	bool is_youtube_environment();
+	String get_sdk_version();
+	Ref<YoutubePlayablesResponse> load_data();
+	Ref<YoutubePlayablesResponse> save_data(String);
+	Ref<YoutubePlayablesResponse> send_score(int32_t);
+	Ref<YoutubePlayablesResponse> open_yt_content(String);
+	Ref<YoutubePlayablesResponse> get_language();
 
-    YoutubePlayablesClient();
+	YoutubePlayablesClient();
 };
-
-#endif // YOUTUBE_PLAYABLES_CLIENT_H

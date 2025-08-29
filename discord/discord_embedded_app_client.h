@@ -28,13 +28,12 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DISCORD_EMBEDDED_APP_CLIENT_H
-#define DISCORD_EMBEDDED_APP_CLIENT_H
+#pragma once
 
 #include "../third_party_client.h"
+#include "discord_embedded_app_response.h"
 #include "platform/web/api/javascript_bridge_singleton.h"
 #include "scene/main/node.h"
-#include "discord_embedded_app_response.h"
 
 // From https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts v1.9.0
 class DiscordEmbeddedAppClient : public ThirdPartyClient {
@@ -73,6 +72,7 @@ class DiscordEmbeddedAppClient : public ThirdPartyClient {
 	void _send_command(String p_command, Dictionary p_args, String p_nonce);
 	void _send_message(int p_opcode, Dictionary p_body);
 	void _handshake();
+
 protected:
 	static void _bind_methods();
 
@@ -126,4 +126,3 @@ public:
 };
 
 VARIANT_ENUM_CAST(DiscordEmbeddedAppClient::DiscordEmbeddedAppOrientationLockState);
-#endif // DISCORD_EMBEDDED_APP_CLIENT_H

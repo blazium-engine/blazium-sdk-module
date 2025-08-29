@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef LOBBY_PEER_H
-#define LOBBY_PEER_H
+#pragma once
 
 #include "core/io/resource.h"
 
@@ -67,5 +66,3 @@ public:
 	int get_order_id() const;
 	Dictionary get_user_data() const;
 };
-
-#endif // LOBBY_PEER_H
