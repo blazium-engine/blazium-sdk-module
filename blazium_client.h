@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef BLAZIUM_CLIENT_H
-#define BLAZIUM_CLIENT_H
+#pragma once
 
 #include "scene/main/node.h"
 
@@ -39,5 +38,3 @@ class BlaziumClient : public Node {
 protected:
 	static void _bind_methods() {}
 };
-
-#endif // BLAZIUM_CLIENT_H

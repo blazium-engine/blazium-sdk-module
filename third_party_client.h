@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef THIRD_PARTY_CLIENT
-#define THIRD_PARTY_CLIENT
+#pragma once
 
 #include "scene/main/node.h"
 
@@ -39,5 +38,3 @@ class ThirdPartyClient : public Node {
 protected:
 	static void _bind_methods() {}
 };
-
-#endif // THIRD_PARTY_CLIENT

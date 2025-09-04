@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef LOGIN_CLIENT_H
-#define LOGIN_CLIENT_H
+#pragma once
 
 #include "../blazium_client.h"
 #include "../discord/discord_embedded_app_client.h"
@@ -207,7 +206,7 @@ public:
 			bool has_error() const { return !error.is_empty(); }
 			String get_error() const { return error; }
 		};
-		
+
 		void _on_request_completed(int p_status, int p_code, const PackedStringArray &p_headers, const PackedByteArray &p_data) {
 			Ref<LoginAuthResult> result;
 			result.instantiate();
@@ -221,7 +220,7 @@ public:
 			}
 			emit_signal(SNAME("finished"), result);
 		}
-		
+
 		void signal_finish(String p_error) {
 			Ref<LoginAuthResult> result;
 			result.instantiate();
@@ -272,7 +271,7 @@ public:
 			bool has_error() const { return !error.is_empty(); }
 			String get_error() const { return error; }
 		};
-		
+
 		void _on_request_completed(int p_status, int p_code, const PackedStringArray &p_headers, const PackedByteArray &p_data) {
 			Ref<LoginVerifyTokenResult> result;
 			result.instantiate();
@@ -291,7 +290,7 @@ public:
 			}
 			emit_signal(SNAME("finished"), result);
 		}
-		
+
 		void signal_finish(String p_error) {
 			Ref<LoginVerifyTokenResult> result;
 			result.instantiate();
@@ -544,5 +543,3 @@ public:
 		set_process_internal(false);
 	}
 };
-
-#endif // LOGIN_CLIENT_H

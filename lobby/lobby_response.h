@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef LOBBY_RESPONSE_H
-#define LOBBY_RESPONSE_H
+#pragma once
 
 #include "core/object/ref_counted.h"
 #include "core/variant/typed_array.h"
@@ -120,5 +119,3 @@ public:
 		emit_signal("finished", result);
 	}
 };
-
-#endif // LOBBY_RESPONSE_H

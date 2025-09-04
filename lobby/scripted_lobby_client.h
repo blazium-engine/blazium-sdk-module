@@ -28,12 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SCRIPTED_LOBBY_CLIENT_H
-#define SCRIPTED_LOBBY_CLIENT_H
+#pragma once
 
 #include "../discord/discord_embedded_app_client.h"
-#include "scripted_lobby_response.h"
 #include "lobby_client.h"
+#include "scripted_lobby_response.h"
 
 class ScriptedLobbyClient : public BlaziumClient {
 	GDCLASS(ScriptedLobbyClient, BlaziumClient);
@@ -120,5 +119,3 @@ public:
 	ScriptedLobbyClient();
 	~ScriptedLobbyClient();
 };
-
-#endif // SCRIPTED_LOBBY_CLIENT_H
